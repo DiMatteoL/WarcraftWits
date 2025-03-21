@@ -1,0 +1,136 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Light theme (default) */
+    --background: 0 0% 100%;
+    --foreground: 215 25% 25%;
+
+    --card: 0 0% 98%;
+    --card-foreground: 215 25% 25%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 215 25% 25%;
+
+    --primary: 45 70% 50%;
+    --primary-foreground: 215 25% 15%;
+
+    --secondary: 180 40% 40%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 210 20% 96%;
+    --muted-foreground: 215 25% 40%;
+
+    --accent: 180 40% 45%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 45 60% 80%;
+    --input: 210 20% 96%;
+    --ring: 45 70% 50%;
+
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    /* Dark theme */
+    --background: 215 30% 12%;
+    --foreground: 45 70% 80%;
+
+    --card: 215 30% 16%;
+    --card-foreground: 45 70% 80%;
+
+    --popover: 215 30% 12%;
+    --popover-foreground: 45 70% 80%;
+
+    --primary: 45 80% 50%;
+    --primary-foreground: 215 30% 15%;
+
+    --secondary: 180 50% 35%;
+    --secondary-foreground: 45 70% 80%;
+
+    --muted: 215 30% 20%;
+    --muted-foreground: 45 60% 70%;
+
+    --accent: 180 50% 35%;
+    --accent-foreground: 45 70% 80%;
+
+    --destructive: 0 70% 50%;
+    --destructive-foreground: 45 70% 80%;
+
+    --border: 45 60% 40%;
+    --input: 215 30% 20%;
+    --ring: 45 80% 50%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground transition-colors duration-300;
+  }
+
+  h1 {
+    @apply text-3xl font-bold tracking-tight md:text-4xl lg:text-5xl text-primary;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  }
+
+  h2 {
+    @apply text-2xl font-semibold tracking-tight md:text-3xl text-primary;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+  }
+
+  h3 {
+    @apply text-xl font-semibold tracking-tight text-primary;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+  }
+
+  p {
+    @apply leading-relaxed;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .wow-border {
+    @apply border-2 border-border transition-all duration-300;
+    box-shadow: 0 0 8px rgba(var(--primary), 0.2);
+  }
+
+  .wow-card {
+    @apply bg-card border-2 border-border transition-all duration-300;
+    box-shadow: 0 0 10px rgba(var(--primary), 0.15);
+  }
+
+  /* Progress circle animation */
+  @keyframes progress-circle-fill {
+    from {
+      stroke-dashoffset: 100;
+    }
+    to {
+      stroke-dashoffset: var(--progress-value);
+    }
+  }
+
+  .progress-circle {
+    animation: progress-circle-fill 1s ease-out forwards;
+  }
+
+  .fixed-action-button {
+    @apply shadow-md hover:shadow-lg transform transition-all duration-300;
+  }
+
+  .fixed-action-button:hover {
+    @apply -translate-y-0.5;
+  }
+}
+
