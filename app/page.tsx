@@ -9,11 +9,11 @@ export default function WoWMemoryGame() {
   const expansions = getAllExpansions()
 
   return (
-    <div className="container py-12 px-4 max-w-5xl mx-auto">
+    <div className="container py-4 md:py-12 px-4 max-w-5xl mx-auto">
       <div className="flex flex-col items-center mb-12">
         {/* WoW Logo */}
         <div className="w-32 h-32 mb-6 relative">
-          <Image src="/wow-logo.png" alt="World of Warcraft Logo" fill className="object-contain" priority />
+          <Image src="/android-chrome-192x192.png" alt="WoW From Memory Logo" fill className="object-contain" priority />
         </div>
 
         {/* Title */}
@@ -32,7 +32,7 @@ export default function WoWMemoryGame() {
             </p>
 
             {/* Enjoy text */}
-            <p className="text-center text-primary font-medium text-lg">Enjoy!</p>
+            <p className="text-center font-medium text-lg">Enjoy!</p>
           </CardContent>
         </Card>
       </div>
@@ -48,4 +48,3 @@ export default function WoWMemoryGame() {
     </div>
   )
 }
-
