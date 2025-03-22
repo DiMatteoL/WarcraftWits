@@ -65,11 +65,6 @@ export function InstanceIcon({ instance, expansionId, foundBosses, allBosses, si
 
   // Handle click - ensure context is cleared when navigating
   const handleClick = (e: React.MouseEvent) => {
-    if (showTooltip) {
-      e.preventDefault()
-      return
-    }
-
     // Clear the hovered instance before navigation
     clearHoveredInstance()
   }
@@ -153,4 +148,3 @@ export function InstanceIcon({ instance, expansionId, foundBosses, allBosses, si
     </div>
   )
 }
-

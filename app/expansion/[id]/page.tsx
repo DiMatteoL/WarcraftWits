@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, use } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { notFound } from "next/navigation"
@@ -21,16 +21,16 @@ import type { Map, InstanceWithCompletion } from "@/types/game"
 const rightSidePanelStyles =
   "w-full md:w-1/4 h-1/2 md:h-screen bg-card overflow-y-auto border-l border-border/50 shadow-md"
 
-export default function ExpansionPage({ params }: { params: { id: string } }) {
-  // Get expansion data
-  const expansion = expansionData[params.id as keyof typeof expansionData]
+export default function ExpansionPage({ params }: { params: Promise<{ id: string }> }) {
+  const id = use(params).id
+  const expansion = expansionData[id as keyof typeof expansionData]
   if (!expansion) {
     notFound()
   }
 
   // State
   const [selectedMap, setSelectedMap] = useState<Map>(expansion.maps[0])
-  const { foundBosses, addFoundBoss, clearFoundBosses, isLoaded } = useFoundBosses(params.id)
+  const { foundBosses, addFoundBoss, clearFoundBosses, isLoaded } = useFoundBosses(id)
   const { clearHoveredInstance } = useHoveredInstanceStore()
 
   // Calculate boss counts
@@ -156,7 +156,7 @@ export default function ExpansionPage({ params }: { params: { id: string } }) {
                 <InstanceIcon
                   key={instance.id}
                   instance={instance}
-                  expansionId={params.id}
+                  expansionId={id}
                   foundBosses={foundBosses}
                   allBosses={expansion.bosses}
                   size={useCompactMode ? "compact" : "normal"}
@@ -197,4 +197,3 @@ export default function ExpansionPage({ params }: { params: { id: string } }) {
     </div>
   )
 }
-

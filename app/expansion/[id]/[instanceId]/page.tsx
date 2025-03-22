@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, use } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { notFound } from "next/navigation"
@@ -20,22 +20,23 @@ import type { InstanceMap, InstanceWithCompletion } from "@/types/game"
 const rightSidePanelStyles =
   "w-full md:w-1/4 h-1/2 md:h-screen bg-card overflow-y-auto border-l border-border/50 shadow-md"
 
-export default function InstancePage({ params }: { params: { id: string; instanceId: string } }) {
+export default function InstancePage({ params }: { params: Promise<{ id: string; instanceId: string }> }) {
+  const { id, instanceId } = use(params);
   // Get expansion data
-  const expansion = expansionData[params.id as keyof typeof expansionData]
+  const expansion = expansionData[id as keyof typeof expansionData]
   if (!expansion) {
     notFound()
   }
 
   // Get instance data
-  const instance = expansion.instances.find((i) => i.id === params.instanceId)
+  const instance = expansion.instances.find((i) => i.id === instanceId)
   if (!instance) {
     notFound()
   }
 
   // State
   const [selectedInstanceMapIndex, setSelectedInstanceMapIndex] = useState(0)
-  const { foundBosses, addFoundBoss, isLoaded } = useFoundBosses(params.id)
+  const { foundBosses, addFoundBoss, isLoaded } = useFoundBosses(id)
   const { clearHoveredInstance } = useHoveredInstanceStore()
 
   // Calculate instance-specific counts
@@ -116,7 +117,7 @@ export default function InstancePage({ params }: { params: { id: string; instanc
         <div className="p-4">
           {/* Navigation button to return to expansion page */}
           <div className="mb-4">
-            <Link href={`/expansion/${params.id}`} onClick={() => clearHoveredInstance()}>
+            <Link href={`/expansion/${id}`} onClick={() => clearHoveredInstance()}>
               <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground px-2 py-1 h-8">
                 <ChevronLeft className="mr-1 h-4 w-4" />
                 All instances
@@ -150,7 +151,7 @@ export default function InstancePage({ params }: { params: { id: string; instanc
       {/* Fixed Reset Button in bottom-right corner */}
       {foundCount > 0 && (
         <div className="fixed bottom-6 right-6 z-40">
-          <Link href={`/expansion/${params.id}`} onClick={() => clearHoveredInstance()}>
+          <Link href={`/expansion/${id}`} onClick={() => clearHoveredInstance()}>
             <Button
               variant="outline"
               size="sm"
@@ -165,4 +166,3 @@ export default function InstancePage({ params }: { params: { id: string; instanc
     </div>
   )
 }
-
