@@ -3,13 +3,15 @@
 import Image from "next/image"
 import type { Boss } from "@/types/game"
 import { DEFAULT_IMAGE } from "@/lib/constants"
+import { Tables } from "@/types/database"
 
 interface BossListProps {
   bosses: Boss[]
   instanceFilter?: string
+  allBosses?: Tables<"npc">[]
 }
 
-export function BossList({ bosses, instanceFilter }: BossListProps) {
+export function BossList({ bosses, instanceFilter, allBosses = [] }: BossListProps) {
   const filteredBosses = instanceFilter ? bosses.filter((boss) => boss.instance === instanceFilter) : bosses
 
   if (filteredBosses.length === 0) {
@@ -20,13 +22,20 @@ export function BossList({ bosses, instanceFilter }: BossListProps) {
     )
   }
 
+  // Get image for boss by looking up in allBosses if available
+  const getBossImage = (boss: Boss) => {
+    // Try to find the image in allBosses
+    const matchingBoss = allBosses.find(b => b.name === boss.name);
+    return matchingBoss?.background_uri || DEFAULT_IMAGE;
+  };
+
   return (
     <div className="space-y-3">
-      {filteredBosses.map((boss) => (
-        <div key={boss.id} className="flex items-center gap-3 p-2 hover:bg-muted rounded-md transition-colors">
+      {filteredBosses.map((boss, index) => (
+        <div key={`${boss.name}-${boss.instance}-${index}`} className="flex items-center gap-3 p-2 hover:bg-muted rounded-md transition-colors">
           <div className="w-10 h-10 rounded-full overflow-hidden bg-muted flex-shrink-0 border border-border/50 transition-all duration-300">
             <Image
-              src={`${DEFAULT_IMAGE}?height=100&width=100`}
+              src={getBossImage(boss)}
               alt={boss.name}
               width={40}
               height={40}
@@ -42,4 +51,3 @@ export function BossList({ bosses, instanceFilter }: BossListProps) {
     </div>
   )
 }
-

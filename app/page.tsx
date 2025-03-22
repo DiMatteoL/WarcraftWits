@@ -1,13 +1,8 @@
 import Image from "next/image"
-import Link from "next/link"
-import { ExpansionCard } from "@/components/expansion-card"
 import { Card, CardContent } from "@/components/ui/card"
-import { getAllExpansions } from "@/lib/data"
+import { ExpansionTable } from "@/components/expansion-table"
 
 export default function WoWMemoryGame() {
-  // Get expansions from data file
-  const expansions = getAllExpansions()
-
   return (
     <div className="container py-4 md:py-12 px-4 max-w-5xl mx-auto">
       <div className="flex flex-col items-center mb-12">
@@ -37,14 +32,8 @@ export default function WoWMemoryGame() {
         </Card>
       </div>
 
-      {/* Expansion Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full">
-        {expansions.map((expansion) => (
-          <Link href={`/expansion/${expansion.id}`} key={expansion.id}>
-            <ExpansionCard name={expansion.name} image={expansion.image} />
-          </Link>
-        ))}
-      </div>
+      {/* Expansion Grid - Now using Supabase data */}
+      <ExpansionTable />
     </div>
   )
 }

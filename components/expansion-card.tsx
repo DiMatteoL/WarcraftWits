@@ -28,17 +28,17 @@ export function ExpansionCard({ name, image }: ExpansionCardProps) {
           <h3 className="text-lg font-medium text-center">{name}</h3>
         </CardHeader>
         <CardContent className="p-4 pt-0">
-          <div className="relative w-full aspect-square rounded-md overflow-hidden border border-border/50">
+          <div className="relative w-full aspect-[16/9] rounded-md overflow-hidden border border-border/50">
             <div
-              className={`absolute inset-0 bg-gradient-to-t from-primary/70 via-secondary/30 to-transparent z-10 transition-opacity duration-300 ${
-                isHovered ? "opacity-80" : "opacity-60"
+              className={`absolute inset-0 bg-gradient-to-t from-primary/40 via-secondary/20 to-transparent z-10 transition-opacity duration-300 ${
+                isHovered ? "opacity-50" : "opacity-30"
               }`}
             />
             <Image
               src={image || "/placeholder.svg"}
               alt={name}
               fill
-              className={`object-cover transition-transform duration-300 ${isHovered ? "scale-110" : "scale-100"}`}
+              className={`object-contain transition-transform duration-300 ${isHovered ? "scale-110" : "scale-100"}`}
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
             />
           </div>
@@ -47,4 +47,3 @@ export function ExpansionCard({ name, image }: ExpansionCardProps) {
     </motion.div>
   )
 }
-

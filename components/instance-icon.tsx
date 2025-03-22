@@ -48,7 +48,7 @@ export function InstanceIcon({ instance, expansionId, foundBosses, allBosses, si
   const bossCount = `${foundInstanceBosses.length}/${instanceBosses.length}`
 
   // Get the first map image for the tooltip
-  const instanceImage = instance.maps[0]?.image || "/placeholder.svg"
+  const instanceImage = instance.background || "/placeholder.svg"
 
   // Handle mouse enter with position
   const handleMouseEnter = (e: React.MouseEvent) => {

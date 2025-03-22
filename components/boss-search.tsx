@@ -75,4 +75,3 @@ export function BossSearch({ bosses, foundBosses, onBossFound, instanceFilter }:
     </div>
   )
 }
-
