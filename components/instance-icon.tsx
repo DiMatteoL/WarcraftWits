@@ -34,8 +34,8 @@ export function InstanceIcon({ instance, expansionId, foundBosses, allBosses, si
   const fontSize = isCompact ? "text-xs" : "text-sm"
 
   // Calculate instance-specific boss counts
-  const instanceBosses = allBosses.filter((boss) => boss.instance === instance.name)
-  const foundInstanceBosses = foundBosses.filter((boss) => boss.instance === instance.name)
+  const instanceBosses = allBosses.filter((boss) => boss.instance_id === instance.id)
+  const foundInstanceBosses = foundBosses.filter((boss) => boss.instance_id === instance.id)
 
   // Calculate completion percentage for the progress circle
   const completionRate =
@@ -47,8 +47,6 @@ export function InstanceIcon({ instance, expansionId, foundBosses, allBosses, si
 
   const bossCount = `${foundInstanceBosses.length}/${instanceBosses.length}`
 
-  // Get the first map image for the tooltip
-  const instanceImage = instance.background || "/placeholder.svg"
 
   // Handle mouse enter with position
   const handleMouseEnter = (e: React.MouseEvent) => {
@@ -78,7 +76,7 @@ export function InstanceIcon({ instance, expansionId, foundBosses, allBosses, si
 
   return (
     <div className="flex-shrink-0">
-      <Link href={`/expansion/${expansionId}/${instance.id}`} onClick={handleClick}>
+      <Link href={`/expansion/${expansionId}/${instance.slug}`} onClick={handleClick}>
         <div
           className="relative flex items-center justify-center transition-transform hover:scale-110"
           onMouseEnter={handleMouseEnter}
@@ -114,7 +112,7 @@ export function InstanceIcon({ instance, expansionId, foundBosses, allBosses, si
           <div
             className={`${iconSize} rounded-full flex items-center justify-center ${fontSize} font-bold transition-all bg-muted text-muted-foreground hover:bg-muted/80`}
           >
-            {instance.shortName}
+            {instance.slug}
           </div>
         </div>
       </Link>
@@ -129,7 +127,7 @@ export function InstanceIcon({ instance, expansionId, foundBosses, allBosses, si
       >
         <div className="w-48 bg-card rounded-md shadow-md border border-border/50 overflow-hidden transition-all duration-300">
           <div className="relative h-24 w-full">
-            <Image src={instanceImage || "/placeholder.svg"} alt={instance.name} fill className="object-cover" />
+            <Image src={instance.backgroud_uri || "/placeholder.svg"} alt={instance.name || "unknown"} fill className="object-cover" />
             <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent"></div>
           </div>
           <div className="p-3">

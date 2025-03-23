@@ -3,9 +3,10 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { createClient } from '@/utils/supabase/client';
 import type { SupabaseClient } from '@supabase/supabase-js';
+import { Database } from '@/types/database';
 
 type SupabaseContextType = {
-  supabase: SupabaseClient;
+  supabase: SupabaseClient<Database>;
 };
 
 const SupabaseContext = createContext<SupabaseContextType | undefined>(undefined);

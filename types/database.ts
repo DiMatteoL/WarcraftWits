@@ -85,6 +85,7 @@ export type Database = {
           created_at: string
           height_in_px: number | null
           id: number
+          index: number | null
           instance_id: number
           uri: string | null
           width_in_px: number | null
@@ -93,6 +94,7 @@ export type Database = {
           created_at?: string
           height_in_px?: number | null
           id?: number
+          index?: number | null
           instance_id: number
           uri?: string | null
           width_in_px?: number | null
@@ -101,6 +103,7 @@ export type Database = {
           created_at?: string
           height_in_px?: number | null
           id?: number
+          index?: number | null
           instance_id?: number
           uri?: string | null
           width_in_px?: number | null

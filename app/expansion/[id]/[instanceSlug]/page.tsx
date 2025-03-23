@@ -6,7 +6,6 @@ import Link from "next/link"
 import { notFound } from "next/navigation"
 import { ChevronLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { expansionData } from "@/lib/data"
 import { MapSelector } from "@/components/map-selector"
 import { BossSearch } from "@/components/boss-search"
 import { BossList } from "@/components/boss-list"
@@ -14,45 +13,22 @@ import { ProgressIndicator } from "@/components/progress-indicator"
 import { MapTitleDisplay } from "@/components/map-title-display"
 import { useFoundBosses } from "@/hooks/use-found-bosses"
 import { useHoveredInstanceStore } from "@/lib/store"
-import type { InstanceMap, InstanceWithCompletion } from "@/types/game"
+import { useSupabase } from "@/contexts/supabase-context"
+import { Instance } from "@/types/game"
 
 // Update the right side panel styling to be more understated
 const rightSidePanelStyles =
   "w-full md:w-1/4 h-1/2 md:h-screen bg-card overflow-y-auto border-l border-border/50 shadow-md"
 
-export default function InstancePage({ params }: { params: Promise<{ id: string; instanceId: string }> }) {
-  const { id, instanceId } = use(params);
-  // Get expansion data
-  const expansion = expansionData[id as keyof typeof expansionData]
-  if (!expansion) {
-    notFound()
-  }
+export default function InstancePage({ params }: { params: Promise<{ id: string; instanceSlug: string }> }) {
+  const { id, instanceSlug } = use(params);
 
-  // Get instance data
-  const instance = expansion.instances.find((i) => i.id === instanceId)
-  if (!instance) {
-    notFound()
-  }
-
-  // State
+  const supabase = useSupabase()
   const [selectedInstanceMapIndex, setSelectedInstanceMapIndex] = useState(0)
+  const [instance, setInstance] = useState<Instance | null>(null)
   const { foundBosses, addFoundBoss, isLoaded } = useFoundBosses(id)
   const { clearHoveredInstance } = useHoveredInstanceStore()
 
-  // Calculate instance-specific counts
-  const instanceBosses = expansion.bosses.filter((b) => b.instance === instance.name)
-  const foundInstanceBosses = foundBosses.filter((b) => b.instance === instance.name)
-  const foundCount = foundInstanceBosses.length
-  const totalCount = instanceBosses.length
-  const completionPercentage = totalCount > 0 ? Math.round((foundCount / totalCount) * 100) : 0
-
-  // Create an instance with completion rate for the progress indicator
-  const instanceWithCompletion: InstanceWithCompletion = {
-    ...instance,
-    calculatedCompletionRate: completionPercentage,
-  }
-
-  // Clear hovered instance when component mounts or unmounts
   useEffect(() => {
     clearHoveredInstance()
     return () => {
@@ -65,7 +41,24 @@ export default function InstancePage({ params }: { params: Promise<{ id: string;
     clearHoveredInstance()
   }, [selectedInstanceMapIndex, clearHoveredInstance])
 
-  if (!isLoaded) {
+  useEffect(() => {
+    const fetchInstance = async () => {
+        const { data, error } = await supabase
+          .from("instance")
+          .select("*, npc(*), map(*)")
+          .eq("slug", instanceSlug)
+          .single()
+
+        console.log(data);
+        if (data) {
+          setInstance(data)
+        }
+      }
+
+    fetchInstance()
+  }, [supabase, instanceSlug])
+
+  if (!isLoaded || !instance || !instance?.npc || !instance?.map) {
     return (
       <div className="flex items-center justify-center h-screen">
         <div className="animate-pulse text-primary font-bold text-xl">Loading...</div>
@@ -73,15 +66,23 @@ export default function InstancePage({ params }: { params: Promise<{ id: string;
     )
   }
 
+  // State
+
+  const instanceBosses = instance.npc
+  const foundInstanceBosses = foundBosses.filter((b) => b.instance_id === instance.id)
+  const foundCount = foundInstanceBosses.length
+  const totalCount = instanceBosses.length
+  const completionPercentage = totalCount > 0 ? Math.round((foundCount / totalCount) * 100) : 0
+
   return (
     <div className="flex flex-col md:flex-row h-screen overflow-hidden" onMouseLeave={() => clearHoveredInstance()}>
       {/* Left side - Map display (75% width) */}
       <div className="w-full md:w-3/4 h-1/2 md:h-screen bg-muted flex flex-col">
         {/* Instance map selector */}
-        {instance.maps.length > 1 && (
+        {instance.map.length > 1 && (
           <div className="p-4 bg-card border-b border-border">
             <div className="flex space-x-2 overflow-x-auto pb-2">
-              {instance.maps.map((map: InstanceMap, index: number) => (
+              {instance.map.map((map, index: number) => (
                 <MapSelector
                   key={map.id}
                   map={map}
@@ -99,15 +100,15 @@ export default function InstancePage({ params }: { params: Promise<{ id: string;
         {/* Main map display */}
         <div className="relative flex-grow overflow-hidden">
           <Image
-            src={instance.maps[selectedInstanceMapIndex]?.image || "/placeholder.svg"}
-            alt={instance.maps[selectedInstanceMapIndex]?.name || instance.name}
+            src={instance.map[selectedInstanceMapIndex]?.uri || "/placeholder.svg"}
+            alt={instance.name || ""}
             fill
             className="object-cover"
             priority
           />
           <div className="absolute inset-0 bg-gradient-to-t from-background/30 to-transparent"></div>
           <div className="absolute bottom-4 left-4">
-            <MapTitleDisplay mapName={instance.maps[selectedInstanceMapIndex]?.name || instance.name} />
+            <MapTitleDisplay mapName={instance.name ||""} />
           </div>
         </div>
       </div>
@@ -129,21 +130,21 @@ export default function InstancePage({ params }: { params: Promise<{ id: string;
 
             {/* 2. Boss name input with suggestions */}
             <BossSearch
-              bosses={expansion.bosses}
+              bosses={instance.npc}
               foundBosses={foundBosses}
               onBossFound={addFoundBoss}
-              instanceFilter={instance.name}
+              instanceFilter={instance.name || ""}
             />
 
             {/* 3. Separator */}
             <div className="h-px bg-border my-4"></div>
 
             {/* 4. Boss percentage */}
-            <ProgressIndicator percentage={completionPercentage} label="Bosses named" name={instance.name} />
+            <ProgressIndicator percentage={completionPercentage} label="Bosses named" name={instance.name || ""} />
 
 
             {/* Boss list - filtered by instance */}
-            <BossList bosses={foundBosses} instanceFilter={instance.name} />
+            <BossList bosses={foundBosses} instanceFilter={instance.name || ""} />
 
             {/* Dynamic boss counter */}
             <div className="text-sm text-muted-foreground text-right mb-4 mt-4">
@@ -164,17 +165,17 @@ export default function InstancePage({ params }: { params: Promise<{ id: string;
             </div>
 
             {/* Boss percentage */}
-            <ProgressIndicator percentage={completionPercentage} label="Bosses named" name={instance.name} />
+            <ProgressIndicator percentage={completionPercentage} label="Bosses named" name={instance.name || ""} />
 
             {/* Separator */}
             <div className="h-px bg-border my-4"></div>
 
             {/* Boss name input with suggestions */}
             <BossSearch
-              bosses={expansion.bosses}
+              bosses={instance.npc}
               foundBosses={foundBosses}
               onBossFound={addFoundBoss}
-              instanceFilter={instance.name}
+              instanceFilter={instance.name || ""}
             />
 
             {/* Dynamic boss counter */}
@@ -183,7 +184,7 @@ export default function InstancePage({ params }: { params: Promise<{ id: string;
             </div>
 
             {/* Boss list - filtered by instance */}
-            <BossList bosses={foundBosses} instanceFilter={instance.name} />
+            <BossList bosses={foundBosses} instanceFilter={instance.name || ""} />
           </div>
         </div>
       </div>

@@ -120,14 +120,7 @@ export default function ExpansionPage({ params }: { params: Promise<{ id: string
     const completionRate =
       instanceBosses.length > 0 ? Math.round((foundInstanceBosses.length / instanceBosses.length) * 100) : 0
 
-    return {
-      id: String(instance.id),
-      name: instance.name || "Unknown",
-      icon: instance.logo_uri || "/placeholder.svg",
-      calculatedCompletionRate: completionRate,
-      background: instance.backgroud_uri || "/placeholder.svg",
-      shortName: instance.slug || "Unknown"
-    }
+    return { ...instance, calculatedCompletionRate: completionRate }
   })
 
   // Clear hovered instance when component mounts or unmounts
@@ -169,13 +162,6 @@ export default function ExpansionPage({ params }: { params: Promise<{ id: string
     if (instanceCount > 8) return 12 // Medium gap
     return 16 // Largest gap for fewer instances
   }
-
-  // Format bosses for the search component
-  const formattedBosses: Boss[] = bosses.map(boss => ({
-    name: boss.name || "Unknown",
-    instance: instances.find(i => i.id === boss.instance_id)?.name || "Unknown",
-    image: boss.logo_uri || "/placeholder.svg"
-  }))
 
   return (
     <div className="flex flex-col md:flex-row h-screen overflow-hidden" onMouseLeave={() => clearHoveredInstance()}>
@@ -236,7 +222,7 @@ export default function ExpansionPage({ params }: { params: Promise<{ id: string
             </div>
 
             {/* 2. Boss name input with suggestions */}
-            <BossSearch bosses={formattedBosses} foundBosses={foundBosses} onBossFound={addFoundBoss} />
+            <BossSearch bosses={bosses} foundBosses={foundBosses} onBossFound={addFoundBoss} />
 
             {/* 3. Separator */}
             <div className="h-px bg-border my-4"></div>
@@ -259,7 +245,7 @@ export default function ExpansionPage({ params }: { params: Promise<{ id: string
                     instance={instance}
                     expansionId={id}
                     foundBosses={foundBosses}
-                    allBosses={formattedBosses}
+                    allBosses={bosses}
                     size={useCompactMode ? "compact" : "normal"}
                   />
                 ))}
@@ -302,7 +288,7 @@ export default function ExpansionPage({ params }: { params: Promise<{ id: string
                     instance={instance}
                     expansionId={id}
                     foundBosses={foundBosses}
-                    allBosses={formattedBosses}
+                    allBosses={bosses}
                     size={useCompactMode ? "compact" : "normal"}
                   />
                 ))}
@@ -313,7 +299,7 @@ export default function ExpansionPage({ params }: { params: Promise<{ id: string
             <div className="h-px bg-border my-4"></div>
 
             {/* Boss name input with suggestions */}
-            <BossSearch bosses={formattedBosses} foundBosses={foundBosses} onBossFound={addFoundBoss} />
+            <BossSearch bosses={bosses} foundBosses={foundBosses} onBossFound={addFoundBoss} />
 
             {/* Dynamic boss counter */}
             <div className="text-sm text-muted-foreground text-right mb-4">
