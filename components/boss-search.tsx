@@ -8,7 +8,7 @@ interface BossSearchProps {
   bosses: Boss[]
   foundBosses: Boss[]
   onBossFound: (boss: Boss) => void
-  instanceFilter?: string
+  instanceFilter?: number
 }
 
 export function BossSearch({ bosses, foundBosses, onBossFound, instanceFilter }: BossSearchProps) {
@@ -22,9 +22,9 @@ export function BossSearch({ bosses, foundBosses, onBossFound, instanceFilter }:
       const filteredBosses = bosses
         .filter(
           (boss) =>
-            boss.name.toLowerCase().includes(searchTerm) &&
+            boss.name!.toLowerCase().includes(searchTerm) &&
             !foundBosses.some((found) => found.id === boss.id) &&
-            (!instanceFilter || boss.instance === instanceFilter),
+            (!instanceFilter || boss.instance_id === instanceFilter),
         )
         // Sort results to prioritize bosses that start with the search term
         .sort((a, b) => {

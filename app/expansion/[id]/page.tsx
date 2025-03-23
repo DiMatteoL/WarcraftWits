@@ -307,7 +307,7 @@ export default function ExpansionPage({ params }: { params: Promise<{ id: string
             </div>
 
             {/* Boss list */}
-            <BossList bosses={foundBosses} allBosses={bosses} />
+            <BossList bosses={foundBosses} allBosses={bosses} instances={instances} />
           </div>
         </div>
       </div>
