@@ -20,11 +20,7 @@ export default async function InstancePage({ params }: { params: { id: string; i
   }
 
   return (
-    <Suspense fallback={
-      <div className="flex items-center justify-center h-screen">
-        <div className="animate-pulse text-primary font-bold text-xl">Loading instance...</div>
-      </div>
-    }>
+    <Suspense>
       <InstanceClient
         expansionId={id}
         instance={instance}

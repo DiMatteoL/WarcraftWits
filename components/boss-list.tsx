@@ -31,15 +31,15 @@ export function BossList({ bosses, instanceFilter, allBosses = [], instances = [
   };
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-2">
       {filteredBosses.map((boss, index) => (
-        <div key={`${boss.name}-${boss.instance_id}-${index}`} className="flex items-center gap-3 p-2 hover:bg-muted rounded-md transition-colors">
-          <div className="w-10 h-10 rounded-full overflow-hidden bg-muted flex-shrink-0 border border-border/50 transition-all duration-300">
+        <div key={`${boss.name}-${boss.instance_id}-${index}`} className="flex items-center gap-3 pr-2 hover:bg-muted rounded-md transition-colors">
+          <div className="w-12 h-12 rounded-full overflow-hidden bg-muted flex-shrink-0 border border-border/50 transition-all duration-300">
             <Image
               src={getBossImage(boss)}
               alt={boss.name || ""}
-              width={40}
-              height={40}
+              width={48}
+              height={48}
               className="object-cover"
             />
           </div>
