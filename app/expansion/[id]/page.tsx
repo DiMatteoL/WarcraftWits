@@ -2,7 +2,6 @@ import { Suspense } from "react"
 import { notFound } from "next/navigation"
 import { createClient } from "@/utils/supabase/server"
 import { ExpansionClient } from "./expansion-client"
-import { BossSkeletonList } from "@/components/boss-skeleton-list"
 
 export default async function ExpansionPage({ params }: { params: { id: string } }) {
   // Create a Supabase client configured for server-side
@@ -12,7 +11,7 @@ export default async function ExpansionPage({ params }: { params: { id: string }
   const { data: expansion, error: expansionError } = await supabase
     .from("expansion")
     .select("*")
-    .eq("slug", params.id)
+    .eq("slug", (await params).id)
     .single()
 
   if (expansionError || !expansion) {
@@ -41,7 +40,7 @@ export default async function ExpansionPage({ params }: { params: { id: string }
   return (
     <Suspense>
       <ExpansionClient
-        id={params.id}
+        id={(await params).id}
         expansion={expansion}
         instances={instances || []}
         maps={maps}
