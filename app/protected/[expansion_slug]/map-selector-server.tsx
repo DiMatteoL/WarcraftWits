@@ -1,7 +1,7 @@
 import { createClient } from "@/utils/supabase/server"
-import { MapSelectorClient } from "./map-selector-client"
+import { BossPickerClient } from "./boss-picker-client"
 
-const MAPS_PER_PAGE = 10
+const MAPS_PER_PAGE = 1
 
 export async function MapSelectorServer({
   expansionSlug,
@@ -29,8 +29,8 @@ export async function MapSelectorServer({
     .select("*", { count: "exact" })
     .eq("expansion_id", expansion.id)
     .is("instance_id", null)
-    .order("name")
-    .range(page * MAPS_PER_PAGE, (page + 1) * MAPS_PER_PAGE - 1)
+    .order("index")
+    .range(page * MAPS_PER_PAGE, page * MAPS_PER_PAGE)
 
   if (mapsError) {
     throw new Error(`Failed to load maps: ${mapsError.message}`)
@@ -38,5 +38,21 @@ export async function MapSelectorServer({
 
   const totalPages = Math.ceil((count || 0) / MAPS_PER_PAGE)
 
-  return <MapSelectorClient maps={maps || []} currentPage={page} totalPages={totalPages} />
+  const { data: instances, error: instancesError } = await supabase
+    .from("instance")
+    .select("*")
+    .eq("expansion_id", expansion.id)
+    .order("name")
+
+  if (instancesError) {
+    throw new Error(`Failed to load instances: ${instancesError.message}`)
+  }
+
+  return <BossPickerClient
+    expansionSlug={expansionSlug}
+    maps={maps || []}
+    instances={instances || []}
+    currentPage={page}
+    totalPages={totalPages}
+  />
 }
