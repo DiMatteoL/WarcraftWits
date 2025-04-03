@@ -109,11 +109,7 @@ export function ExpansionClient({ id, expansion, instances, maps, bosses }: Expa
             {maps.map((map) => (
               <MapSelector
                 key={map.id}
-                map={{
-                  id: String(map.id),
-                  name: `Map ${map.id}`,
-                  image: map.uri || "/placeholder.svg"
-                }}
+                map={map}
                 isSelected={selectedMap?.id === map.id}
                 onClick={() => {
                   setSelectedMap(map)

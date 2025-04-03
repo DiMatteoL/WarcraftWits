@@ -27,7 +27,7 @@ export function BossList({ bosses, instanceFilter, allBosses = [], instances = [
   const getBossImage = (boss: Boss) => {
     // Try to find the image in allBosses
     const matchingBoss = allBosses.find(b => b.name === boss.name);
-    return matchingBoss?.background_uri || DEFAULT_IMAGE;
+    return matchingBoss?.background_uri || matchingBoss?.logo_uri || DEFAULT_IMAGE;
   };
 
   return (

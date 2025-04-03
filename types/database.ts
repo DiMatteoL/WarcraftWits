@@ -1,4 +1,6 @@
-export type Json =
+Need to install the following packages:
+supabase@2.20.5
+Ok to proceed? (y) export type Json =
   | string
   | number
   | boolean
@@ -47,6 +49,8 @@ export type Database = {
           id: number
           is_default: boolean
           logo_uri: string | null
+          max_level: number | null
+          min_level: number | null
           name: string | null
           slug: string | null
         }
@@ -57,6 +61,8 @@ export type Database = {
           id?: number
           is_default?: boolean
           logo_uri?: string | null
+          max_level?: number | null
+          min_level?: number | null
           name?: string | null
           slug?: string | null
         }
@@ -67,6 +73,8 @@ export type Database = {
           id?: number
           is_default?: boolean
           logo_uri?: string | null
+          max_level?: number | null
+          min_level?: number | null
           name?: string | null
           slug?: string | null
         }
@@ -83,32 +91,45 @@ export type Database = {
       map: {
         Row: {
           created_at: string
+          expansion_id: number | null
           height_in_px: number | null
           id: number
           index: number | null
           instance_id: number
+          name: string | null
           uri: string | null
           width_in_px: number | null
         }
         Insert: {
           created_at?: string
+          expansion_id?: number | null
           height_in_px?: number | null
           id?: number
           index?: number | null
           instance_id: number
+          name?: string | null
           uri?: string | null
           width_in_px?: number | null
         }
         Update: {
           created_at?: string
+          expansion_id?: number | null
           height_in_px?: number | null
           id?: number
           index?: number | null
           instance_id?: number
+          name?: string | null
           uri?: string | null
           width_in_px?: number | null
         }
         Relationships: [
+          {
+            foreignKeyName: "map_expansion_id_fkey"
+            columns: ["expansion_id"]
+            isOneToOne: false
+            referencedRelation: "expansion"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "map_instance_id_fkey"
             columns: ["instance_id"]
@@ -123,7 +144,9 @@ export type Database = {
           background_uri: string | null
           created_at: string
           id: number
+          index: number | null
           instance_id: number | null
+          level: number | null
           logo_uri: string | null
           name: string | null
           pin_id: number | null
@@ -133,7 +156,9 @@ export type Database = {
           background_uri?: string | null
           created_at?: string
           id?: number
+          index?: number | null
           instance_id?: number | null
+          level?: number | null
           logo_uri?: string | null
           name?: string | null
           pin_id?: number | null
@@ -143,7 +168,9 @@ export type Database = {
           background_uri?: string | null
           created_at?: string
           id?: number
+          index?: number | null
           instance_id?: number | null
+          level?: number | null
           logo_uri?: string | null
           name?: string | null
           pin_id?: number | null

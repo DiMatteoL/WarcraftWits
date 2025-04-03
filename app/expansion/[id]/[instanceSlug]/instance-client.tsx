@@ -71,11 +71,7 @@ export function InstanceClient({ expansionId, instance }: InstanceClientProps) {
               {instance.map.map((map, index) => (
                 <MapSelector
                   key={map.id}
-                  map={{
-                    id: String(map.id),
-                    name: `Map ${map.id}`,
-                    image: map.uri || "/placeholder.svg"
-                  }}
+                  map={map}
                   isSelected={selectedInstanceMapIndex === index}
                   onClick={() => {
                     setSelectedInstanceMapIndex(index)

@@ -34,7 +34,17 @@ export default async function ExpansionPage({ params }: { params: { id: string }
   }
 
   // Extract maps and bosses from the joined query results
-  const maps = instances?.flatMap(instance => instance.map || []) || []
+  const { data: maps, error: mapsError } = await supabase
+    .from("map")
+    .select(`*`)
+    .eq("expansion_id", expansion.id)
+    .is("instance_id", null)
+    .order("index")
+
+  if (mapsError) {
+    throw new Error(`Failed to load maps: ${mapsError.message}`)
+  }
+
   const bosses = instances?.flatMap(instance => instance.npc || []) || []
 
   return (
@@ -43,7 +53,7 @@ export default async function ExpansionPage({ params }: { params: { id: string }
         id={(await params).id}
         expansion={expansion}
         instances={instances || []}
-        maps={maps}
+        maps={maps || []}
         bosses={bosses}
       />
     </Suspense>
