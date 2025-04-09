@@ -4,6 +4,7 @@ import type React from "react"
 import { useState, useEffect, useMemo } from "react"
 import Link from "next/link"
 import Image from "next/image"
+import { usePathname } from "next/navigation"
 import type { InstanceWithCompletion, Boss } from "@/types/game"
 import { FollowingTooltip } from "@/components/following-tooltip"
 import { useHoveredInstanceStore } from "@/lib/store"
@@ -18,6 +19,7 @@ interface InstanceIconProps {
 export function InstanceIcon({ instance, foundBosses = [], allBosses = [], size = "normal" }: InstanceIconProps) {
   const [showTooltip, setShowTooltip] = useState(false)
   const { setHoveredInstance, clearHoveredInstance, hoveredInstanceId } = useHoveredInstanceStore()
+  const pathname = usePathname()
 
   // Check if this instance is currently being hovered by another component
   const isHoveredByOther = useMemo(() => hoveredInstanceId?.toString() === instance.id.toString() && !showTooltip, [hoveredInstanceId])
@@ -73,7 +75,7 @@ export function InstanceIcon({ instance, foundBosses = [], allBosses = [], size 
 
   return (
     <div className="flex-shrink-0">
-      <Link href={`${window.location.pathname}/${instance.slug}`} onClick={handleClick} prefetch={true}>
+      <Link href={`${pathname}/${instance.slug}`} onClick={handleClick} prefetch={true}>
         <div
           className={`relative flex items-center justify-center transition-transform hover:scale-110 ${
             showTooltip || isHoveredByOther ? "z-100" : ""

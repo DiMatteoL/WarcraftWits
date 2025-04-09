@@ -1,10 +1,11 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useRef } from "react"
 import { AutoSelectInput } from "@/components/auto-select-input"
 import type { Boss } from "@/types/game"
-import { useReward } from "react-rewards"
-import { wowEmojis } from "@/lib/wow-emojis"
+import { isValidSearch } from "@/utils/leveinstein"
+import createFuzzySearch from '@nozbe/microfuzz'
+
 
 interface BossSearchProps {
   bosses: Boss[]
@@ -15,86 +16,75 @@ interface BossSearchProps {
 
 export function BossSearch({ bosses, foundBosses, onBossFound, instanceFilter }: BossSearchProps) {
   const [inputValue, setInputValue] = useState("")
-  const [suggestions, setSuggestions] = useState<Boss[]>([])
-  const containerRef = useRef<HTMLDivElement>(null)
-  const { reward: rewardDesktop } = useReward('rewardDesktop', 'emoji', {
-    emoji: wowEmojis,
-    elementCount: Math.floor(Math.random() * 6) + 5, // Random number between 5 and 10
-    startVelocity: 20,
-  })
-  const { reward: rewardMobile } = useReward('rewardMobile', 'emoji', {
-    emoji: wowEmojis,
-    elementCount: Math.floor(Math.random() * 6) + 5, // Random number between 5 and 10
-    startVelocity: 20,
-  })
+  const [isError, setIsError] = useState(false)
+  const inputContainerRef = useRef<HTMLDivElement>(null)
 
-  // Filter bosses based on input and instance
-  useEffect(() => {
-    if (inputValue.length >= 3) {
-      const searchTerm = inputValue.toLowerCase()
-      const filteredBosses = bosses
-        .filter(
-          (boss) =>
-            boss.name?.toLowerCase().includes(searchTerm) &&
-            !foundBosses.some((found) => found.id === boss.id) &&
-            (!instanceFilter || boss.instance_id === instanceFilter),
-        )
-        // Sort results to prioritize bosses that start with the search term
-        .sort((a, b) => {
-          const aName = a.name?.toLowerCase() || ""
-          const bName = b.name?.toLowerCase() || ""
-          const aStartsWith = aName.startsWith(searchTerm) ? 0 : 1
-          const bStartsWith = bName.startsWith(searchTerm) ? 0 : 1
-          return aStartsWith - bStartsWith
-        })
-        .slice(0, 5)
+  // Handle form submission
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
 
-      setSuggestions(filteredBosses)
-    } else {
-      setSuggestions([])
+    if (!inputValue.trim()) return
+
+    const contextualBosses = bosses.filter(boss =>
+      boss.name
+      && foundBosses.every((found) => found.id !== boss.id)
+      && (!instanceFilter
+      || boss.instance_id === instanceFilter))
+    const fuzzySearch = createFuzzySearch(contextualBosses, { key: "name" });
+    const results = fuzzySearch(inputValue);
+    const bestResult = results?.[0];
+    const matchedBoss = bestResult?.item;
+    const nameLength = matchedBoss?.name?.length || 0;
+    let score = bestResult?.score || Infinity
+
+    // Adjust score based on input length vs boss name length
+    if (inputValue.length < 4 && nameLength > 4) {
+      // Add penalty to score (1 point per character difference)
+      const lengthDifference = nameLength - inputValue.length;
+      score += lengthDifference;
     }
-  }, [inputValue, bosses, foundBosses, instanceFilter])
 
-  // Handle suggestion click
-  const handleSuggestionClick = (boss: Boss) => {
-    // Trigger the reward animation with a random WoW emoji
-    rewardMobile()
-    rewardDesktop()
-    // Add the boss to found bosses
-    onBossFound(boss)
-    setInputValue("")
-    setSuggestions([])
+
+    if (score < 3.5) {
+      console.log(bestResult, score)
+      const matchedBoss = results[0].item;
+      // Boss found, add it
+      onBossFound(matchedBoss)
+      setInputValue("")
+      setIsError(false)
+    } else {
+      if (inputContainerRef.current) {
+        inputContainerRef.current.classList.add("animate-shake")
+        setTimeout(() => {
+          if (inputContainerRef.current) {
+            inputContainerRef.current.classList.remove("animate-shake")
+          }
+        }, 500)
+      }
+
+      // Reset error state after animation
+      setTimeout(() => {
+        setIsError(false)
+      }, 500)
+    }
   }
 
   return (
-    <div ref={containerRef} className="relative">
-      <div className="relative mb-1">
+    <form onSubmit={handleSubmit} className="relative">
+      <div ref={inputContainerRef} className={`relative mb-1 ${isError ? "animate-shake" : ""}`}>
         <div className="relative">
           <AutoSelectInput
             type="text"
             placeholder="Boss Name"
-            className="wow-border"
+            className={`wow-border ${isError ? "border-destructive" : ""}`}
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
-            priority={10} // High priority to ensure this input is focused
+            priority={10}
+            autoFocus={true}
+            selectAllOnFocus={true}
           />
         </div>
-
-        {/* Suggestions dropdown */}
-        {suggestions.length > 0 && (
-          <div className="absolute z-10 w-full mt-1 bg-card border border-border/50 rounded-md shadow-md transition-all duration-300">
-            {suggestions.map((boss) => (
-              <div
-                key={boss.id}
-                className="px-4 py-2 cursor-pointer hover:bg-muted"
-                onClick={() => handleSuggestionClick(boss)}
-              >
-                {boss.name}
-              </div>
-            ))}
-          </div>
-        )}
       </div>
-    </div>
+    </form>
   )
 }

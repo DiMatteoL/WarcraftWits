@@ -15,6 +15,7 @@ import { useHoveredInstanceStore } from "@/lib/store"
 import type { InstanceWithCompletion } from "@/types/game"
 import type { Tables } from "@/types/database"
 import { ImageWithOverlay } from "@/components/image-with-overlay"
+import { useMedia } from "react-use"
 
 // Update the right side panel styling to be more understated
 const rightSidePanelStyles =
@@ -36,6 +37,7 @@ export function ExpansionClient({ id, expansion, instances, maps, bosses }: Expa
   const [selectedMap, setSelectedMap] = useState<Tables<"map"> | null>(null)
   const { foundBosses, addFoundBoss, clearFoundBosses } = useFoundBosses(id)
   const { clearHoveredInstance } = useHoveredInstanceStore()
+  const isDesktop = useMedia('(min-width: 768px)', false)
 
   // Set first map as selected when component mounts
   useEffect(() => {
@@ -147,106 +149,106 @@ export function ExpansionClient({ id, expansion, instances, maps, bosses }: Expa
       {/* Right side - Boss tracking (25% width) with visual separator */}
       <div className={rightSidePanelStyles}>
         <div className="p-4">
-          {/* Mobile Layout - Reordered */}
-          <div className="md:hidden">
-            {/* 1. Navigation button */}
-            <div className="mb-4">
-              <Link href="/" onClick={() => clearHoveredInstance()}>
-                <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground px-2 py-1 h-8">
-                  <ChevronLeft className="mr-1 h-4 w-4" />
-                  Other expansions
-                </Button>
-              </Link>
-            </div>
-
-            {/* 2. Boss name input with suggestions */}
-            <BossSearch bosses={bosses} foundBosses={foundBosses} onBossFound={addFoundBoss} />
-            <span id="rewardMobile" />
-
-            {/* 3. Separator */}
-            <div className="h-px bg-border my-4"></div>
-
-            {/* 4. Boss percentage */}
-            <ProgressIndicator percentage={completionPercentage} label="Bosses named" name={expansion.name || "Expansion"} />
-
-            {/* 5. Instance icons */}
-            <div className="mb-6 -mx-1 mt-4">
-              <div
-                className="flex flex-wrap justify-start"
-                style={{
-                  gap: `${getMaxGap()}px`,
-                  maxWidth: "100%",
-                }}
-              >
-                {instanceCompletionRates.map((instance) => (
-                  <InstanceIcon
-                    key={instance.id}
-                    instance={instance}
-                    foundBosses={foundBosses}
-                    allBosses={bosses}
-                    size={useCompactMode ? "compact" : "normal"}
-                  />
-                ))}
+          {!isDesktop ? (
+            // Mobile Layout
+            <>
+              {/* 1. Navigation button */}
+              <div className="mb-4">
+                <Link href="/" onClick={() => clearHoveredInstance()}>
+                  <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground px-2 py-1 h-8">
+                    <ChevronLeft className="mr-1 h-4 w-4" />
+                    Other expansions
+                  </Button>
+                </Link>
               </div>
-            </div>
 
-            {/* Dynamic boss counter */}
-            <div className="text-sm text-muted-foreground text-left mb-4">
-              {`${foundBossCount}/${totalBossCount} bosses found`}
-            </div>
-          </div>
+              {/* 2. Boss name input with suggestions */}
+              <BossSearch bosses={bosses} foundBosses={foundBosses} onBossFound={addFoundBoss} />
 
-          {/* Desktop Layout - Unchanged */}
-          <div className="hidden md:block">
-            {/* Navigation button to return to expansion picker */}
-            <div className="mb-4">
-              <Link href="/" onClick={() => clearHoveredInstance()}>
-                <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground px-2 py-1 h-8">
-                  <ChevronLeft className="mr-1 h-4 w-4" />
-                  Other expansions
-                </Button>
-              </Link>
-            </div>
+              {/* 3. Separator */}
+              <div className="h-px bg-border my-4"></div>
 
-            {/* Boss percentage */}
-            <ProgressIndicator percentage={completionPercentage} label="Bosses named" name={expansion.name || "Expansion"} />
+              {/* 4. Boss percentage */}
+              <ProgressIndicator percentage={completionPercentage} label="Bosses named" name={expansion.name || "Expansion"} />
 
-            {/* Instance icons */}
-            <div className="mb-6 -mx-1">
-              <div
-                className="flex flex-wrap justify-start"
-                style={{
-                  gap: `${getMaxGap()}px`,
-                  maxWidth: "100%",
-                }}
-              >
-                {instanceCompletionRates.map((instance) => (
-                  <InstanceIcon
-                    key={instance.id}
-                    instance={instance}
-                    foundBosses={foundBosses}
-                    allBosses={bosses}
-                    size={useCompactMode ? "compact" : "normal"}
-                  />
-                ))}
+              {/* 5. Instance icons */}
+              <div className="mb-6 -mx-1 mt-4">
+                <div
+                  className="flex flex-wrap justify-start"
+                  style={{
+                    gap: `${getMaxGap()}px`,
+                    maxWidth: "100%",
+                  }}
+                >
+                  {instanceCompletionRates.map((instance) => (
+                    <InstanceIcon
+                      key={instance.id}
+                      instance={instance}
+                      foundBosses={foundBosses}
+                      allBosses={bosses}
+                      size={useCompactMode ? "compact" : "normal"}
+                    />
+                  ))}
+                </div>
               </div>
-            </div>
 
-            {/* Separator */}
-            <div className="h-px bg-border my-4"></div>
+              {/* Dynamic boss counter */}
+              <div className="text-sm text-muted-foreground text-left mb-4">
+                {`${foundBossCount}/${totalBossCount} bosses found`}
+              </div>
+            </>
+          ) : (
+            // Desktop Layout
+            <>
+              {/* Navigation button to return to expansion picker */}
+              <div className="mb-4">
+                <Link href="/" onClick={() => clearHoveredInstance()}>
+                  <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground px-2 py-1 h-8">
+                    <ChevronLeft className="mr-1 h-4 w-4" />
+                    Other expansions
+                  </Button>
+                </Link>
+              </div>
 
-            {/* Boss name input with suggestions */}
-            <BossSearch bosses={bosses} foundBosses={foundBosses} onBossFound={addFoundBoss} />
+              {/* Boss percentage */}
+              <ProgressIndicator percentage={completionPercentage} label="Bosses named" name={expansion.name || "Expansion"} />
 
-            {/* Dynamic boss counter */}
-            <div className="text-sm text-muted-foreground text-right mb-4">
-              {`${foundBossCount}/${totalBossCount} bosses found`}
-            </div>
+              {/* Instance icons */}
+              <div className="mb-6 -mx-1">
+                <div
+                  className="flex flex-wrap justify-start"
+                  style={{
+                    gap: `${getMaxGap()}px`,
+                    maxWidth: "100%",
+                  }}
+                >
+                  {instanceCompletionRates.map((instance) => (
+                    <InstanceIcon
+                      key={instance.id}
+                      instance={instance}
+                      foundBosses={foundBosses}
+                      allBosses={bosses}
+                      size={useCompactMode ? "compact" : "normal"}
+                    />
+                  ))}
+                </div>
+              </div>
 
-            {/* Boss list */}
-            <span id="rewardDesktop" />
-            <BossList bosses={foundBosses} allBosses={bosses} instances={instances} />
-          </div>
+              {/* Separator */}
+              <div className="h-px bg-border my-4"></div>
+
+              {/* Boss name input with suggestions */}
+              <BossSearch bosses={bosses} foundBosses={foundBosses} onBossFound={addFoundBoss} />
+
+              {/* Dynamic boss counter */}
+              <div className="text-sm text-muted-foreground text-right mb-4">
+                {`${foundBossCount}/${totalBossCount} bosses found`}
+              </div>
+
+              {/* Boss list */}
+              <BossList bosses={foundBosses} allBosses={bosses} instances={instances} />
+            </>
+          )}
         </div>
       </div>
 

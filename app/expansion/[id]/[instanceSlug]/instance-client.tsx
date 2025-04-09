@@ -13,6 +13,7 @@ import { MapTitleDisplay } from "@/components/map-title-display"
 import { useFoundBosses } from "@/hooks/use-found-bosses"
 import { useHoveredInstanceStore } from "@/lib/store"
 import { Tables } from "@/types/database"
+import { useMedia } from "react-use"
 
 // Update the right side panel styling to be more understated
 const rightSidePanelStyles =
@@ -33,6 +34,7 @@ export function InstanceClient({ expansionId, instance }: InstanceClientProps) {
   const [selectedInstanceMapIndex, setSelectedInstanceMapIndex] = useState(0)
   const { foundBosses, addFoundBoss } = useFoundBosses(expansionId)
   const { clearHoveredInstance } = useHoveredInstanceStore()
+  const isDesktop = useMedia('(min-width: 768px)', false)
 
   // Clear hovered instance when component mounts/unmounts
   useEffect(() => {
@@ -95,87 +97,86 @@ export function InstanceClient({ expansionId, instance }: InstanceClientProps) {
       {/* Right side - Boss tracking (25% width) with visual separator */}
       <div className={rightSidePanelStyles}>
         <div className="p-4">
-          {/* Mobile Layout - Reordered */}
-          <div className="md:hidden">
-            {/* 1. Navigation button */}
-            <div className="mb-4">
-              <Link href={`/expansion/${expansionId}`} onClick={() => clearHoveredInstance()}>
-                <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground px-2 py-1 h-8">
-                  <ChevronLeft className="mr-1 h-4 w-4" />
-                  All instances
-                </Button>
-              </Link>
-            </div>
+          {!isDesktop ? (
+            // Mobile Layout
+            <>
+              {/* 1. Navigation button */}
+              <div className="mb-4">
+                <Link href={`/expansion/${expansionId}`} onClick={() => clearHoveredInstance()}>
+                  <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground px-2 py-1 h-8">
+                    <ChevronLeft className="mr-1 h-4 w-4" />
+                    All instances
+                  </Button>
+                </Link>
+              </div>
 
-            {/* 2. Boss name input with suggestions */}
-            <BossSearch
-              bosses={instance.npc}
-              foundBosses={foundBosses}
-              onBossFound={addFoundBoss}
-              instanceFilter={instance.id}
-            />
+              {/* 2. Boss name input with suggestions */}
+              <BossSearch
+                bosses={instance.npc}
+                foundBosses={foundBosses}
+                onBossFound={addFoundBoss}
+                instanceFilter={instance.id}
+              />
 
-            {/* 3. Separator */}
-            <div className="h-px bg-border my-4"></div>
+              {/* 3. Separator */}
+              <div className="h-px bg-border my-4"></div>
 
-            {/* 4. Boss percentage */}
-            <ProgressIndicator
-              percentage={completionPercentage}
-              label="Bosses named"
-              name={instance.name || ""}
-              expansionName={instance.expansion?.name || ""}
-            />
+              {/* 4. Boss percentage */}
+              <ProgressIndicator
+                percentage={completionPercentage}
+                label="Bosses named"
+                name={instance.name || ""}
+                expansionName={instance.expansion?.name || ""}
+              />
 
+              {/* Boss list - filtered by instance */}
+              <BossList bosses={foundBosses} instanceFilter={instance.id} instances={[instance]} />
 
-            {/* Boss list - filtered by instance */}
-            <span id="rewardMobile" />
-            <BossList bosses={foundBosses} instanceFilter={instance.id} instances={[instance]} />
+              {/* Dynamic boss counter */}
+              <div className="text-sm text-muted-foreground text-right mb-4 mt-4">
+                {`${foundCount}/${totalCount} bosses found`}
+              </div>
+            </>
+          ) : (
+            // Desktop Layout
+            <>
+              {/* Navigation button */}
+              <div className="mb-4">
+                <Link href={`/expansion/${expansionId}`} onClick={() => clearHoveredInstance()}>
+                  <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground px-2 py-1 h-8">
+                    <ChevronLeft className="mr-1 h-4 w-4" />
+                    All instances
+                  </Button>
+                </Link>
+              </div>
 
-            {/* Dynamic boss counter */}
-            <div className="text-sm text-muted-foreground text-right mb-4 mt-4">
-              {`${foundCount}/${totalCount} bosses found`}
-            </div>
-          </div>
+              <ProgressIndicator
+                percentage={completionPercentage}
+                label="Bosses named"
+                name={instance.name || ""}
+                expansionName={instance.expansion?.name || ""}
+              />
 
-          {/* Desktop Layout - Unchanged */}
-          <div className="hidden md:block">
-            {/* Navigation button */}
-            <div className="mb-4">
-              <Link href={`/expansion/${expansionId}`} onClick={() => clearHoveredInstance()}>
-                <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground px-2 py-1 h-8">
-                  <ChevronLeft className="mr-1 h-4 w-4" />
-                  All instances
-                </Button>
-              </Link>
-            </div>
+              {/* Separator */}
+              <div className="h-px bg-border my-4"></div>
 
-            <ProgressIndicator
-              percentage={completionPercentage}
-              label="Bosses named"
-              name={instance.name || ""}
-              expansionName={instance.expansion?.name || ""}
-            />
+              {/* Boss name input with suggestions */}
+              <BossSearch
+                bosses={instance.npc}
+                foundBosses={foundBosses}
+                onBossFound={addFoundBoss}
+                instanceFilter={instance.id}
+              />
 
-            {/* Separator */}
-            <div className="h-px bg-border my-4"></div>
+              {/* Dynamic boss counter */}
+              <div className="text-sm text-muted-foreground text-right mb-4">
+                {`${foundCount}/${totalCount} bosses found`}
+              </div>
 
-            {/* Boss name input with suggestions */}
-            <BossSearch
-              bosses={instance.npc}
-              foundBosses={foundBosses}
-              onBossFound={addFoundBoss}
-              instanceFilter={instance.id}
-            />
-
-            {/* Dynamic boss counter */}
-            <div className="text-sm text-muted-foreground text-right mb-4">
-              {`${foundCount}/${totalCount} bosses found`}
-            </div>
-
-            {/* Boss list - filtered by instance */}
-            <span id="rewardDesktop" />
-            <BossList allBosses={instance.npc} bosses={foundBosses} instanceFilter={instance.id} instances={[instance]} />
-          </div>
+              {/* Boss list - filtered by instance */}
+              <BossList allBosses={instance.npc} bosses={foundBosses} instanceFilter={instance.id} instances={[instance]} />
+            </>
+          )}
         </div>
       </div>
     </div>

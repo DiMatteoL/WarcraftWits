@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { ArrowDownRight, CornerDownRight } from "lucide-react"
 
 interface ProgressIndicatorProps {
   percentage: number
@@ -25,17 +26,20 @@ export function ProgressIndicator({ percentage, label, name, expansionName }: Pr
     <div className="mb-4">
       <h2 className="text-xl font-semibold text-primary mb-1">
         {expansionName ? (
-          <div className="flex items-center">
+          <div className="flex flex-col">
             <span>{expansionName}</span>
-            <span
-              className={`transition-all duration-500 ease-in-out transform ${
-                isNameVisible
+            <div className="flex items-center">
+              <span
+                className={`flex items-center transition-all duration-500 ease-in-out transform ${
+                  isNameVisible
                   ? "translate-x-0 translate-y-0 opacity-100"
-                  : "translate-x-[-20px] translate-y-4 opacity-0"
-              }`}
-            >
-              &nbsp;&gt;&nbsp;{name}
-            </span>
+                  : "translate-y-[-20px] translate-x-[-12px] opacity-0"
+                  }`}
+              >
+                <CornerDownRight className="h-4 w-4 mr-1" />
+                {name}
+              </span>
+            </div>
           </div>
         ) : (
           name
