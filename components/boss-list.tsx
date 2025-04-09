@@ -36,7 +36,7 @@ export function BossList({ bosses, instanceFilter, allBosses = [], instances = [
   };
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-2 h-[calc(100vh-460px)] max-h-full overflow-y-auto pr-2">
       <span id="reward" />
       {sortedBosses.map((boss, index) => (
         <div key={`${boss.name}-${boss.instance_id}-${index}`} className="flex items-center gap-3 pr-2 hover:bg-muted rounded-md transition-colors">
