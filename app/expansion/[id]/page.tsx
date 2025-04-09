@@ -36,7 +36,10 @@ export default async function ExpansionPage({ params }: { params: { id: string }
   // Extract maps and bosses from the joined query results
   const { data: maps, error: mapsError } = await supabase
     .from("map")
-    .select(`*`)
+    .select(`
+      *,
+      pin(*, instance(*))
+    `)
     .eq("expansion_id", expansion.id)
     .is("instance_id", null)
     .order("index")

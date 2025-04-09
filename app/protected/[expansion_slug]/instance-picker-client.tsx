@@ -9,9 +9,10 @@ import { Button } from "@/components/ui/button"
 interface InstancePickerClientProps {
   instances: Tables<"instance">[]
   expansionSlug: string
+  pinnedInstanceIds: number[]
 }
 
-export function InstancePickerClient({ expansionSlug, instances }: InstancePickerClientProps) {
+export function InstancePickerClient({ expansionSlug, instances, pinnedInstanceIds }: InstancePickerClientProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
 
@@ -42,7 +43,14 @@ export function InstancePickerClient({ expansionSlug, instances }: InstancePicke
             onClick={() => handleInstanceClick(instance.id)}
           >
             <div className="flex justify-between items-center">
-              <h3 className="font-medium">{instance.name}</h3>
+              <div className="flex items-center">
+                <h3 className="font-medium">{instance.name}</h3>
+                {pinnedInstanceIds.includes(instance.id) && (
+                  <span className="ml-2 px-2 py-0.5 text-xs bg-green-100 text-green-800 rounded-full">
+                    Pinned
+                  </span>
+                )}
+              </div>
               <a
                 href={`/protected/${expansionSlug}/${instance.slug}`}
                 className="text-gray-500 hover:text-blue-500"

@@ -12,7 +12,7 @@ export default function ExpansionPage({
   const page = searchParams.page ? parseInt(searchParams.page) : 0
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense>
       <ExpansionSelectorServer expansionSlug={params.expansion_slug} />
       <MapSelectorServer expansionSlug={params.expansion_slug} page={page} />
     </Suspense>

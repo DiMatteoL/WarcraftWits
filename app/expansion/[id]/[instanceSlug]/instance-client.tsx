@@ -21,6 +21,7 @@ const rightSidePanelStyles =
 type InstanceData = Tables<"instance"> & {
   npc: Tables<"npc">[];
   map: Tables<"map">[];
+  expansion: Tables<"expansion">;
 }
 
 type InstanceClientProps = {
@@ -45,14 +46,6 @@ export function InstanceClient({ expansionId, instance }: InstanceClientProps) {
   useEffect(() => {
     clearHoveredInstance()
   }, [selectedInstanceMapIndex, clearHoveredInstance])
-
-  if (!isLoaded || !instance || !instance?.npc || !instance?.map) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="animate-pulse text-primary font-bold text-xl">Loading...</div>
-      </div>
-    )
-  }
 
   // Calculate statistics
   const foundInstanceBosses = foundBosses.filter((b) => b.instance_id === instance.id)
@@ -126,7 +119,12 @@ export function InstanceClient({ expansionId, instance }: InstanceClientProps) {
             <div className="h-px bg-border my-4"></div>
 
             {/* 4. Boss percentage */}
-            <ProgressIndicator percentage={completionPercentage} label="Bosses named" name={instance.name || ""} />
+            <ProgressIndicator
+              percentage={completionPercentage}
+              label="Bosses named"
+              name={instance.name || ""}
+              expansionName={instance.expansion?.name || ""}
+            />
 
 
             {/* Boss list - filtered by instance */}
@@ -150,8 +148,12 @@ export function InstanceClient({ expansionId, instance }: InstanceClientProps) {
               </Link>
             </div>
 
-            {/* Boss percentage */}
-            <ProgressIndicator percentage={completionPercentage} label="Bosses named" name={instance.name || ""} />
+            <ProgressIndicator
+              percentage={completionPercentage}
+              label="Bosses named"
+              name={instance.name || ""}
+              expansionName={instance.expansion?.name || ""}
+            />
 
             {/* Separator */}
             <div className="h-px bg-border my-4"></div>

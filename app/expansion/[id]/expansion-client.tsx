@@ -15,6 +15,7 @@ import { useFoundBosses } from "@/hooks/use-found-bosses"
 import { useHoveredInstanceStore } from "@/lib/store"
 import type { InstanceWithCompletion } from "@/types/game"
 import type { Tables } from "@/types/database"
+import { ImageWithOverlay } from "@/components/image-with-overlay"
 
 // Update the right side panel styling to be more understated
 const rightSidePanelStyles =
@@ -24,13 +25,17 @@ type ExpansionClientProps = {
   id: string
   expansion: Tables<"expansion">
   instances: Tables<"instance">[]
-  maps: Tables<"map">[]
+  maps: (Tables<"map"> & {
+    pin: (Tables<"pin"> & {
+      instance: Tables<"instance"> | null
+    })[]
+  })[]
   bosses: Tables<"npc">[]
 }
 
 export function ExpansionClient({ id, expansion, instances, maps, bosses }: ExpansionClientProps) {
   const [selectedMap, setSelectedMap] = useState<Tables<"map"> | null>(null)
-  const { foundBosses, addFoundBoss, clearFoundBosses, isLoaded } = useFoundBosses(id)
+  const { foundBosses, addFoundBoss, clearFoundBosses } = useFoundBosses(id)
   const { clearHoveredInstance } = useHoveredInstanceStore()
 
   // Set first map as selected when component mounts
@@ -58,15 +63,6 @@ export function ExpansionClient({ id, expansion, instances, maps, bosses }: Expa
     if (expansion?.name && window.confirm(`Are you sure you want to reset all found bosses for ${expansion.name}?`)) {
       clearFoundBosses()
     }
-  }
-
-  // Show loading state while foundBosses are loading
-  if (!isLoaded) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="animate-pulse text-primary font-bold text-xl">Loading...</div>
-      </div>
-    )
   }
 
   // Calculate boss counts
@@ -122,15 +118,31 @@ export function ExpansionClient({ id, expansion, instances, maps, bosses }: Expa
 
         {/* Main map display */}
         <div className="relative flex-grow overflow-hidden">
-          <Image
-            src={selectedMap?.uri || "/placeholder.svg"}
-            alt={`Map ${selectedMap?.id || ''}`}
-            fill
-            className="object-cover"
-            priority
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-background/30 to-transparent"></div>
-          <div className="absolute bottom-4 left-4">
+          <div className="absolute inset-0">
+            <ImageWithOverlay
+              src={selectedMap?.uri || "/placeholder.svg"}
+              alt={`Map ${selectedMap?.id || ''}`}
+              pins={selectedMap?.pin?.map((pin) => {
+                // Find the instance associated with this pin
+                const instance = pin.instance || null;
+                if (!instance) return null;
+
+                // Find the instance with completion rate
+                const instanceWithCompletion = instanceCompletionRates.find(i => i.id === instance.id);
+
+                return {
+                  component: <InstanceIcon
+                    instance={instanceWithCompletion || instance}
+                    foundBosses={foundBosses}
+                    allBosses={bosses}
+                    size="compact"
+                  />,
+                  position: { x: pin.x_percent || 0, y: pin.y_percent || 0 }
+                };
+              }).filter(Boolean) || []}
+            />
+          </div>
+          <div className="absolute bottom-4 left-4 z-10">
             <MapTitleDisplay mapName={
               instances.find(i => i.id === selectedMap?.instance_id)?.name || "Map"
             } />
@@ -175,7 +187,6 @@ export function ExpansionClient({ id, expansion, instances, maps, bosses }: Expa
                   <InstanceIcon
                     key={instance.id}
                     instance={instance}
-                    expansionId={id}
                     foundBosses={foundBosses}
                     allBosses={bosses}
                     size={useCompactMode ? "compact" : "normal"}
@@ -218,7 +229,6 @@ export function ExpansionClient({ id, expansion, instances, maps, bosses }: Expa
                   <InstanceIcon
                     key={instance.id}
                     instance={instance}
-                    expansionId={id}
                     foundBosses={foundBosses}
                     allBosses={bosses}
                     size={useCompactMode ? "compact" : "normal"}

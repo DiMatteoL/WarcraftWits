@@ -11,7 +11,7 @@ export default async function InstancePage({ params }: { params: { id: string; i
   // Fetch instance data
   const { data: instance, error } = await supabase
     .from("instance")
-    .select("*, npc(*), map(*)")
+    .select("*, npc(*), map(*), expansion(*)")
     .eq("slug", instanceSlug)
     .single()
 
@@ -20,11 +20,9 @@ export default async function InstancePage({ params }: { params: { id: string; i
   }
 
   return (
-    <Suspense>
       <InstanceClient
         expansionId={id}
         instance={instance}
       />
-    </Suspense>
   )
 }

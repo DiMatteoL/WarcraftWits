@@ -1,28 +1,26 @@
 "use client"
 
 import type React from "react"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { useRouter } from "next/navigation"
 import type { InstanceWithCompletion, Boss } from "@/types/game"
 import { FollowingTooltip } from "@/components/following-tooltip"
 import { useHoveredInstanceStore } from "@/lib/store"
 
 interface InstanceIconProps {
   instance: InstanceWithCompletion
-  expansionId: string
   foundBosses: Boss[]
   allBosses: Boss[]
   size?: "compact" | "normal"
 }
 
-export function InstanceIcon({ instance, expansionId, foundBosses, allBosses, size = "normal" }: InstanceIconProps) {
+export function InstanceIcon({ instance, foundBosses = [], allBosses = [], size = "normal" }: InstanceIconProps) {
   const [showTooltip, setShowTooltip] = useState(false)
-  const [mousePosition, setMousePosition] = useState<{ x: number; y: number } | undefined>(undefined)
-  const { setHoveredInstance, clearHoveredInstance } = useHoveredInstanceStore()
-  const router = useRouter()
+  const { setHoveredInstance, clearHoveredInstance, hoveredInstanceId } = useHoveredInstanceStore()
 
+  // Check if this instance is currently being hovered by another component
+  const isHoveredByOther = useMemo(() => hoveredInstanceId?.toString() === instance.id.toString() && !showTooltip, [hoveredInstanceId])
   // Size configuration based on the size prop
   const isCompact = size === "compact"
 
@@ -50,7 +48,6 @@ export function InstanceIcon({ instance, expansionId, foundBosses, allBosses, si
 
   // Handle mouse enter with position
   const handleMouseEnter = (e: React.MouseEvent) => {
-    setMousePosition({ x: e.clientX, y: e.clientY })
     setShowTooltip(true)
     setHoveredInstance(instance)
   }
@@ -76,9 +73,11 @@ export function InstanceIcon({ instance, expansionId, foundBosses, allBosses, si
 
   return (
     <div className="flex-shrink-0">
-      <Link href={`/expansion/${expansionId}/${instance.slug}`} onClick={handleClick}>
+      <Link href={`${window.location.pathname}/${instance.slug}`} onClick={handleClick} prefetch={true}>
         <div
-          className="relative flex items-center justify-center transition-transform hover:scale-110"
+          className={`relative flex items-center justify-center transition-transform hover:scale-110 ${
+            showTooltip || isHoveredByOther ? "z-100" : ""
+          }`}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >
@@ -110,7 +109,11 @@ export function InstanceIcon({ instance, expansionId, foundBosses, allBosses, si
           </svg>
 
           <div
-            className={`${iconSize} rounded-full flex items-center justify-center ${fontSize} font-bold transition-all bg-muted text-muted-foreground hover:bg-muted/80`}
+            className={`${iconSize} rounded-full flex items-center justify-center ${fontSize} font-bold transition-all bg-muted ${
+              isHoveredByOther
+                ? "text-primary scale-125"
+                : "text-muted-foreground hover:bg-muted/80"
+            }`}
           >
             {instance.slug}
           </div>
@@ -123,7 +126,6 @@ export function InstanceIcon({ instance, expansionId, foundBosses, allBosses, si
         offsetX={15}
         offsetY={15}
         position="bottom-left"
-        initialMousePosition={mousePosition}
       >
         <div className="w-48 bg-card rounded-md shadow-md border border-border/50 overflow-hidden transition-all duration-300">
           <div className="relative h-24 w-full">

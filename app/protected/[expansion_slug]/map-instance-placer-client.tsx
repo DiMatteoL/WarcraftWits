@@ -1,25 +1,31 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { useSearchParams } from "next/navigation"
+import { useSearchParams, useRouter } from "next/navigation"
 import { MapSelectorClient } from "./map-selector-client"
 import { InstancePickerClient } from "./instance-picker-client"
 import { Tables } from "@/types/database"
 import { useSupabase } from "@/contexts/supabase-context"
 
 interface BossPickerClientProps {
-  maps: Tables<"map">[]
+  maps: (Tables<"map"> & {
+    pin: (Tables<"pin"> & {
+      instance: Tables<"instance"> | null
+    })[]
+  })[]
   instances: Tables<"instance">[]
   currentPage: number
   totalPages: number
   expansionSlug: string
 }
 
-export function BossPickerClient({ maps, instances, currentPage, totalPages, expansionSlug }: BossPickerClientProps) {
+export function MapInstancePlacerClient({ maps, instances, currentPage, expansionSlug }: BossPickerClientProps) {
   const searchParams = useSearchParams()
+  const router = useRouter()
   const [selectedInstanceId, setSelectedInstanceId] = useState<string | null>(null)
   const supabase = useSupabase()
-  const [pins, setPins] = useState<Tables<"pin">[]>([])
+  const [pinnedInstanceIds, setPinnedInstanceIds] = useState<number[]>([])
+  const [currentMapIndex, setCurrentMapIndex] = useState(currentPage)
 
   // Initialize selected instance from URL
   useEffect(() => {
@@ -27,26 +33,24 @@ export function BossPickerClient({ maps, instances, currentPage, totalPages, exp
     setSelectedInstanceId(instanceId)
   }, [searchParams])
 
-  // Fetch pins for the first map
+  // Initialize pins from the current map and extract pinned instance IDs
   useEffect(() => {
-    const fetchPins = async () => {
-      if (maps.length > 0) {
-        const { data, error } = await supabase
-          .from('pin')
-          .select('*')
-          .eq('map_id', maps[0].id)
+    if (maps.length > 0) {
+      // Get the current map based on the currentMapIndex
+      const currentMap = maps[currentMapIndex] || maps[0]
+      const currentMapPins = currentMap.pin || []
 
-        if (error) {
-          console.error("Error fetching pins:", error)
-          return
-        }
+      // Extract unique instance IDs from all pins across all maps
+      const allPins = maps.flatMap(map => map.pin || [])
+      const uniqueInstanceIds = Array.from(new Set(
+        allPins
+          .filter(pin => pin.instance !== null)
+          .map(pin => pin.instance!.id)
+      ))
 
-        setPins(data || [])
-      }
+      setPinnedInstanceIds(uniqueInstanceIds)
     }
-
-    fetchPins()
-  }, [maps, supabase])
+  }, [maps, currentMapIndex])
 
   const addPin = async (mapId: number, position: { x: number; y: number }) => {
     if (!selectedInstanceId) {
@@ -60,9 +64,9 @@ export function BossPickerClient({ maps, instances, currentPage, totalPages, exp
         .from('pin')
         .insert({
           map_id: mapId,
-          instance_id: parseInt(selectedInstanceId),
           x_percent: position.x,
-          y_percent: position.y
+          y_percent: position.y,
+          instance_id: selectedInstanceId
         })
         .select()
 
@@ -72,10 +76,7 @@ export function BossPickerClient({ maps, instances, currentPage, totalPages, exp
         return
       }
 
-      // Update the pins state with the new pin
-      if (data && data.length > 0) {
-        setPins(prevPins => [...prevPins, data[0]])
-      }
+      router.refresh()
     } catch (err) {
       console.error("Error in addPin function:", err)
       alert("An error occurred while adding the pin")
@@ -84,17 +85,18 @@ export function BossPickerClient({ maps, instances, currentPage, totalPages, exp
 
   return (
     <div className="flex flex-row gap-4">
-      <div className="w-1/2">
+      <div className="w-3/4">
         <MapSelectorClient
           maps={maps}
-          currentPage={currentPage}
-          totalPages={totalPages}
           addPin={addPin}
-          pins={pins}
         />
       </div>
-      <div className="w-1/2">
-        <InstancePickerClient expansionSlug={expansionSlug} instances={instances} />
+      <div className="w-1/4">
+        <InstancePickerClient
+          expansionSlug={expansionSlug}
+          instances={instances}
+          pinnedInstanceIds={pinnedInstanceIds}
+        />
       </div>
     </div>
   )

@@ -59,7 +59,7 @@ export function ExpansionTable() {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full">
       {expansions.map((expansion) => (
-        <Link href={`/expansion/${expansion.slug}`} key={expansion.id}>
+        <Link href={`/expansion/${expansion.slug}`} key={expansion.id} prefetch={true}>
           <ExpansionCard
             name={expansion.name || "Unknown Expansion"}
             image={expansion.logo_uri || "/placeholder.svg"}

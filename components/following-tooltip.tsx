@@ -1,6 +1,7 @@
 "use client"
 
 import { useRef, useEffect, useState, type ReactNode } from "react"
+import { createPortal } from "react-dom"
 
 interface FollowingTooltipProps {
   children: ReactNode
@@ -8,7 +9,6 @@ interface FollowingTooltipProps {
   offsetX?: number
   offsetY?: number
   position?: "bottom-left" | "bottom-right" | "top-left" | "top-right"
-  initialMousePosition?: { x: number; y: number }
 }
 
 export function FollowingTooltip({
@@ -17,10 +17,24 @@ export function FollowingTooltip({
   offsetX = 10,
   offsetY = 10,
   position = "bottom-left",
-  initialMousePosition,
 }: FollowingTooltipProps) {
   const tooltipRef = useRef<HTMLDivElement>(null)
   const [isPositioned, setIsPositioned] = useState(false)
+  const [portalContainer, setPortalContainer] = useState<HTMLElement | null>(null)
+
+  // Find or create a portal container
+  useEffect(() => {
+    let container = document.getElementById('tooltip-portal-container')
+    if (!container) {
+      container = document.createElement('div')
+      container.id = 'tooltip-portal-container'
+      document.body.appendChild(container)
+    }
+    setPortalContainer(container)
+    return () => {
+      // Don't remove the container on unmount as it might be used by other tooltips
+    }
+  }, [])
 
   // Position the tooltip based on mouse coordinates
   const positionTooltip = (tooltip: HTMLElement, mouseX: number, mouseY: number) => {
@@ -74,20 +88,6 @@ export function FollowingTooltip({
     }
   }, [show])
 
-  // Handle initial positioning
-  useEffect(() => {
-    if (show && tooltipRef.current && initialMousePosition) {
-      const tooltip = tooltipRef.current
-
-      // Use setTimeout to ensure the tooltip has rendered with dimensions
-      setTimeout(() => {
-        if (tooltip && document.body.contains(tooltip)) {
-          positionTooltip(tooltip, initialMousePosition.x, initialMousePosition.y)
-        }
-      }, 0)
-    }
-  }, [show, initialMousePosition, offsetX, offsetY, position])
-
   // Handle mouse movement
   useEffect(() => {
     if (!show) return
@@ -121,23 +121,24 @@ export function FollowingTooltip({
     }
   }, [show, offsetX, offsetY, position])
 
-  if (!show) return null
+  if (!show || !portalContainer) return null
 
-  return (
+  // Use createPortal to render the tooltip directly in the document body
+  return createPortal(
     <div
       ref={tooltipRef}
       className={`fixed z-[9999] pointer-events-none transition-opacity duration-150 ${
         isPositioned ? "opacity-100" : "opacity-0"
       }`}
       style={{
-        left: initialMousePosition ? `${initialMousePosition.x}px` : "0px",
-        top: initialMousePosition ? `${initialMousePosition.y}px` : "0px",
+        left: "0px",
+        top: "0px",
         willChange: "transform, left, top",
         transform: "translateZ(0)", // Hardware acceleration
       }}
     >
       {children}
-    </div>
+    </div>,
+    portalContainer
   )
 }
-

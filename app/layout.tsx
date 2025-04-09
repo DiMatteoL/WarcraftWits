@@ -25,11 +25,9 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
           <SupabaseProvider>
             <div className="min-h-screen bg-background">
-              {/* Floating Theme Toggle */}
               <div className="fixed top-4 right-4 z-50">
                 <ModeToggle />
               </div>
-
               {children}
             </div>
           </SupabaseProvider>

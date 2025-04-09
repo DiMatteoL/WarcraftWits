@@ -1,5 +1,5 @@
 import { createClient } from "@/utils/supabase/server"
-import { BossPickerClient } from "./boss-picker-client"
+import { MapInstancePlacerClient } from "./map-instance-placer-client"
 
 const MAPS_PER_PAGE = 1
 
@@ -23,19 +23,19 @@ export async function MapSelectorServer({
     throw new Error(`Failed to load expansion: ${expansionError?.message}`)
   }
 
-  // Fetch maps for this expansion with pagination
+  // Fetch all maps for this expansion with pins and instances
   const { data: maps, error: mapsError, count } = await supabase
     .from("map")
-    .select("*", { count: "exact" })
+    .select("*, pin(*, instance(*))", { count: "exact" })
     .eq("expansion_id", expansion.id)
     .is("instance_id", null)
     .order("index")
-    .range(page * MAPS_PER_PAGE, page * MAPS_PER_PAGE)
 
   if (mapsError) {
     throw new Error(`Failed to load maps: ${mapsError.message}`)
   }
 
+  // Calculate total pages based on all maps
   const totalPages = Math.ceil((count || 0) / MAPS_PER_PAGE)
 
   const { data: instances, error: instancesError } = await supabase
@@ -48,7 +48,7 @@ export async function MapSelectorServer({
     throw new Error(`Failed to load instances: ${instancesError.message}`)
   }
 
-  return <BossPickerClient
+  return <MapInstancePlacerClient
     expansionSlug={expansionSlug}
     maps={maps || []}
     instances={instances || []}

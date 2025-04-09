@@ -2,6 +2,8 @@
 
 import { Tables } from "@/types/database";
 import { ImageWithOverlay } from "../../../components/image-with-overlay"
+import { InstanceIcon } from "@/components/instance-icon";
+import { useState } from "react";
 
 interface Pin {
   component: React.ReactNode
@@ -9,49 +11,64 @@ interface Pin {
 }
 
 interface MapSelectorClientProps {
-  maps: Tables<"map">[]
-  currentPage: number
-  totalPages: number
+  maps: (Tables<"map"> & {
+    pin: (Tables<"pin"> & {
+      instance: Tables<"instance"> | null
+    })[]
+  })[]
   addPin: (mapId: number, position: { x: number; y: number }) => Promise<void>
   pins: Tables<"pin">[]
+  onPageChange?: (page: number) => void
 }
 
 export function MapSelectorClient({
   maps,
-  currentPage,
-  totalPages,
   addPin,
-  pins,
 }: MapSelectorClientProps) {
+  const [currentPage, setCurrentPage] = useState(0)
+  const currentMap = maps[currentPage]
+
   // Convert database pins to the format expected by ImageWithOverlay
-  const formattedPins: Pin[] = pins.map(pin => ({
-    component: <div className="w-4 h-4 bg-red-500 rounded-full" />,
-    position: { x: pin.x_percent || 0, y: pin.y_percent || 0 }
-  }))
+  const formattedPins: Pin[] = currentMap.pin.map(pin => {
+    // Find the instance associated with this pin
+    const instance = pin?.instance || null
+    if (!instance) return null
+
+    console.log(instance)
+
+    return {
+      component: <InstanceIcon instance={instance} />,
+      position: { x: pin.x_percent || 0, y: pin.y_percent || 0 }
+    }
+  }).filter(Boolean)
+
+
 
   return (
     <div className="p-4">
-      {maps?.map((map) => (
-        <div key={map.id} className="mt-2 mx-auto">
-          <ImageWithOverlay
-            src={map.uri!}
-            alt={`${map.name} background`}
-            width={1000}
-            height={1000}
-            onClick={(position) => {
-              addPin(map.id, position);
-            }}
-            pins={formattedPins}
-          />
+      {currentMap && (
+        <div key={currentMap.id} className="mt-2 mx-auto relative w-full h-[1000px]">
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="w-full h-full">
+              <ImageWithOverlay
+                src={currentMap.uri!}
+                alt={`${currentMap.name} background`}
+                onClick={(position) => {
+                  addPin(currentMap.id, position);
+                }}
+                pins={formattedPins}
+              />
+            </div>
+          </div>
         </div>
-      ))}
+      )}
 
       {/* Pagination controls */}
       <div className="mt-4 flex justify-center gap-2">
-        {Array.from({ length: totalPages }, (_, i) => (
-          <a
+        {Array.from({ length: maps.length }, (_, i) => (
+          <button
             key={i}
-            href={`?page=${i}`}
+            onClick={() => setCurrentPage(i)}
             className={`px-4 py-2 rounded ${
               currentPage === i
                 ? "bg-blue-500 text-white"
@@ -59,7 +76,7 @@ export function MapSelectorClient({
             }`}
           >
             {i + 1}
-          </a>
+          </button>
         ))}
       </div>
     </div>
