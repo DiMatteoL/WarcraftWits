@@ -10,7 +10,6 @@ import { InstanceIcon } from "@/components/instance-icon"
 import { BossSearch } from "@/components/boss-search"
 import { BossList } from "@/components/boss-list"
 import { ProgressIndicator } from "@/components/progress-indicator"
-import { MapTitleDisplay } from "@/components/map-title-display"
 import { useFoundBosses } from "@/hooks/use-found-bosses"
 import { useHoveredInstanceStore } from "@/lib/store"
 import type { InstanceWithCompletion } from "@/types/game"
@@ -142,11 +141,6 @@ export function ExpansionClient({ id, expansion, instances, maps, bosses }: Expa
               }).filter(Boolean) || []}
             />
           </div>
-          <div className="absolute bottom-4 left-4 z-10">
-            <MapTitleDisplay mapName={
-              instances.find(i => i.id === selectedMap?.instance_id)?.name || "Map"
-            } />
-          </div>
         </div>
       </div>
 
@@ -167,6 +161,7 @@ export function ExpansionClient({ id, expansion, instances, maps, bosses }: Expa
 
             {/* 2. Boss name input with suggestions */}
             <BossSearch bosses={bosses} foundBosses={foundBosses} onBossFound={addFoundBoss} />
+            <span id="rewardMobile" />
 
             {/* 3. Separator */}
             <div className="h-px bg-border my-4"></div>
@@ -249,6 +244,7 @@ export function ExpansionClient({ id, expansion, instances, maps, bosses }: Expa
             </div>
 
             {/* Boss list */}
+            <span id="rewardDesktop" />
             <BossList bosses={foundBosses} allBosses={bosses} instances={instances} />
           </div>
         </div>

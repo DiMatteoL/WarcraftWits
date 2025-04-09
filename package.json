@@ -24,6 +24,7 @@
     "prettier": "^3.3.3",
     "react": "19.0.0",
     "react-dom": "19.0.0",
+    "react-rewards": "^2.1.0",
     "supabase": "^2.20.12",
     "zustand": "^5.0.3"
   },

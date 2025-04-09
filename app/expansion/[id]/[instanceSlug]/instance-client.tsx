@@ -31,7 +31,7 @@ type InstanceClientProps = {
 
 export function InstanceClient({ expansionId, instance }: InstanceClientProps) {
   const [selectedInstanceMapIndex, setSelectedInstanceMapIndex] = useState(0)
-  const { foundBosses, addFoundBoss, isLoaded } = useFoundBosses(expansionId)
+  const { foundBosses, addFoundBoss } = useFoundBosses(expansionId)
   const { clearHoveredInstance } = useHoveredInstanceStore()
 
   // Clear hovered instance when component mounts/unmounts
@@ -128,6 +128,7 @@ export function InstanceClient({ expansionId, instance }: InstanceClientProps) {
 
 
             {/* Boss list - filtered by instance */}
+            <span id="rewardMobile" />
             <BossList bosses={foundBosses} instanceFilter={instance.id} instances={[instance]} />
 
             {/* Dynamic boss counter */}
@@ -172,6 +173,7 @@ export function InstanceClient({ expansionId, instance }: InstanceClientProps) {
             </div>
 
             {/* Boss list - filtered by instance */}
+            <span id="rewardDesktop" />
             <BossList allBosses={instance.npc} bosses={foundBosses} instanceFilter={instance.id} instances={[instance]} />
           </div>
         </div>

@@ -13,9 +13,13 @@ interface BossListProps {
 }
 
 export function BossList({ bosses, instanceFilter, allBosses = [], instances = [] }: BossListProps) {
+  // Filter bosses by instance if needed
   const filteredBosses = instanceFilter ? bosses.filter((boss) => boss.instance_id === instanceFilter) : bosses
 
-  if (filteredBosses.length === 0) {
+  // Reverse the array to show most recently found bosses at the top
+  const sortedBosses = [...filteredBosses].reverse()
+
+  if (sortedBosses.length === 0) {
     return (
       <div className="text-center py-6 text-muted-foreground text-sm">
         {instanceFilter ? "No bosses found for this instance yet." : "No bosses found yet."}
@@ -32,7 +36,7 @@ export function BossList({ bosses, instanceFilter, allBosses = [], instances = [
 
   return (
     <div className="space-y-2">
-      {filteredBosses.map((boss, index) => (
+      {sortedBosses.map((boss, index) => (
         <div key={`${boss.name}-${boss.instance_id}-${index}`} className="flex items-center gap-3 pr-2 hover:bg-muted rounded-md transition-colors">
           <div className="w-12 h-12 rounded-full overflow-hidden bg-muted flex-shrink-0 border border-border/50 transition-all duration-300">
             <Image

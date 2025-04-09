@@ -5,6 +5,7 @@ import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { ModeToggle } from "@/components/mode-toggle"
 import { SupabaseProvider } from "@/contexts/supabase-context"
+import { ClientLayoutWrapper } from "@/components/client-layout-wrapper"
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" })
 
@@ -28,7 +29,9 @@ export default function RootLayout({
               <div className="fixed top-4 right-4 z-50">
                 <ModeToggle />
               </div>
-              {children}
+              <ClientLayoutWrapper>
+                {children}
+              </ClientLayoutWrapper>
             </div>
           </SupabaseProvider>
         </ThemeProvider>
