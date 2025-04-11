@@ -14,6 +14,7 @@ export type Database = {
           background_uri: string | null
           created_at: string
           id: number
+          is_active: boolean
           logo_uri: string | null
           name: string | null
           release_date: string | null
@@ -23,6 +24,7 @@ export type Database = {
           background_uri?: string | null
           created_at?: string
           id?: number
+          is_active?: boolean
           logo_uri?: string | null
           name?: string | null
           release_date?: string | null
@@ -32,6 +34,7 @@ export type Database = {
           background_uri?: string | null
           created_at?: string
           id?: number
+          is_active?: boolean
           logo_uri?: string | null
           name?: string | null
           release_date?: string | null

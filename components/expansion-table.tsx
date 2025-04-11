@@ -5,6 +5,7 @@ import Link from "next/link"
 import { ExpansionCard } from "@/components/expansion-card"
 import { Tables } from "@/types/database"
 import { useSupabase } from "@/contexts/supabase-context"
+import { PersistentTooltip } from "@/components/persistent-tooltip"
 
 export function ExpansionTable() {
   const supabase = useSupabase()
@@ -59,12 +60,32 @@ export function ExpansionTable() {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full">
       {expansions.map((expansion) => (
-        <Link href={`/expansion/${expansion.slug}`} key={expansion.id} prefetch={true}>
-          <ExpansionCard
-            name={expansion.name || "Unknown Expansion"}
-            image={expansion.logo_uri || "/placeholder.svg"}
-          />
-        </Link>
+        expansion.is_active ? (
+          <Link
+            href={`/expansion/${expansion.slug}`}
+            key={expansion.id}
+            prefetch={true}
+          >
+            <ExpansionCard
+              name={expansion.name || "Unknown Expansion"}
+              image={expansion.logo_uri || "/placeholder.svg"}
+            />
+          </Link>
+        ) : (
+          <PersistentTooltip
+            key={expansion.id}
+            content="Coming soon"
+            side="top"
+          >
+            <div className="cursor-not-allowed opacity-50">
+              <ExpansionCard
+                name={expansion.name || "Unknown Expansion"}
+                image={expansion.logo_uri || "/placeholder.svg"}
+                disabled={true}
+              />
+            </div>
+          </PersistentTooltip>
+        )
       ))}
     </div>
   )

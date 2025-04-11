@@ -1,9 +1,11 @@
 import Image from "next/image"
 import { Card, CardContent } from "@/components/ui/card"
 import { ExpansionTable } from "@/components/expansion-table"
+import { Footer } from "@/components/footer"
 
 export default function WoWMemoryGame() {
   return (
+    <>
     <div className="container py-4 md:py-12 px-4 max-w-5xl mx-auto">
       <div className="flex flex-col items-center mb-12">
         {/* WoW Logo */}
@@ -35,5 +37,7 @@ export default function WoWMemoryGame() {
       {/* Expansion Grid - Now using Supabase data */}
       <ExpansionTable />
     </div>
+    <Footer />
+    </>
   )
 }

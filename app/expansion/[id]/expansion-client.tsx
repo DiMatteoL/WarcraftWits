@@ -91,9 +91,9 @@ export function ExpansionClient({ id, expansion, instances, maps, bosses }: Expa
   // Calculate the maximum gap based on the number of instances and icon size
   const getMaxGap = () => {
     const instanceCount = instanceCompletionRates.length
-    if (instanceCount > 12) return 8 // Smallest gap for many instances
-    if (instanceCount > 8) return 12 // Medium gap
-    return 16 // Largest gap for fewer instances
+    if (instanceCount > 12) return 6 // Smallest gap for many instances
+    if (instanceCount > 8) return 8 // Medium gap
+    return 12 // Largest gap for fewer instances
   }
 
   return (
