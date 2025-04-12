@@ -3,7 +3,6 @@
 import { useState, useRef } from "react"
 import { AutoSelectInput } from "@/components/auto-select-input"
 import type { Boss } from "@/types/game"
-import { isValidSearch } from "@/utils/leveinstein"
 import createFuzzySearch from '@nozbe/microfuzz'
 
 

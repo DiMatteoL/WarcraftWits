@@ -14,18 +14,16 @@ interface BossPickerClientProps {
     })[]
   })[]
   instances: Tables<"instance">[]
-  currentPage: number
   totalPages: number
   expansionSlug: string
 }
 
-export function MapInstancePlacerClient({ maps, instances, currentPage, expansionSlug }: BossPickerClientProps) {
+export function MapInstancePlacerClient({ maps, instances, expansionSlug }: BossPickerClientProps) {
   const searchParams = useSearchParams()
   const router = useRouter()
   const [selectedInstanceId, setSelectedInstanceId] = useState<number | null>(null)
   const supabase = useSupabase()
   const [pinnedInstanceIds, setPinnedInstanceIds] = useState<number[]>([])
-  const [currentMapIndex, setCurrentMapIndex] = useState(currentPage)
 
   // Initialize selected instance from URL
   useEffect(() => {
@@ -36,10 +34,6 @@ export function MapInstancePlacerClient({ maps, instances, currentPage, expansio
   // Initialize pins from the current map and extract pinned instance IDs
   useEffect(() => {
     if (maps.length > 0) {
-      // Get the current map based on the currentMapIndex
-      const currentMap = maps[currentMapIndex] || maps[0]
-      const currentMapPins = currentMap.pin || []
-
       // Extract unique instance IDs from all pins across all maps
       const allPins = maps.flatMap(map => map.pin || [])
       const uniqueInstanceIds = Array.from(new Set(
@@ -50,7 +44,7 @@ export function MapInstancePlacerClient({ maps, instances, currentPage, expansio
 
       setPinnedInstanceIds(uniqueInstanceIds)
     }
-  }, [maps, currentMapIndex])
+  }, [maps])
 
   const addPin = async (mapId: number, position: { x: number; y: number }) => {
     if (!selectedInstanceId) {
@@ -60,7 +54,7 @@ export function MapInstancePlacerClient({ maps, instances, currentPage, expansio
 
     try {
       // Insert the pin into the database
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from('pin')
         .insert({
           map_id: mapId,

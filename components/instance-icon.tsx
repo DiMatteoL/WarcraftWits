@@ -49,7 +49,7 @@ export function InstanceIcon({ instance, foundBosses = [], allBosses = [], size 
 
 
   // Handle mouse enter with position
-  const handleMouseEnter = (e: React.MouseEvent) => {
+  const handleMouseEnter = () => {
     setShowTooltip(true)
     setHoveredInstance(instance)
   }
@@ -61,7 +61,7 @@ export function InstanceIcon({ instance, foundBosses = [], allBosses = [], size 
   }
 
   // Handle click - ensure context is cleared when navigating
-  const handleClick = (e: React.MouseEvent) => {
+  const handleClick = () => {
     // Clear the hovered instance before navigation
     clearHoveredInstance()
   }

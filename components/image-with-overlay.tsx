@@ -87,7 +87,7 @@ export function ImageWithOverlay({ src, alt, onClick, pins }: ImageWithOverlayPr
     setPosition(null)
   }
 
-  const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handleClick = () => {
     if (onClick && position) {
       onClick(position)
     }

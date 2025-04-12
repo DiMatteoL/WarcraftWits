@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { ArrowDownRight, CornerDownRight } from "lucide-react"
+import { CornerDownRight } from "lucide-react"
 
 interface ProgressIndicatorProps {
   percentage: number

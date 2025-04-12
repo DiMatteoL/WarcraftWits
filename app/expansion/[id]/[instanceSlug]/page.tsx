@@ -1,5 +1,4 @@
 // This is a Server Component
-import { Suspense } from "react"
 import { createClient } from "@/utils/supabase/server"
 import { InstanceClient } from "./instance-client"
 

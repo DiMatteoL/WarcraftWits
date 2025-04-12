@@ -17,7 +17,7 @@ export function ExpansionTable() {
     async function fetchExpansions() {
       try {
         setLoading(true)
-        const { data, error } = await supabase
+        const { data } = await supabase
           .from("expansion")
           .select("*")
           .order("release_date", { ascending: true })
