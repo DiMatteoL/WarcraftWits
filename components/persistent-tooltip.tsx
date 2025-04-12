@@ -4,6 +4,7 @@ import * as React from "react"
 import * as TooltipPrimitive from "@radix-ui/react-tooltip"
 import { cn } from "@/lib/utils"
 import { Twitter } from "lucide-react"
+import { Expansion } from "@/types/game"
 
 const PersistentTooltipProvider = TooltipPrimitive.Provider
 
@@ -30,6 +31,7 @@ PersistentTooltipContent.displayName = TooltipPrimitive.Content.displayName
 interface PersistentTooltipProps {
   children: React.ReactNode
   content: React.ReactNode
+  expansion: Expansion
   className?: string
   side?: "top" | "right" | "bottom" | "left"
   align?: "start" | "center" | "end"
@@ -39,6 +41,7 @@ export function PersistentTooltip({
   children,
   content,
   className,
+  expansion,
   side = "top",
   align = "center",
 }: PersistentTooltipProps) {
@@ -66,9 +69,8 @@ export function PersistentTooltip({
             <div className="font-medium">{content}</div>
             <div className="h-px bg-border/50" />
             <a
-              href="https://x.com/Rudnost"
+              href={`https://twitter.com/intent/tweet?text=Hey @Rudnost, when can you add ${expansion.name} to warcraftwits.com? %23WoW %23${expansion.slug} %23WarcraftWits`}
               target="_blank"
-              rel="noopener noreferrer"
               className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors group"
             >
               <span>Want it faster? Ask for it on</span>

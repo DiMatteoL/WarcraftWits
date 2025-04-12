@@ -4,6 +4,7 @@ import Image from "next/image"
 import type { Boss } from "@/types/game"
 import { DEFAULT_IMAGE } from "@/lib/constants"
 import { Tables } from "@/types/database"
+import { memo, useMemo } from "react"
 
 interface BossListProps {
   bosses: Boss[]
@@ -12,12 +13,19 @@ interface BossListProps {
   instances?: Tables<"instance">[]
 }
 
-export function BossList({ bosses, instanceFilter, allBosses = [], instances = [] }: BossListProps) {
+export const BossList = memo(function BossList({ bosses, instanceFilter, allBosses = [], instances = [] }: BossListProps) {
   // Filter bosses by instance if needed
-  const filteredBosses = instanceFilter ? bosses.filter((boss) => boss.instance_id === instanceFilter) : bosses
+  const filteredBosses = useMemo(() =>
+    instanceFilter ? bosses.filter((boss) => boss.instance_id === instanceFilter) : bosses,
+    [bosses, instanceFilter]
+  );
 
-  // Reverse the array to show most recently found bosses at the top
-  const sortedBosses = [...filteredBosses].reverse()
+  const sortedBosses = useMemo(() => [...filteredBosses].reverse(), [filteredBosses]);
+
+  const getBossImage = useMemo(() => (boss: Boss) => {
+    const matchingBoss = allBosses.find(b => b.name === boss.name);
+    return matchingBoss?.background_uri || matchingBoss?.logo_uri || DEFAULT_IMAGE;
+  }, [allBosses]);
 
   if (sortedBosses.length === 0) {
     return (
@@ -29,11 +37,6 @@ export function BossList({ bosses, instanceFilter, allBosses = [], instances = [
   }
 
   // Get image for boss by looking up in allBosses if available
-  const getBossImage = (boss: Boss) => {
-    // Try to find the image in allBosses
-    const matchingBoss = allBosses.find(b => b.name === boss.name);
-    return matchingBoss?.background_uri || matchingBoss?.logo_uri || DEFAULT_IMAGE;
-  };
 
   return (
     <div className="space-y-2 h-[calc(100vh-460px)] max-h-full overflow-y-auto pr-2">
@@ -57,4 +60,4 @@ export function BossList({ bosses, instanceFilter, allBosses = [], instances = [
       ))}
     </div>
   )
-}
+})

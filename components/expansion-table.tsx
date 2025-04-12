@@ -74,6 +74,7 @@ export function ExpansionTable() {
         ) : (
           <PersistentTooltip
             key={expansion.id}
+            expansion={expansion}
             content="Coming soon"
             side="top"
           >

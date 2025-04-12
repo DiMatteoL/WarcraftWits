@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useRef } from "react"
+import { useState, useRef, useMemo, useCallback } from "react"
 import { AutoSelectInput } from "@/components/auto-select-input"
 import type { Boss } from "@/types/game"
 import createFuzzySearch from '@nozbe/microfuzz'
@@ -18,19 +18,29 @@ export function BossSearch({ bosses, foundBosses, onBossFound, instanceFilter }:
   const [isError, setIsError] = useState(false)
   const inputContainerRef = useRef<HTMLDivElement>(null)
 
+  // Memoize the filtered bosses list
+  const contextualBosses = useMemo(() =>
+    bosses.filter(boss =>
+      boss.name
+      && foundBosses.every((found) => found.id !== boss.id)
+      && (!instanceFilter || boss.instance_id === instanceFilter)),
+    [bosses, foundBosses, instanceFilter]
+  );
+
+  // Memoize the fuzzy search instance
+  const fuzzySearch = useMemo(() =>
+    createFuzzySearch(contextualBosses, { key: "name" }),
+    [contextualBosses]
+  );
+
   // Handle form submission
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = useCallback((e: React.FormEvent) => {
     e.preventDefault()
 
     if (!inputValue.trim()) return
 
-    const contextualBosses = bosses.filter(boss =>
-      boss.name
-      && foundBosses.every((found) => found.id !== boss.id)
-      && (!instanceFilter
-      || boss.instance_id === instanceFilter))
-    const fuzzySearch = createFuzzySearch(contextualBosses, { key: "name" });
-    const results = fuzzySearch(inputValue);
+    const cleanInputValue = inputValue.replace(/[^\w\s]/gi, '')
+    const results = fuzzySearch(cleanInputValue);
     const bestResult = results?.[0];
     const matchedBoss = bestResult?.item;
     const nameLength = matchedBoss?.name?.length || 0;
@@ -66,7 +76,12 @@ export function BossSearch({ bosses, foundBosses, onBossFound, instanceFilter }:
         setIsError(false)
       }, 500)
     }
-  }
+  }, [inputValue, fuzzySearch, onBossFound]);
+
+  // Debounced input handler
+  const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(e.target.value);
+  }, []);
 
   return (
     <form onSubmit={handleSubmit} className="relative">
@@ -77,7 +92,7 @@ export function BossSearch({ bosses, foundBosses, onBossFound, instanceFilter }:
             placeholder="Boss Name"
             className={`wow-border ${isError ? "border-destructive" : ""}`}
             value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
+            onChange={handleInputChange}
             priority={10}
             autoFocus={true}
             selectAllOnFocus={true}
