@@ -71,7 +71,7 @@ export function PersistentTooltip({
               rel="noopener noreferrer"
               className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors group"
             >
-              <span>Want it faster? Ask for it on Twitter</span>
+              <span>Want it faster? Ask for it on</span>
               <Twitter className="h-3.5 w-3.5 group-hover:scale-110 transition-transform" />
             </a>
           </div>

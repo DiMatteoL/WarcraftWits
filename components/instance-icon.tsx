@@ -11,8 +11,8 @@ import { useHoveredInstanceStore } from "@/lib/store"
 
 interface InstanceIconProps {
   instance: InstanceWithCompletion
-  foundBosses: Boss[]
-  allBosses: Boss[]
+  foundBosses?: Boss[]
+  allBosses?: Boss[]
   size?: "compact" | "normal"
 }
 

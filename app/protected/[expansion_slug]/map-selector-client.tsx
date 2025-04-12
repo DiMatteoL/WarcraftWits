@@ -17,8 +17,6 @@ interface MapSelectorClientProps {
     })[]
   })[]
   addPin: (mapId: number, position: { x: number; y: number }) => Promise<void>
-  pins: Tables<"pin">[]
-  onPageChange?: (page: number) => void
 }
 
 export function MapSelectorClient({
@@ -29,18 +27,16 @@ export function MapSelectorClient({
   const currentMap = maps[currentPage]
 
   // Convert database pins to the format expected by ImageWithOverlay
-  const formattedPins: Pin[] = currentMap.pin.map(pin => {
+  const formattedPins = currentMap.pin.map(pin => {
     // Find the instance associated with this pin
     const instance = pin?.instance || null
     if (!instance) return null
 
-    console.log(instance)
-
     return {
-      component: <InstanceIcon instance={instance} />,
+      component: <InstanceIcon instance={{...instance, calculatedCompletionRate: 0}} />,
       position: { x: pin.x_percent || 0, y: pin.y_percent || 0 }
     }
-  }).filter(Boolean)
+  }).filter(Boolean) as Pin[]
 
 
 

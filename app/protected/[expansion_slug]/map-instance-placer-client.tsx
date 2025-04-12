@@ -22,7 +22,7 @@ interface BossPickerClientProps {
 export function MapInstancePlacerClient({ maps, instances, currentPage, expansionSlug }: BossPickerClientProps) {
   const searchParams = useSearchParams()
   const router = useRouter()
-  const [selectedInstanceId, setSelectedInstanceId] = useState<string | null>(null)
+  const [selectedInstanceId, setSelectedInstanceId] = useState<number | null>(null)
   const supabase = useSupabase()
   const [pinnedInstanceIds, setPinnedInstanceIds] = useState<number[]>([])
   const [currentMapIndex, setCurrentMapIndex] = useState(currentPage)
@@ -30,7 +30,7 @@ export function MapInstancePlacerClient({ maps, instances, currentPage, expansio
   // Initialize selected instance from URL
   useEffect(() => {
     const instanceId = searchParams.get('instance_id')
-    setSelectedInstanceId(instanceId)
+    setSelectedInstanceId(instanceId ? parseInt(instanceId) : null)
   }, [searchParams])
 
   // Initialize pins from the current map and extract pinned instance IDs

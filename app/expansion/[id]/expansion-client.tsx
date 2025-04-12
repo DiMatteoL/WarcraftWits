@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import Image from "next/image"
 import Link from "next/link"
 import { ChevronLeft, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -14,27 +13,29 @@ import { useFoundBosses } from "@/hooks/use-found-bosses"
 import { useHoveredInstanceStore } from "@/lib/store"
 import type { InstanceWithCompletion } from "@/types/game"
 import type { Tables } from "@/types/database"
-import { ImageWithOverlay } from "@/components/image-with-overlay"
+import { ImageWithOverlay, Pin } from "@/components/image-with-overlay"
 import { useMedia } from "react-use"
 
 // Update the right side panel styling to be more understated
 const rightSidePanelStyles =
   "w-full md:w-1/4 h-1/2 md:h-screen bg-card overflow-y-auto border-l border-border/50 shadow-md"
 
+type ExtendedMap = Tables<"map"> & {
+  pin: (Tables<"pin"> & {
+    instance: Tables<"instance"> | null
+  })[]
+}
+
 type ExpansionClientProps = {
   id: string
   expansion: Tables<"expansion">
   instances: Tables<"instance">[]
-  maps: (Tables<"map"> & {
-    pin: (Tables<"pin"> & {
-      instance: Tables<"instance"> | null
-    })[]
-  })[]
+  maps: ExtendedMap[]
   bosses: Tables<"npc">[]
 }
 
 export function ExpansionClient({ id, expansion, instances, maps, bosses }: ExpansionClientProps) {
-  const [selectedMap, setSelectedMap] = useState<Tables<"map"> | null>(null)
+  const [selectedMap, setSelectedMap] = useState<ExtendedMap | null>(null)
   const { foundBosses, addFoundBoss, clearFoundBosses } = useFoundBosses(id)
   const { clearHoveredInstance } = useHoveredInstanceStore()
   const isDesktop = useMedia('(min-width: 768px)', false)
@@ -133,14 +134,14 @@ export function ExpansionClient({ id, expansion, instances, maps, bosses }: Expa
 
                 return {
                   component: <InstanceIcon
-                    instance={instanceWithCompletion || instance}
+                    instance={instanceWithCompletion || {...instance, calculatedCompletionRate: 0}}
                     foundBosses={foundBosses}
                     allBosses={bosses}
                     size="compact"
                   />,
                   position: { x: pin.x_percent || 0, y: pin.y_percent || 0 }
                 };
-              }).filter(Boolean) || []}
+              }).filter(Boolean) as Pin[] || []}
             />
           </div>
         </div>

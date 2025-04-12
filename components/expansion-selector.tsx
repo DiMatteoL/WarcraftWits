@@ -22,7 +22,7 @@ export function ExpansionSelector({
       </SelectTrigger>
       <SelectContent>
         {expansions.map((expansion) => (
-          <SelectItem key={expansion.id} value={expansion.slug}>
+          <SelectItem key={expansion.id} value={expansion.slug || ""}>
             {expansion.name}
           </SelectItem>
         ))}

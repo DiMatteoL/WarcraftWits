@@ -2,7 +2,7 @@ import { create } from "zustand"
 import type { Instance } from "@/types/game"
 
 interface HoveredInstanceState {
-  hoveredInstanceId: string | null
+  hoveredInstanceId: number | null
   hoveredInstance: Instance | null
   setHoveredInstance: (instance: Instance | null) => void
   clearHoveredInstance: () => void
@@ -31,4 +31,3 @@ export const useHoveredInstanceStore = create<HoveredInstanceState>((set) => ({
       hoveredInstance: null,
     }),
 }))
-

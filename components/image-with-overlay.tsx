@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react"
 import Image from "next/image"
 
-interface Pin {
+export interface Pin {
   component: React.ReactNode
   position: { x: number; y: number }
 }

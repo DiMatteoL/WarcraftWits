@@ -4,7 +4,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "import-types": "npx supabase gen types typescript --project-id \"pedklfcjgygiazzhpqtk\" --schema public > types/database.ts"
+    "import-types": "npx supabase gen types typescript --project-id \"pedklfcjgygiazzhpqtk\" --schema public > types/database.ts",
+    "types": "tsc --noEmit"
   },
   "dependencies": {
     "@nozbe/microfuzz": "^1.0.0",

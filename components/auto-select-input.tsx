@@ -60,7 +60,7 @@ export function AutoSelectInput({
 
     // Add this input to the registry
     inputRegistry.inputs.push({
-      ref: inputRef,
+      ref: inputRef as React.RefObject<HTMLInputElement>,
       priority,
     })
 
@@ -97,4 +97,3 @@ export function AutoSelectInput({
 
   return <Input ref={inputRef} onClick={handleClick} {...props} />
 }
-

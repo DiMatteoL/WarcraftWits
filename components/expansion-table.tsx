@@ -81,7 +81,6 @@ export function ExpansionTable() {
               <ExpansionCard
                 name={expansion.name || "Unknown Expansion"}
                 image={expansion.logo_uri || "/placeholder.svg"}
-                disabled={true}
               />
             </div>
           </PersistentTooltip>
