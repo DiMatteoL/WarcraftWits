@@ -26,7 +26,7 @@ export default function WoWMemoryGame() {
           <CardContent className="pt-6 pb-6">
             <p className="text-center text-card-foreground mb-4 text-lg">
               Choose your expansion and see how many encounters you can recall.
-              From Onyxia to Gallywix, prove you're a true WoW veteran.
+              From Onyxia to Gallywix, prove you&apos;re a true WoW veteran.
             </p>
 
             <p className="text-center font-medium text-lg">Enjoy!</p>
