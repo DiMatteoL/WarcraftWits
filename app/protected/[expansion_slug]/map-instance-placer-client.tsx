@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, Suspense } from "react"
 import { useSearchParams, useRouter } from "next/navigation"
 import { MapSelectorClient } from "./map-selector-client"
 import { InstancePickerClient } from "./instance-picker-client"
@@ -18,7 +18,7 @@ interface BossPickerClientProps {
   expansionSlug: string
 }
 
-export function MapInstancePlacerClient({ maps, instances, expansionSlug }: BossPickerClientProps) {
+function MapInstancePlacerClientInner({ maps, instances, expansionSlug }: BossPickerClientProps) {
   const searchParams = useSearchParams()
   const router = useRouter()
   const [selectedInstanceId, setSelectedInstanceId] = useState<number | null>(null)
@@ -93,5 +93,13 @@ export function MapInstancePlacerClient({ maps, instances, expansionSlug }: Boss
         />
       </div>
     </div>
+  )
+}
+
+export function MapInstancePlacerClient(props: BossPickerClientProps) {
+  return (
+    <Suspense fallback={<div>Loading map instance placer...</div>}>
+      <MapInstancePlacerClientInner {...props} />
+    </Suspense>
   )
 }

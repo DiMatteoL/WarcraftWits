@@ -2,6 +2,7 @@
 
 import { useRouter, useSearchParams } from "next/navigation"
 import { Tables } from "@/types/database"
+import { Suspense } from "react"
 
 
 interface InstancePickerClientProps {
@@ -10,11 +11,9 @@ interface InstancePickerClientProps {
   pinnedInstanceIds: number[]
 }
 
-export function InstancePickerClient({ expansionSlug, instances, pinnedInstanceIds }: InstancePickerClientProps) {
+function InstancePickerClientInner({ expansionSlug, instances, pinnedInstanceIds }: InstancePickerClientProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
-
-
 
   const handleInstanceClick = (instanceId: number) => {
     const params = new URLSearchParams(searchParams.toString())
@@ -61,5 +60,13 @@ export function InstancePickerClient({ expansionSlug, instances, pinnedInstanceI
         ))}
       </div>
     </div>
+  )
+}
+
+export function InstancePickerClient(props: InstancePickerClientProps) {
+  return (
+    <Suspense fallback={<div className="h-full">Loading instances...</div>}>
+      <InstancePickerClientInner {...props} />
+    </Suspense>
   )
 }
