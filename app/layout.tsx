@@ -10,9 +10,50 @@ import { ClientLayoutWrapper } from "@/components/client-layout-wrapper"
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" })
 
 export const metadata: Metadata = {
-  title: "Warcraft Wits",
-  description: "Test your knowledge of World of Warcraft bosses",
-  generator: 'v1.0.0'
+  title: "Warcraft Wits - WoW Memory Game",
+  description: "Test your knowledge of World of Warcraft bosses across all expansions. Challenge yourself to name as many raid and dungeon bosses as you can remember!",
+  generator: 'v1.0.0',
+  keywords: "World of Warcraft, WoW, boss memory game, raid bosses, dungeon bosses, Warcraft, gaming quiz, WoW quiz",
+  authors: [{ name: "Rudnost" }],
+  creator: "Rudnost",
+  publisher: "Warcraft Wits",
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: 'https://warcraftwits.com',
+    title: 'Warcraft Wits - WoW Memory Game',
+    description: 'Test your knowledge of World of Warcraft bosses across all expansions. Challenge yourself to name as many raid and dungeon bosses as you can remember!',
+    siteName: 'Warcraft Wits',
+    images: [
+      {
+        url: '/android-chrome-512x512.png',
+        width: 512,
+        height: 512,
+        alt: 'Warcraft Wits Logo',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Warcraft Wits - World of Warcraft Boss Memory Game',
+    description: 'Test your knowledge of World of Warcraft bosses across all expansions. Challenge yourself to name as many raid and dungeon bosses as you can remember!',
+    creator: '@Rudnost',
+    images: ['/android-chrome-512x512.png'],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  verification: {
+    google: 'your-google-site-verification', // You'll need to add your actual verification code
+  },
 }
 
 export default function RootLayout({
