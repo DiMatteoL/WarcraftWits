@@ -3,15 +3,16 @@ import { notFound } from "next/navigation"
 import { createClient } from "@/utils/supabase/server"
 import { ExpansionClient } from "./expansion-client"
 
-export default async function ExpansionPage({ params }: { params: { id: string } }) {
+export default async function ExpansionPage({ params }: { params: Promise<{ id: string }> }) {
   // Create a Supabase client configured for server-side
   const supabase = await createClient()
+  const { id } = await params;
 
   // 1. Fetch expansion
   const { data: expansion, error: expansionError } = await supabase
     .from("expansion")
     .select("*")
-    .eq("slug", (await params).id)
+    .eq("slug", id)
     .single()
 
   if (expansionError || !expansion) {
@@ -53,7 +54,7 @@ export default async function ExpansionPage({ params }: { params: { id: string }
   return (
     <Suspense>
       <ExpansionClient
-        id={(await params).id}
+        id={id}
         expansion={expansion}
         instances={instances || []}
         maps={maps || []}

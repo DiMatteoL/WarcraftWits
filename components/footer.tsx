@@ -20,7 +20,7 @@ export function Footer() {
             </a>
             . The source code is available on{" "}
             <a
-              href="https://github.com/rudnost/wowFromMemory"
+              href="https://github.com/DiMatteoL/WowFromMemory"
               target="_blank"
               rel="noopener noreferrer"
               className="font-medium underline underline-offset-4 hover:text-primary"

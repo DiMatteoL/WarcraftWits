@@ -2,19 +2,20 @@ import { Suspense } from "react"
 import { ExpansionSelectorServer } from "./expansion-selector-server"
 import { MapSelectorServer } from "./map-selector-server"
 
-export default function ExpansionPage({
+export default async function ExpansionPage({
   params,
   searchParams
 }: {
-  params: { expansion_slug: string }
-  searchParams: { page?: string }
+  params: Promise<{ expansion_slug: string }>,
+  searchParams: Promise<{ page?: string }>
 }) {
-  const page = searchParams.page ? parseInt(searchParams.page) : 0
+  const { expansion_slug } = await params;
+  const { page } = await searchParams;
 
   return (
     <Suspense>
-      <ExpansionSelectorServer expansionSlug={params.expansion_slug} />
-      <MapSelectorServer expansionSlug={params.expansion_slug} page={page} />
+      <ExpansionSelectorServer expansionSlug={expansion_slug} />
+      <MapSelectorServer expansionSlug={expansion_slug} page={page ? parseInt(page) : undefined} />
     </Suspense>
   )
 }

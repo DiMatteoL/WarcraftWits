@@ -5,7 +5,6 @@ const MAPS_PER_PAGE = 1
 
 export async function MapSelectorServer({
   expansionSlug,
-  page = 0
 }: {
   expansionSlug: string
   page?: number
@@ -52,7 +51,6 @@ export async function MapSelectorServer({
     expansionSlug={expansionSlug}
     maps={maps || []}
     instances={instances || []}
-    currentPage={page}
     totalPages={totalPages}
   />
 }
