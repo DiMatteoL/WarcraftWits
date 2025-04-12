@@ -25,11 +25,11 @@ export default function WoWMemoryGame() {
         <Card className="w-full max-w-2xl border border-border/40 shadow-md mb-8">
           <CardContent className="pt-6 pb-6">
             <p className="text-center text-card-foreground mb-4 text-lg">
+              From Edwin VanCleef to Gallywix, prove you&apos;re a true WoW veteran.
               Choose your expansion and see how many encounters you can recall.
-              From Onyxia to Gallywix, prove you&apos;re a true WoW veteran.
             </p>
 
-            <p className="text-center font-medium text-lg">Enjoy!</p>
+            <p className="text-center font-medium text-lg">You are not prepared!</p>
           </CardContent>
         </Card>
       </div>
