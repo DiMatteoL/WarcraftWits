@@ -1,12 +1,28 @@
-# WoW Boss Memory Game
-This project is a test to experiment with apps fully developped by AI. Don't juge the code quality on it (Or if you do, judge V0, N8N, Claude and
-Cursor, not me).
+# Warcraft Wits
 
-## AI Development
-This project serves as a test case for AI-assisted development. The codebase was created using various AI tools including:
+<div align="center">
+  <img src="public/android-chrome-512x512.png" alt="WarcraftWits Logo" width="200"/>
+</div>
+
+A browser-based game inspired by World of Warcraft, built as a way to test and learn.
+
+## About This Project
+
+This project was created as a learning experiment to explore the dreaded and buzzing concept of Vibe Coding. The game was built using V0 and Cursor, focusing on rapid prototyping and iterative development rather than traditional software engineering practices. And oh boy did it end up being hard to finish !
+
+### Disclaimer
+
+This codebase is not intended to showcase best practices or production-quality code.
+
+## Getting Started
+
+[Coming soon]
+
+## Technologies Used
+
 - V0
-- N8N
-- Claude
 - Cursor
 
-*Note: The code quality reflects the current capabilities of AI coding assistants rather than human-written code.*
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
