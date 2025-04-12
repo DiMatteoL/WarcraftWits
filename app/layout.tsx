@@ -10,9 +10,9 @@ import { ClientLayoutWrapper } from "@/components/client-layout-wrapper"
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" })
 
 export const metadata: Metadata = {
-  title: "WoW From Memory",
+  title: "Warcraft Wits",
   description: "Test your knowledge of World of Warcraft bosses",
-  generator: 'v0.dev'
+  generator: 'v1.0.0'
 }
 
 export default function RootLayout({
