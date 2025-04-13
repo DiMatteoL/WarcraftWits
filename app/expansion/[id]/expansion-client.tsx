@@ -163,35 +163,17 @@ export function ExpansionClient({ id, expansion, instances, maps, bosses }: Expa
                 </Link>
               </div>
 
-              {/* 2. Boss name input with suggestions */}
+              {/* 2. Boss percentage */}
+              <ProgressIndicator percentage={completionPercentage} label="Bosses named" name={expansion.name || "Expansion"} />
+
+              {/* 3. Boss name input with suggestions */}
               <BossSearch bosses={bosses} foundBosses={foundBosses} onBossFound={addFoundBoss} />
 
               {/* 3. Separator */}
               <div className="h-px bg-border my-4"></div>
 
-              {/* 4. Boss percentage */}
-              <ProgressIndicator percentage={completionPercentage} label="Bosses named" name={expansion.name || "Expansion"} />
-
-              {/* 5. Instance icons */}
-              <div className="mb-6 -mx-1 mt-4">
-                <div
-                  className="flex flex-wrap justify-start"
-                  style={{
-                    gap: `${getMaxGap()}px`,
-                    maxWidth: "100%",
-                  }}
-                >
-                  {instanceCompletionRates.map((instance) => (
-                    <InstanceIcon
-                      key={instance.id}
-                      instance={instance}
-                      foundBosses={foundBosses}
-                      allBosses={bosses}
-                      size={useCompactMode ? "compact" : "normal"}
-                    />
-                  ))}
-                </div>
-              </div>
+              {/* Boss list */}
+              <BossList bosses={foundBosses} allBosses={bosses} instances={instances} />
 
               {/* Dynamic boss counter */}
               <div className="text-sm text-muted-foreground text-left mb-4">

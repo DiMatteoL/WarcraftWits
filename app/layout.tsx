@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/components/theme-provider"
 import { ModeToggle } from "@/components/mode-toggle"
 import { SupabaseProvider } from "@/contexts/supabase-context"
 import { ClientLayoutWrapper } from "@/components/client-layout-wrapper"
+import GoogleAdsense from "@/components/GoogleAdsense"
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" })
 
@@ -54,6 +55,9 @@ export const metadata: Metadata = {
   verification: {
     google: 'your-google-site-verification', // You'll need to add your actual verification code
   },
+  other: {
+    'google-adsense-account': 'ca-pub-5164534018223080',
+  },
 }
 
 export default function RootLayout({
@@ -63,9 +67,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5164534018223080" crossOrigin="anonymous"></script>
-      </head>
       <body className={`${inter.variable} font-sans antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
           <SupabaseProvider>
@@ -80,6 +81,7 @@ export default function RootLayout({
           </SupabaseProvider>
         </ThemeProvider>
       </body>
+      <GoogleAdsense />
     </html>
   )
 }
