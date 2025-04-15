@@ -7,6 +7,7 @@ import { ModeToggle } from "@/components/mode-toggle"
 import { SupabaseProvider } from "@/contexts/supabase-context"
 import { ClientLayoutWrapper } from "@/components/client-layout-wrapper"
 import GoogleAdsense from "@/components/GoogleAdsense"
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" })
 
@@ -80,8 +81,9 @@ export default function RootLayout({
             </div>
           </SupabaseProvider>
         </ThemeProvider>
+        <SpeedInsights />
+        <GoogleAdsense />
       </body>
-      <GoogleAdsense />
     </html>
   )
 }
