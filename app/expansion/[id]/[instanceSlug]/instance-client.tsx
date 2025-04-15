@@ -130,7 +130,7 @@ export function InstanceClient({ expansionId, instance }: InstanceClientProps) {
               />
 
               {/* Boss list - filtered by instance */}
-              <BossList bosses={foundBosses} instanceFilter={instance.id} instances={[instance]} />
+              <BossList allBosses={instance.npc} bosses={foundBosses} instanceFilter={instance.id} instances={[instance]} />
 
               {/* Dynamic boss counter */}
               <div className="text-sm text-muted-foreground text-right mb-4 mt-4">
