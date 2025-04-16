@@ -1,24 +1,16 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import Link from "next/link"
-import { ChevronLeft, Trash2 } from "lucide-react"
+import { Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { MapSelector } from "@/components/map-selector"
 import { InstanceIcon } from "@/components/instance-icon"
-import { BossSearch } from "@/components/boss-search"
-import { BossList } from "@/components/boss-list"
-import { ProgressIndicator } from "@/components/progress-indicator"
 import { useFoundBosses } from "@/hooks/use-found-bosses"
 import { useHoveredInstanceStore } from "@/lib/store"
 import type { InstanceWithCompletion } from "@/types/game"
 import type { Tables } from "@/types/database"
 import { ImageWithOverlay, Pin } from "@/components/image-with-overlay"
-import { useMedia } from "react-use"
-
-// Update the right side panel styling to be more understated
-const rightSidePanelStyles =
-  "w-full md:w-1/4 h-1/2 md:h-screen bg-card overflow-y-auto border-l border-border/50 shadow-md"
+import { ImageCarousel } from "@/components/image-carousel/image-carousel"
+import { GameInterface } from "@/components/game-interface"
 
 type ExtendedMap = Tables<"map"> & {
   pin: (Tables<"pin"> & {
@@ -38,7 +30,6 @@ export function ExpansionClient({ id, expansion, instances, maps, bosses }: Expa
   const [selectedMap, setSelectedMap] = useState<ExtendedMap | null>(null)
   const { foundBosses, addFoundBoss, clearFoundBosses } = useFoundBosses(id)
   const { clearHoveredInstance } = useHoveredInstanceStore()
-  const isDesktop = useMedia('(min-width: 768px)', false)
 
   // Set first map as selected when component mounts
   useEffect(() => {
@@ -86,169 +77,71 @@ export function ExpansionClient({ id, expansion, instances, maps, bosses }: Expa
     return { ...instance, calculatedCompletionRate: completionRate }
   })
 
-  // Determine if we should use compact mode based on instance count
-  const useCompactMode = instanceCompletionRates.length > 8
+  // Prepare slides and thumbnails for ImageCarousel
+  const slides = maps.map((map) => (
+    <ImageWithOverlay
+      key={map.id}
+      src={map.uri || "/placeholder.svg"}
+      alt={`Map ${map.id || ''}`}
+      pins={map.pin?.map((pin) => {
+        const instance = pin.instance || null;
+        if (!instance) return null;
 
-  // Calculate the maximum gap based on the number of instances and icon size
-  const getMaxGap = () => {
-    const instanceCount = instanceCompletionRates.length
-    if (instanceCount > 12) return 6 // Smallest gap for many instances
-    if (instanceCount > 8) return 8 // Medium gap
-    return 12 // Largest gap for fewer instances
-  }
+        const instanceWithCompletion = instanceCompletionRates.find(i => i.id === instance.id);
+
+        return {
+          component: <InstanceIcon
+            instance={instanceWithCompletion || {...instance, calculatedCompletionRate: 0}}
+            foundBosses={foundBosses}
+            allBosses={bosses}
+            size="compact"
+          />,
+          position: { x: pin.x_percent || 0, y: pin.y_percent || 0 }
+        };
+      }).filter(Boolean) as Pin[] || []}
+    />
+  ))
+
+  const thumbnails = maps.map((map) => ({
+    src: map.uri || "/placeholder.svg",
+    alt: `Map ${map.id || ''}`,
+    name: map.name || `Map ${map.id}`
+  }))
+
+  // Prepare the left content for the GameInterface
+  const leftContent = (
+    <ImageCarousel
+      slides={slides}
+      thumbnails={thumbnails}
+      className="h-full"
+    />
+  )
+
+  // Prepare the footer content for the GameInterface
+  const footerContent = foundBosses.length > 0 ? (
+    <div className="fixed bottom-6 right-6 z-40">
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={handleResetExpansion}
+        className="fixed-action-button rounded-full bg-card shadow-md border border-border hover:bg-destructive/10 hover:text-destructive transition-colors duration-300 flex items-center gap-1.5"
+      >
+        <Trash2 className="h-4 w-4" />
+        <span>Reset Progress</span>
+      </Button>
+    </div>
+  ) : null
 
   return (
-    <div className="flex flex-col md:flex-row h-screen overflow-hidden" onMouseLeave={() => clearHoveredInstance()}>
-      {/* Left side - Map display (75% width) */}
-      <div className="w-full md:w-3/4 h-1/2 md:h-screen bg-muted flex flex-col">
-        {/* Map selector */}
-        <div className="p-4 bg-card border-b border-border">
-          <div className="flex space-x-2 overflow-x-auto pb-2">
-            {maps.map((map) => (
-              <MapSelector
-                key={map.id}
-                map={map}
-                isSelected={selectedMap?.id === map.id}
-                onClick={() => {
-                  setSelectedMap(map)
-                  clearHoveredInstance()
-                }}
-              />
-            ))}
-          </div>
-        </div>
-
-        {/* Main map display */}
-        <div className="relative flex-grow overflow-hidden">
-          <div className="absolute inset-0">
-            <ImageWithOverlay
-              src={selectedMap?.uri || "/placeholder.svg"}
-              alt={`Map ${selectedMap?.id || ''}`}
-              pins={selectedMap?.pin?.map((pin) => {
-                // Find the instance associated with this pin
-                const instance = pin.instance || null;
-                if (!instance) return null;
-
-                // Find the instance with completion rate
-                const instanceWithCompletion = instanceCompletionRates.find(i => i.id === instance.id);
-
-                return {
-                  component: <InstanceIcon
-                    instance={instanceWithCompletion || {...instance, calculatedCompletionRate: 0}}
-                    foundBosses={foundBosses}
-                    allBosses={bosses}
-                    size="compact"
-                  />,
-                  position: { x: pin.x_percent || 0, y: pin.y_percent || 0 }
-                };
-              }).filter(Boolean) as Pin[] || []}
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* Right side - Boss tracking (25% width) with visual separator */}
-      <div className={rightSidePanelStyles}>
-        <div className="p-4">
-          {!isDesktop ? (
-            // Mobile Layout
-            <>
-              {/* 1. Navigation button */}
-              <div className="mb-4">
-                <Link href="/" onClick={() => clearHoveredInstance()}>
-                  <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground px-2 py-1 h-8">
-                    <ChevronLeft className="mr-1 h-4 w-4" />
-                    Other expansions
-                  </Button>
-                </Link>
-              </div>
-
-              {/* 2. Boss percentage */}
-              <ProgressIndicator percentage={completionPercentage} label="Bosses named" name={expansion.name || "Expansion"} />
-
-              {/* 3. Boss name input with suggestions */}
-              <BossSearch bosses={bosses} foundBosses={foundBosses} onBossFound={addFoundBoss} />
-
-              {/* 3. Separator */}
-              <div className="h-px bg-border my-4"></div>
-
-              {/* Boss list */}
-              <BossList bosses={foundBosses} allBosses={bosses} instances={instances} />
-
-              {/* Dynamic boss counter */}
-              <div className="text-sm text-muted-foreground text-left mb-4">
-                {`${foundBossCount}/${totalBossCount} bosses found`}
-              </div>
-            </>
-          ) : (
-            // Desktop Layout
-            <>
-              {/* Navigation button to return to expansion picker */}
-              <div className="mb-4">
-                <Link href="/" onClick={() => clearHoveredInstance()}>
-                  <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground px-2 py-1 h-8">
-                    <ChevronLeft className="mr-1 h-4 w-4" />
-                    Other expansions
-                  </Button>
-                </Link>
-              </div>
-
-              {/* Boss percentage */}
-              <ProgressIndicator percentage={completionPercentage} label="Bosses named" name={expansion.name || "Expansion"} />
-
-              {/* Instance icons */}
-              <div className="mb-6 -mx-1">
-                <div
-                  className="flex flex-wrap justify-start"
-                  style={{
-                    gap: `${getMaxGap()}px`,
-                    maxWidth: "100%",
-                  }}
-                >
-                  {instanceCompletionRates.map((instance) => (
-                    <InstanceIcon
-                      key={instance.id}
-                      instance={instance}
-                      foundBosses={foundBosses}
-                      allBosses={bosses}
-                      size={useCompactMode ? "compact" : "normal"}
-                    />
-                  ))}
-                </div>
-              </div>
-
-              {/* Separator */}
-              <div className="h-px bg-border my-4"></div>
-
-              {/* Boss name input with suggestions */}
-              <BossSearch bosses={bosses} foundBosses={foundBosses} onBossFound={addFoundBoss} />
-
-              {/* Dynamic boss counter */}
-              <div className="text-sm text-muted-foreground text-right mb-4">
-                {`${foundBossCount}/${totalBossCount} bosses found`}
-              </div>
-
-              {/* Boss list */}
-              <BossList bosses={foundBosses} allBosses={bosses} instances={instances} />
-            </>
-          )}
-        </div>
-      </div>
-
-      {/* Fixed Reset Button in bottom-right corner */}
-      {foundBossCount > 0 && (
-        <div className="fixed bottom-6 right-6 z-40">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleResetExpansion}
-            className="fixed-action-button rounded-full bg-card shadow-md border border-border hover:bg-destructive/10 hover:text-destructive transition-colors duration-300 flex items-center gap-1.5"
-          >
-            <Trash2 className="h-4 w-4" />
-            <span>Reset Progress</span>
-          </Button>
-        </div>
-      )}
-    </div>
+    <GameInterface
+      leftContent={leftContent}
+      expansion={expansion}
+      instances={instanceCompletionRates}
+      bosses={bosses}
+      foundBosses={foundBosses}
+      onBossFound={addFoundBoss}
+      clearHoveredInstance={clearHoveredInstance}
+      footerContent={footerContent}
+    />
   )
 }
