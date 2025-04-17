@@ -1,6 +1,6 @@
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
-  siteUrl: 'https://warcraftwits.com',
+  siteUrl: 'https://www.warcraftwits.com',
   generateRobotsTxt: true,
   exclude: ['/protected', '/protected/*'],
   changefreq: 'daily',

@@ -99,7 +99,7 @@ export function SidePanel({
       <div className="grid-area-progress">
         <ProgressIndicator
           percentage={completionPercentage}
-          label="Bosses named"
+          label="Complete"
           name={displayName}
           expansionName={instanceName ? expansionName : undefined}
         />

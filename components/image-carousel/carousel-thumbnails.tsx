@@ -24,7 +24,7 @@ export function CarouselThumbnails({ thumbnails, activeIndex, onSelect, classNam
           key={index}
           onClick={() => onSelect(index)}
           className={cn(
-            "flex-shrink-0 w-16 h-16 rounded overflow-hidden border-2 transition-colors",
+            "flex-shrink-0 w-24 h-16 rounded overflow-hidden border-2 transition-colors",
             index === activeIndex ? "border-primary" : "border-transparent",
           )}
           aria-label={`View ${thumbnail.name}`}

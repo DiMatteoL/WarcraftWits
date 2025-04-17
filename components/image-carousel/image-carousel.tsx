@@ -44,7 +44,7 @@ export function ImageCarousel({ slides, thumbnails, className }: ImageCarouselPr
   }
 
   return (
-    <div className={cn("h-full flex flex-col", className)}>
+    <div className={cn("h-full flex flex-col overflow-hidden", className)}>
       {isDesktop ? <div className="flex-shrink-0 border-b py-2 px-4">
       <CarouselThumbnails
         thumbnails={thumbnails}
@@ -53,7 +53,7 @@ export function ImageCarousel({ slides, thumbnails, className }: ImageCarouselPr
       />
       </div> : null}
 
-      <Carousel setApi={setApi} className="w-full flex-grow h-full">
+      <Carousel setApi={setApi} className="w-full flex-grow overflow-hidden">
         <CarouselContent className="h-full">
           {slides.map((slide, index) => (
             <CarouselItem key={index} className="h-full">

@@ -1,20 +1,20 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import Image from "next/image"
-import { MapSelector } from "@/components/map-selector"
-import { MapTitleDisplay } from "@/components/map-title-display"
 import { useFoundBosses } from "@/hooks/use-found-bosses"
 import { useHoveredInstanceStore } from "@/lib/store"
 import { Tables } from "@/types/database"
 import { InstanceWithCompletion } from "@/types/game"
 import { GameInterface } from "@/components/game-interface"
-import { ImageCarousel } from "@/components/image-carousel/image-carousel"
-import { ImageWithOverlay } from "@/components/image-with-overlay"
+import { MapTitleDisplay } from "@/components/map-title-display"
 
 type InstanceData = Tables<"instance"> & {
   npc: Tables<"npc">[];
-  map: Tables<"map">[];
+  map: (Tables<"map"> & {
+    pin: (Tables<"pin"> & {
+      instance: Tables<"instance"> | null
+    })[]
+  })[];
   expansion: Tables<"expansion">;
 }
 
@@ -24,7 +24,6 @@ type InstanceClientProps = {
 }
 
 export function InstanceClient({ expansionId, instance }: InstanceClientProps) {
-  const [selectedInstanceMapIndex, setSelectedInstanceMapIndex] = useState(0)
   const { foundBosses, addFoundBoss } = useFoundBosses(expansionId)
   const { clearHoveredInstance } = useHoveredInstanceStore()
 
@@ -35,11 +34,6 @@ export function InstanceClient({ expansionId, instance }: InstanceClientProps) {
       clearHoveredInstance()
     }
   }, [clearHoveredInstance])
-
-  // Clear hovered instance when map changes
-  useEffect(() => {
-    clearHoveredInstance()
-  }, [selectedInstanceMapIndex, clearHoveredInstance])
 
   // Calculate completion rate for the instance
   const foundInstanceBosses = foundBosses.filter((b) => b.instance_id === instance.id)
@@ -53,39 +47,8 @@ export function InstanceClient({ expansionId, instance }: InstanceClientProps) {
     calculatedCompletionRate: completionPercentage
   }
 
-  // Prepare slides and thumbnails for ImageCarousel
-  const slides = instance.map.map((map) => (
-    <ImageWithOverlay
-      key={map.id}
-      src={map.uri || "/placeholder.svg"}
-      alt={map.name || `Map ${map.id}`}
-      pins={[]}
-    />
-  ))
-
-  const thumbnails = instance.map.map((map) => ({
-    src: map.uri || "/placeholder.svg",
-    alt: map.name || `Map ${map.id}`,
-    name: map.name || `Map ${map.id}`
-  }))
-
-  // Prepare the left content for the GameInterface
-  const leftContent = (
-    <div className="relative flex-grow overflow-hidden">
-      <ImageCarousel
-        slides={slides}
-        thumbnails={thumbnails}
-        className="h-full"
-      />
-      <div className="absolute bottom-4 left-4 z-10">
-        <MapTitleDisplay mapName={instance.name || ""} />
-      </div>
-    </div>
-  )
-
   return (
     <GameInterface
-      leftContent={leftContent}
       expansion={instance.expansion}
       instances={[instanceWithCompletion]}
       bosses={instance.npc}
@@ -96,6 +59,7 @@ export function InstanceClient({ expansionId, instance }: InstanceClientProps) {
       instanceFilter={instance.id.toString()}
       backLink={`/expansion/${expansionId}`}
       backText="All instances"
+      maps={instance.map}
     />
   )
 }
