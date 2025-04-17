@@ -11,9 +11,10 @@ interface BossSearchProps {
   foundBosses: Boss[]
   onBossFound: (boss: Boss) => void
   instanceFilter?: number
+  name?: string
 }
 
-export function BossSearch({ bosses, foundBosses, onBossFound, instanceFilter }: BossSearchProps) {
+export function BossSearch({ bosses, foundBosses, onBossFound, instanceFilter, name }: BossSearchProps) {
   const [inputValue, setInputValue] = useState("")
   const [isError, setIsError] = useState(false)
   const inputContainerRef = useRef<HTMLDivElement>(null)
@@ -89,7 +90,7 @@ export function BossSearch({ bosses, foundBosses, onBossFound, instanceFilter }:
         <div className="relative">
           <AutoSelectInput
             type="text"
-            placeholder="Boss Name"
+            placeholder={`${name || ''} Boss Name`}
             className={`wow-border ${isError ? "border-destructive" : ""}`}
             value={inputValue}
             onChange={handleInputChange}

@@ -8,7 +8,7 @@ Disallow: /static/
 Disallow: /protected/
 
 # Host
-Host: https://warcraftwits.com
+Host: https://www.warcraftwits.com
 
 # Sitemaps
-Sitemap: https://warcraftwits.com/sitemap.xml
+Sitemap: https://www.warcraftwits.com/sitemap.xml

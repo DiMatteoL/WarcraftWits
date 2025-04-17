@@ -63,93 +63,89 @@ export function SidePanel({
 
   return (
     <div
-      className={`w-full md:w-1/4 h-full md:h-screen bg-card overflow-y-auto border-l border-border/50 shadow-md overflow-hidden p-4 grid gap-4 ${
-        isDesktop
-          ? "grid-areas-desktop grid-cols-1 grid-rows-[auto_auto_auto_1px_1fr]"
-          : "grid-areas-mobile grid-cols-1 grid-rows-[auto_auto_1px_1fr]"
-      }`}
-      style={{
-        gridTemplateAreas: isDesktop
-          ? `
-            "nav"
-            "progress"
-            "instances"
-            "separator"
-            "search"
-          `
-          : `
-            "nav"
-            "progress"
-            "separator"
-            "search"
-          `
-      }}
+      className={`w-full md:w-1/4 h-[calc(100vh-4rem)] md:h-screen bg-card border-l border-border/50 shadow-md flex flex-col overflow-hidden`}
     >
-      {/* Navigation Area */}
-      <div className="grid-area-nav">
-        <Link href={backLink} onClick={() => clearHoveredInstance()}>
-          <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground px-2 py-1 h-8">
-            <ChevronLeft className="mr-1 h-4 w-4" />
-            {backText}
-          </Button>
-        </Link>
-      </div>
-
-      {/* Progress Area */}
-      <div className="grid-area-progress">
-        <ProgressIndicator
-          percentage={completionPercentage}
-          label="Complete"
-          name={displayName}
-          expansionName={instanceName ? expansionName : undefined}
-        />
-      </div>
-
-      {/* Instances Area - Only show on desktop */}
-      {isDesktop && (
-        <div className="grid-area-instances">
-          {!instanceFilter && (
-            <div
-              className="flex flex-wrap justify-start"
-              style={{
-                gap: `${getMaxGap()}px`,
-                maxWidth: "100%",
-              }}
-            >
-              {instances.map((instance) => (
-                <InstanceIcon
-                  key={instance.id}
-                  instance={instance}
-                  foundBosses={foundBosses}
-                  allBosses={bosses}
-                  size={useCompactMode ? "compact" : "normal"}
-                />
-              ))}
-            </div>
-          )}
+      {/* Fixed Content Container */}
+      <div className="flex-none pt-4 px-4 space-y-4">
+        {/* Navigation Area */}
+        <div className="grid-area-nav">
+          <Link href={backLink} onClick={() => clearHoveredInstance()}>
+            <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground h-8 p-0">
+              <ChevronLeft className="mr-1 h-4 w-4" />
+              {backText}
+            </Button>
+          </Link>
         </div>
-      )}
 
-      {/* Separator */}
-      <div className="grid-area-separator h-px bg-border" />
-
-      {/* Search Area */}
-      <div className="grid-area-search">
-        <BossSearch
+        {!isDesktop ? <BossSearch
           bosses={bosses}
           foundBosses={foundBosses}
           onBossFound={onBossFound}
           instanceFilter={instanceFilter}
+          name={instanceName || expansionName}
         />
-        <div className="text-sm text-muted-foreground flex justify-end w-full">
-          {`${foundBossCount}/${totalBossCount} bosses found`}
+        : <div className="grid-area-progress">
+            <ProgressIndicator
+              percentage={completionPercentage}
+              label="Complete"
+              name={displayName}
+              expansionName={instanceName ? expansionName : undefined}
+            />
+          </div>
+        }
+
+        {/* Instances Area - Only show on desktop */}
+        {isDesktop && (
+          <>
+          <div className="grid-area-instances">
+            {!instanceFilter && (
+              <div
+                className="flex flex-wrap justify-start"
+                style={{
+                  gap: `${getMaxGap()}px`,
+                  maxWidth: "100%",
+                }}
+              >
+                {instances.map((instance) => (
+                  <InstanceIcon
+                    key={instance.id}
+                    instance={instance}
+                    foundBosses={foundBosses}
+                    allBosses={bosses}
+                    size={useCompactMode ? "compact" : "normal"}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+          <div className="grid-area-separator h-px bg-border" />
+          </>
+        )}
+
+
+        {/* Search Area */}
+        <div className="grid-area-search">
+          {isDesktop && <BossSearch
+            bosses={bosses}
+            foundBosses={foundBosses}
+            onBossFound={onBossFound}
+            instanceFilter={instanceFilter}
+            name={instanceName || expansionName}
+          />}
+          <div className="text-sm text-muted-foreground flex justify-end w-full">
+            {`${foundBossCount}/${totalBossCount} bosses found`}
+          </div>
         </div>
-        <BossList
-          bosses={foundBosses}
-          allBosses={bosses}
-          instances={instances}
-          instanceFilter={instanceFilter}
-        />
+      </div>
+      <div className="flex-1 overflow-y-auto min-h-0">
+        <div className="px-4 pb-4">
+          <BossList
+            bosses={foundBosses}
+            allBosses={bosses}
+            instances={instances}
+            instanceFilter={instanceFilter}
+          />
+        </div>
       </div>
     </div>
   )
