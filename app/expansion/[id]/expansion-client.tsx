@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useEffect } from "react"
 import { useFoundBosses } from "@/hooks/use-found-bosses"
 import { useHoveredInstanceStore } from "@/lib/store"
 import type { InstanceWithCompletion } from "@/types/game"

@@ -1,12 +1,11 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useEffect } from "react"
 import { useFoundBosses } from "@/hooks/use-found-bosses"
 import { useHoveredInstanceStore } from "@/lib/store"
 import { Tables } from "@/types/database"
 import { InstanceWithCompletion } from "@/types/game"
 import { GameInterface } from "@/components/game-interface"
-import { MapTitleDisplay } from "@/components/map-title-display"
 
 type InstanceData = Tables<"instance"> & {
   npc: Tables<"npc">[];
