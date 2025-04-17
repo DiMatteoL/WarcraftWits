@@ -40,7 +40,7 @@ export function BossSearch({ bosses, foundBosses, onBossFound, instanceFilter, n
 
     if (!inputValue.trim()) return
 
-    const cleanInputValue = inputValue.replace(/[^\w\s]/gi, '')
+    const cleanInputValue = inputValue.replace(/[^\w\s]/gi, '').toLowerCase()
     const results = fuzzySearch(cleanInputValue);
     const bestResult = results?.[0];
     const matchedBoss = bestResult?.item;
