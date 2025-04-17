@@ -70,8 +70,12 @@ export function SidePanel({
         {/* Navigation Area */}
         <div className="grid-area-nav">
           <Link href={backLink} onClick={() => clearHoveredInstance()}>
-            <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground h-8 p-0">
-              <ChevronLeft className="mr-1 h-4 w-4" />
+            <Button
+              variant="outline"
+              size="sm"
+              className="rounded-full bg-card shadow-md border border-border hover:bg-destructive/10 duration-300 flex items-center gap-1.5"
+            >
+              <ChevronLeft className="h-4 w-4" />
               {backText}
             </Button>
           </Link>
