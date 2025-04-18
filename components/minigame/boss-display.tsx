@@ -16,8 +16,8 @@ export function BossDisplay({ boss }: BossDisplayProps) {
         <div className="flex flex-col sm:flex-row items-center gap-6">
           <div className="w-24 h-24 rounded-full overflow-hidden bg-muted flex-shrink-0 border-2 border-primary/50 transition-all duration-300 relative">
             <Image
-              src={`${DEFAULT_IMAGE}?height=200&width=200`}
-              alt={boss.name}
+              src={boss.logo_uri || DEFAULT_IMAGE}
+              alt={boss.name || ""}
               width={96}
               height={96}
               className="object-cover"
