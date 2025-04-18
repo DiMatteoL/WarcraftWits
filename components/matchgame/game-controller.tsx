@@ -3,9 +3,10 @@
 import { useState, useEffect } from "react"
 import { Tables } from "@/types/database"
 import { BossDisplay } from "./boss-display"
-import { InstanceSelector } from "@/components/minigame/instance-selector"
+import { InstanceSelector } from "@/components/matchgame/instance-selector"
 import { ScoreDisplay } from "./score-display"
 import { GameOver } from "./game-over"
+import { useMinigameScore } from "@/hooks/use-matchgame-score"
 
 interface GameControllerProps {
   expansion: Tables<"expansion"> & {
@@ -17,7 +18,7 @@ interface GameControllerProps {
 export function GameController({ expansion }: GameControllerProps) {
   const [gameState, setGameState] = useState<"playing" | "gameOver">("playing")
   const [score, setScore] = useState(0)
-  const [highScore, setHighScore] = useState(0)
+  const { highScore, updateHighScore } = useMinigameScore(expansion.slug)
   const [currentBoss, setCurrentBoss] = useState<Tables<"npc"> | null>(null)
   const [selectedInstance, setSelectedInstance] = useState<Tables<"instance"> | null>(null)
   const [displayedInstances, setDisplayedInstances] = useState<Tables<"instance">[]>([])
@@ -48,7 +49,7 @@ export function GameController({ expansion }: GameControllerProps) {
     const shuffledInstances = [...otherInstances].sort(() => Math.random() - 0.5)
 
     // Take 5 random instances
-    const randomInstances = shuffledInstances.slice(0, 5)
+    const randomInstances = shuffledInstances.slice(0, 7)
 
     // Combine the 5 random instances with the matching instance
     const combinedInstances = [...randomInstances, matchingInstance]
@@ -67,7 +68,7 @@ export function GameController({ expansion }: GameControllerProps) {
     } else {
       setGameState("gameOver")
       if (score > highScore) {
-        setHighScore(score)
+        updateHighScore(score)
       }
     }
   }
@@ -101,7 +102,13 @@ export function GameController({ expansion }: GameControllerProps) {
           />
         </div>
       ) : (
-        <GameOver score={score} highScore={highScore} onRestart={restartGame} />
+        <GameOver
+          score={score}
+          highScore={highScore}
+          onRestart={restartGame}
+          correctInstanceName={displayedInstances.find(instance => instance.id === currentBoss.instance_id)?.name || ""}
+          bossName={currentBoss.name || ""}
+        />
       )}
     </div>
   )

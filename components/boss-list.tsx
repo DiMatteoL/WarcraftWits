@@ -49,7 +49,7 @@ export const BossList = memo(function BossList({ bosses, instanceFilter, allBoss
               alt={boss.name || ""}
               width={48}
               height={48}
-              className="object-cover"
+              className="object-cover w-full h-full object-top"
             />
           </div>
           <div>

@@ -5,7 +5,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { ChevronLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { GameController } from "@/components/minigame/game-controller"
+import { GameController } from "@/components/matchgame/game-controller"
 import { useParams } from "next/navigation"
 import { Database } from "@/types/database"
 import { supabase } from "@/lib/supabase"
@@ -115,7 +115,7 @@ export default function BossInstanceMinigame() {
         </div>
 
         {/* Title */}
-        <h1 className="text-center mb-2">Boss Instance Matcher</h1>
+        <h1 className="text-center mb-2">Instance Matcher</h1>
 
         {/* Subtitle */}
         <p className="text-center text-muted-foreground text-lg max-w-2xl">Match each boss to their correct instance</p>

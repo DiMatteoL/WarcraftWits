@@ -8,7 +8,7 @@ import { useState, useEffect } from "react";
 interface InstanceCardProps {
   instance: Tables<"instance">;
   onInstanceSelect: (instance: Tables<"instance"> | null) => void;
-  correctInstanceId: string;
+  correctInstanceId: number | null;
 }
 
 export function InstanceCard({
@@ -25,7 +25,7 @@ export function InstanceCard({
         setAnimationState(null);
         // Trigger onInstanceSelect after animation completes
         onInstanceSelect(instance);
-      }, 1000);
+      }, 400);
       return () => clearTimeout(timer);
     }
   }, [animationState, onInstanceSelect, instance]);
@@ -41,21 +41,21 @@ export function InstanceCard({
   return (
     <div
       key={instance.id}
-      className="w-full"
+      className="w-full h-full flex"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       <Card
         className={cn(
-          "w-full relative cursor-pointer overflow-hidden transition-all duration-300",
+          "w-full h-full flex flex-col relative cursor-pointer overflow-hidden transition-all duration-300",
           "hover:shadow-lg hover:scale-[1.02]",
           isHovered && "ring-2 ring-primary/50",
-          animationState === 'success' && "bg-green-500 shadow-green-500/50",
-          animationState === 'fail' && "bg-red-500 shadow-red-500/50"
+          animationState === 'success' && "bg-green-500/20 shadow-green-500/50",
+          animationState === 'fail' && "bg-red-500/20 shadow-red-500/50"
         )}
         onClick={() => handleClick(instance)}
       >
-        <div className="aspect-[4/3] relative">
+        <div className="aspect-[4/3] relative flex-shrink-0">
           {instance.backgroud_uri && (
             <Image
               src={instance.backgroud_uri}
@@ -66,7 +66,7 @@ export function InstanceCard({
                 isHovered && "scale-105",
                 animationState && "brightness-50"
               )}
-              sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
+              sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 25vw"
             />
           )}
           {animationState === 'success' && (
@@ -85,13 +85,13 @@ export function InstanceCard({
           )}
         </div>
         <div className={cn(
-          "p-3 bg-card transition-all duration-300",
+          "p-3 bg-card transition-all duration-300 flex-shrink-0",
           animationState === 'success' && "bg-green-600/20",
           animationState === 'fail' && "bg-red-600/20"
         )}>
-          <h3 className="font-semibold">{instance.name}</h3>
+          <h3 className="font-semibold truncate">{instance.name}</h3>
           {instance.slug && (
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-muted-foreground truncate">
               {instance.slug}
             </p>
           )}

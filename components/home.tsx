@@ -1,7 +1,7 @@
 import Image from "next/image"
 import { ExpansionTable } from "@/components/expansion-table"
 import { Footer } from "@/components/footer"
-import { GamePicker } from "@/components/minigame/game-picker"
+import { GamePicker } from "@/components/matchgame/game-picker"
 
 export function Home() {
   return (
