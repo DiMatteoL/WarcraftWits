@@ -78,7 +78,7 @@ export function InstanceIcon({ instance, foundBosses = [], allBosses = [], size 
 
   return (
     <div className="flex-shrink-0">
-      <Link href={`${pathname}/${instance.slug}`} onClick={handleClick} prefetch={true}>
+      <Link href={`${pathname}/${instance.slug}`} onClick={handleClick}>
         <div
           className={`relative flex items-center justify-center transition-transform hover:scale-110 ${
             showTooltip || isHoveredByOther ? "z-100" : ""
