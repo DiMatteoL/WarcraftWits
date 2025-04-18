@@ -1,5 +1,5 @@
 import { Home } from "@/components/home"
 
-export default function WoWMemoryGame() {
+export default function MatchPage() {
   return <Home />
 }

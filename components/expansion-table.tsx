@@ -6,9 +6,12 @@ import { ExpansionCard } from "@/components/expansion-card"
 import { Tables } from "@/types/database"
 import { useSupabase } from "@/contexts/supabase-context"
 import { PersistentTooltip } from "@/components/persistent-tooltip"
+import { usePathname } from "next/navigation"
 
 export function ExpansionTable() {
   const supabase = useSupabase()
+  const pathname = usePathname()
+  const isMatchRoute = pathname === "/match"
   const [expansions, setExpansions] = useState<Tables<"expansion">[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -62,7 +65,7 @@ export function ExpansionTable() {
       {expansions.map((expansion) => (
         expansion.is_active ? (
           <Link
-            href={`/expansion/${expansion.slug}`}
+            href={isMatchRoute ? `/match/${expansion.slug}` : `/expansion/${expansion.slug}`}
             key={expansion.id}
             prefetch={true}
           >
