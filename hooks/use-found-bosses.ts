@@ -10,6 +10,7 @@ import {
 } from "@/lib/constants";
 import { useReward } from "react-rewards";
 import { getRandomEmojis } from "@/lib/wow-emojis";
+import { useUserScore } from "@/hooks/use-user-score";
 
 // Define the storage structure with expansion-specific boss lists
 interface FoundBossesStorage {
@@ -41,6 +42,14 @@ export function useFoundBosses(expansionId: string) {
   );
 
   const [foundBosses, setFoundBosses] = useState<Boss[]>([]);
+
+  // Use the user score hook to get user ID and high score
+  const {
+    userId,
+    highScore,
+    updateHighScore,
+    isLoaded: isUserScoreLoaded,
+  } = useUserScore(expansionId);
 
   const { reward } = useReward("reward", "emoji", {
     emoji: getRandomEmojis(),
@@ -202,6 +211,9 @@ export function useFoundBosses(expansionId: string) {
           },
         };
         setStorageData(updatedStorage);
+
+        // Update high score based on the number of found bosses
+        updateHighScore(updatedBosses.length);
       }
     }
   };
@@ -224,6 +236,9 @@ export function useFoundBosses(expansionId: string) {
         },
       };
       setStorageData(updatedStorage);
+
+      // Update high score based on the number of found bosses
+      updateHighScore(updatedBosses.length);
     }
   };
 
@@ -244,6 +259,9 @@ export function useFoundBosses(expansionId: string) {
         },
       };
       setStorageData(updatedStorage);
+
+      // Update high score to 0
+      updateHighScore(0);
     }
   };
 
@@ -276,6 +294,9 @@ export function useFoundBosses(expansionId: string) {
 
     setStorageData(resetStorage);
     setFoundBosses([]);
+
+    // Update high score to 0
+    updateHighScore(0);
   };
 
   // Get statistics about found bosses
@@ -302,6 +323,8 @@ export function useFoundBosses(expansionId: string) {
     getAllFoundBosses,
     getExpansionFoundBosses,
     getFoundBossesStats,
-    isLoaded,
+    isLoaded: isLoaded && isUserScoreLoaded,
+    userId,
+    highScore,
   };
 }

@@ -252,6 +252,30 @@ export type Database = {
           },
         ]
       }
+      score: {
+        Row: {
+          created_at: string
+          expansion_slug: string
+          id: number
+          identifier: string | null
+          personal_best: number | null
+        }
+        Insert: {
+          created_at?: string
+          expansion_slug: string
+          id?: number
+          identifier?: string | null
+          personal_best?: number | null
+        }
+        Update: {
+          created_at?: string
+          expansion_slug?: string
+          id?: number
+          identifier?: string | null
+          personal_best?: number | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
