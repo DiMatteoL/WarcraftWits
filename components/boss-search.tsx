@@ -54,9 +54,7 @@ export function BossSearch({ bosses, foundBosses, onBossFound, instanceFilter, n
       score += lengthDifference;
     }
 
-
     if (score < 3.5) {
-      console.log(bestResult, score)
       const matchedBoss = results[0].item;
       // Boss found, add it
       onBossFound(matchedBoss)

@@ -5,10 +5,12 @@ import { Metadata } from "next"
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string; instanceSlug: string }> }): Promise<Metadata> {
   const supabase = await createClient()
-  const { instanceSlug } = await params;
+  const { instanceSlug, id } = await params;
+
   const { data: instance, error } = await supabase
     .from("instance")
     .select("*, expansion(*)")
+    .eq("expansion.slug", id)
     .eq("slug", instanceSlug)
     .single()
 
@@ -52,6 +54,7 @@ export default async function InstancePage({ params }: { params: Promise<{ id: s
   const { data: instance, error } = await supabase
     .from("instance")
     .select("*, npc(*), map(*), expansion(*)")
+    .eq("expansion.slug", id)
     .eq("slug", instanceSlug)
     .single()
 

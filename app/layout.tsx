@@ -8,6 +8,7 @@ import { SupabaseProvider } from "@/contexts/supabase-context"
 import { ClientLayoutWrapper } from "@/components/client-layout-wrapper"
 import GoogleAdsense from "@/components/GoogleAdsense"
 import { SpeedInsights } from "@vercel/speed-insights/next"
+import { Analytics } from "@vercel/analytics/react"
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" })
 
@@ -82,6 +83,7 @@ export default function RootLayout({
           </SupabaseProvider>
         </ThemeProvider>
         <SpeedInsights />
+        <Analytics />
         <GoogleAdsense />
       </body>
     </html>
