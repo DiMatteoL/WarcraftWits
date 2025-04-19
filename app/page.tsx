@@ -1,43 +1,29 @@
-import Image from "next/image"
-import { Card, CardContent } from "@/components/ui/card"
-import { ExpansionTable } from "@/components/expansion-table"
-import { Footer } from "@/components/footer"
+import { Home } from "@/components/home"
+import { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "Warcraft Wits - WoW Memory Game",
+  description: "Test your knowledge of World of Warcraft bosses across all expansions. Challenge yourself to name as many raid and dungeon bosses as you can remember!",
+  openGraph: {
+    title: "Warcraft Wits - WoW Memory Game",
+    description: "Test your knowledge of World of Warcraft bosses across all expansions. Challenge yourself to name as many raid and dungeon bosses as you can remember!",
+    images: [
+      {
+        url: '/android-chrome-512x512.png',
+        width: 512,
+        height: 512,
+        alt: 'Warcraft Wits Logo',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: "Warcraft Wits - WoW Memory Game",
+    description: "Test your knowledge of World of Warcraft bosses across all expansions. Challenge yourself to name as many raid and dungeon bosses as you can remember!",
+    images: ['/android-chrome-512x512.png'],
+  }
+}
 
 export default function WoWMemoryGame() {
-  return (
-    <>
-    <div className="container py-4 md:py-12 px-4 max-w-5xl mx-auto">
-      <div className="flex flex-col items-center mb-12">
-        {/* WoW Logo */}
-        <div className="w-32 h-32 mb-6 relative">
-          <Image src="/android-chrome-192x192.png" alt="WarcraftWits Logo" fill className="object-contain" priority />
-        </div>
-
-        {/* Title */}
-        <h1 className="text-center mb-4">Warcraft Wits</h1>
-
-        {/* Subtitle */}
-        <p className="text-center text-muted-foreground text-lg max-w-2xl mb-8">
-          How many bosses can you name from your favorite WoW expansion?
-        </p>
-
-        {/* Instructions */}
-        <Card className="w-full max-w-2xl border border-border/40 shadow-md mb-8">
-          <CardContent className="pt-6 pb-6">
-            <p className="text-center text-card-foreground mb-4 text-lg">
-              From Edwin VanCleef to Gallywix, prove you&apos;re a true WoW veteran.
-              Choose your expansion and see how many encounters you can recall.
-            </p>
-
-            <p className="text-center font-medium text-lg">You are not prepared!</p>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Expansion Grid - Now using Supabase data */}
-      <ExpansionTable />
-    </div>
-    <Footer />
-    </>
-  )
+  return <Home />
 }

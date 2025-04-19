@@ -46,14 +46,16 @@ export function PersistentTooltip({
   align = "center",
 }: PersistentTooltipProps) {
   const [open, setOpen] = React.useState(false)
+  const tooltipRef = React.useRef<HTMLDivElement>(null)
 
   return (
     <PersistentTooltipProvider>
-      <PersistentTooltipRoot open={open} onOpenChange={setOpen}>
+      <PersistentTooltipRoot open={open} >
         <PersistentTooltipTrigger asChild>
           <div
             onMouseEnter={() => setOpen(true)}
             onMouseLeave={() => setOpen(false)}
+            onTouchStart={() => setOpen(true)}
           >
             {children}
           </div>
@@ -64,6 +66,7 @@ export function PersistentTooltip({
           className={className}
           onMouseEnter={() => setOpen(true)}
           onMouseLeave={() => setOpen(false)}
+          ref={tooltipRef}
         >
           <div className="flex flex-col gap-2 min-w-[200px]">
             <div className="font-medium">{content}</div>

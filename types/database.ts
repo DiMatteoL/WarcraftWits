@@ -256,6 +256,7 @@ export type Database = {
         Row: {
           created_at: string
           expansion_slug: string
+          game_name: string | null
           id: number
           identifier: string | null
           personal_best: number | null
@@ -263,6 +264,7 @@ export type Database = {
         Insert: {
           created_at?: string
           expansion_slug: string
+          game_name?: string | null
           id?: number
           identifier?: string | null
           personal_best?: number | null
@@ -270,6 +272,7 @@ export type Database = {
         Update: {
           created_at?: string
           expansion_slug?: string
+          game_name?: string | null
           id?: number
           identifier?: string | null
           personal_best?: number | null
