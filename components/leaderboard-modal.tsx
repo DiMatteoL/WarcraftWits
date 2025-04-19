@@ -15,6 +15,7 @@ import { UserProfileDisplay } from "@/components/user-profile-display"
 import { Trophy, Medal } from "lucide-react"
 import { BOSS_MEMORY_GAME_TYPE, INSTANCE_MATCHER_GAME_TYPE, USER_ID_STORAGE_KEY } from "@/lib/constants"
 import { usePathname } from "next/navigation"
+import { useMemo } from "react"
 
 interface LeaderboardWrapperProps {
   open: boolean
@@ -28,36 +29,14 @@ export function PrefilledLeaderboardModal({
   onOpenChange,
 }: LeaderboardWrapperProps) {
   const pathname = usePathname()
-  const [selectedGame, setSelectedGame] = React.useState<string>(BOSS_MEMORY_GAME_TYPE)
-  const [selectedExpansion, setSelectedExpansion] = React.useState<string>("classic")
-
-  // Determine game type and expansion from URL
-  React.useEffect(() => {
-    if (pathname) {
-      // Check if we're on a boss memory game page
-      if (pathname.includes("/match")) {
-        setSelectedGame(INSTANCE_MATCHER_GAME_TYPE)
-      } else {
-        setSelectedGame(BOSS_MEMORY_GAME_TYPE)
-      }
-
-
-      // Extract expansion slug from URL path
-      const expansionMatch = pathname.match(/\/(match|expansion)\/([^\/]+)(?:\/|$)/)
-      if (expansionMatch && expansionMatch[2]) {
-        // Handle special case for "woltk" which should be normalized
-        const expansionSlug = expansionMatch[2] === "woltk" ? "wotlk" : expansionMatch[2]
-        setSelectedExpansion(expansionSlug)
-      }
-    }
-  }, [pathname])
+  const expansionMatch = useMemo(() => pathname.match(/\/(match|expansion)\/([^\/]+)(?:\/|$)/), [pathname]);
 
   return (
     <LeaderboardModal
       open={open}
       onOpenChange={onOpenChange}
-      initialExpansion={selectedExpansion}
-      initialGameType={selectedGame}
+      initialExpansion={expansionMatch && expansionMatch[2] ? expansionMatch[2] : "classic"}
+      initialGameType={pathname.includes("match") ? INSTANCE_MATCHER_GAME_TYPE : BOSS_MEMORY_GAME_TYPE}
     />
   )
 }
