@@ -102,7 +102,6 @@ export function GameInterface({
     alt: `Map ${map.id || ''}`,
     name: map.name || `Map ${map.id}`
   }))
-  console.log(thumbnails)
 
   // Prepare the footer content
   const footerContent = foundBosses.length > 0 && clearFoundBosses ? (

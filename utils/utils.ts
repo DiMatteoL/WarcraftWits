@@ -1,4 +1,12 @@
 import { redirect } from "next/navigation";
+import {
+  uniqueNamesGenerator,
+  adjectives,
+  colors,
+  animals,
+} from "unique-names-generator";
+// @ts-ignore
+import emojiFromText from "emoji-from-text";
 
 /**
  * Redirects to a specified path with an encoded message as a query parameter.
@@ -10,7 +18,62 @@ import { redirect } from "next/navigation";
 export function encodedRedirect(
   type: "error" | "success",
   path: string,
-  message: string,
+  message: string
 ) {
   return redirect(`${path}?${type}=${encodeURIComponent(message)}`);
+}
+
+/**
+ * Generates a unique name based on a UUID
+ * @param uuid - A UUID string to use as a seed for name generation
+ * @returns A unique name in the format "adjective-color-animal"
+ */
+export function generateUniqueNameFromUUID(uuid: string): string {
+  // Use the UUID as a seed for consistent name generation
+  const config = {
+    dictionaries: [adjectives, colors, animals],
+    separator: " ",
+    length: 2,
+    seed: uuid,
+  };
+
+  return uniqueNamesGenerator(config);
+}
+
+/**
+ * Generates an emoji based on the input text
+ * @param text - The text to generate an emoji from
+ * @returns An emoji character, defaulting to 🧙 if no suitable emoji is found
+ */
+export function generateEmojiFromText(text: string = ""): string {
+  // @ts-ignore
+  const emojiItem = emojiFromText(text || "", true);
+  if (
+    emojiItem?.match?.emoji.category !== "flags" &&
+    emojiItem?.match?.emoji.char
+  ) {
+    return emojiItem?.match?.emoji.char;
+  }
+  const charSum = text
+    .split("")
+    .reduce((sum, char) => sum + char.charCodeAt(0), 0);
+  const index = charSum % 13;
+
+  const wowEmojis = [
+    "🧙‍♂️",
+    "🧙‍♀️",
+    "🗡️",
+    "⚔️",
+    "🏹",
+    "🛡️",
+    "⚡",
+    "🔥",
+    "❄️",
+    "💀",
+    "🔮",
+    "🏰",
+    "🐉",
+  ];
+
+  return wowEmojis[index] || "🧙";
 }

@@ -1,7 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { USER_ID_STORAGE_KEY } from "@/lib/constants";
+import {
+  INSTANCE_MATCHER_GAME_TYPE,
+  USER_ID_STORAGE_KEY,
+} from "@/lib/constants";
 import { supabase } from "@/lib/supabase";
 
 /**
@@ -39,7 +42,7 @@ export function useMinigameScore(expansionSlug: string | null) {
   useEffect(() => {
     const loadHighScore = () => {
       try {
-        const highScoreKey = `wow-memory-matchgame-high-score-${expansionSlug}`;
+        const highScoreKey = `${INSTANCE_MATCHER_GAME_TYPE}-score-${expansionSlug}`;
         const storedHighScore = localStorage.getItem(highScoreKey);
 
         if (storedHighScore) {
@@ -62,24 +65,17 @@ export function useMinigameScore(expansionSlug: string | null) {
 
       try {
         // Update localStorage
-        const highScoreKey = `wow-memory-matchgame-high-score-${expansionSlug}`;
+        const highScoreKey = `${INSTANCE_MATCHER_GAME_TYPE}-score-${expansionSlug}`;
         localStorage.setItem(highScoreKey, score.toString());
 
         // Only update Supabase if score is greater than 0 and we have a userId
         if (score > 0 && userId && expansionSlug) {
           setIsSyncing(true);
 
-          // First check if the record exists
-          const identifier = `${userId}-${expansionSlug}-matchgame`;
-          console.log(
-            "Checking for matchgame record with identifier:",
-            identifier
-          );
-
           const { data: existingRecord, error: checkError } = await supabase
             .from("score")
             .select("*")
-            .eq("identifier", identifier)
+            .eq("identifier", userId)
             .maybeSingle();
 
           if (checkError) {
@@ -88,13 +84,12 @@ export function useMinigameScore(expansionSlug: string | null) {
               checkError
             );
           } else if (!existingRecord) {
-            console.log("Matchgame record not found, creating new record");
             // Record doesn't exist, create it
             const { error: insertError } = await supabase.from("score").insert({
-              identifier: identifier,
+              identifier: userId,
               personal_best: score,
               expansion_slug: expansionSlug,
-              game_name: "match-the-instance",
+              game_name: INSTANCE_MATCHER_GAME_TYPE,
             });
 
             if (insertError) {
@@ -106,14 +101,13 @@ export function useMinigameScore(expansionSlug: string | null) {
               console.log("Successfully created new matchgame record");
             }
           } else {
-            console.log("Matchgame record found, updating with score:", score);
             // Record exists, update it
             const { data, error } = await supabase
               .from("score")
               .update({ personal_best: score })
-              .eq("identifier", identifier);
-
-            console.log("Update result:", { data, error });
+              .eq("identifier", userId)
+              .eq("game_name", INSTANCE_MATCHER_GAME_TYPE)
+              .eq("expansion_slug", expansionSlug);
 
             if (error) {
               console.error("Error updating matchgame score:", error);

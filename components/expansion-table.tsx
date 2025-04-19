@@ -24,12 +24,6 @@ export function ExpansionTable() {
           .select("*")
           .order("release_date", { ascending: true })
 
-
-        const a = await supabase.storage
-        .from('images')
-        .createSignedUploadUrl('https://wowpedia.fandom.com/wiki/Cataclysm_instance_maps?file=WorldMap-BaradinHold.jpg', )
-
-        console.log(a)
         setExpansions(data || [])
       } catch (err) {
         console.error("Error fetching expansions:", err)

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { USER_ID_STORAGE_KEY } from "@/lib/constants";
+import { BOSS_MEMORY_GAME_TYPE, USER_ID_STORAGE_KEY } from "@/lib/constants";
 import { supabase } from "@/lib/supabase";
 
 /**
@@ -44,7 +44,7 @@ export function useUserScore(expansionId: string) {
 
     const loadHighScore = () => {
       try {
-        const highScoreKey = `wow-memory-high-score-${userId}-${expansionId}`;
+        const highScoreKey = `${BOSS_MEMORY_GAME_TYPE}-score-${expansionId}`;
         const storedHighScore = localStorage.getItem(highScoreKey);
 
         if (storedHighScore) {
@@ -65,21 +65,17 @@ export function useUserScore(expansionId: string) {
 
       try {
         // Update localStorage
-        const highScoreKey = `wow-memory-high-score-${userId}-${expansionId}`;
+        const highScoreKey = `${BOSS_MEMORY_GAME_TYPE}-score-${expansionId}`;
         localStorage.setItem(highScoreKey, score.toString());
 
         // Only update Supabase if score is greater than 0
         if (score > 0) {
           setIsSyncing(true);
 
-          // First check if the record exists
-          const identifier = `${userId}-${expansionId}`;
-          console.log("Checking for record with identifier:", identifier);
-
           const { data: existingRecord, error: checkError } = await supabase
             .from("score")
             .select("*")
-            .eq("identifier", identifier)
+            .eq("identifier", userId)
             .maybeSingle();
 
           if (checkError) {
@@ -88,10 +84,10 @@ export function useUserScore(expansionId: string) {
             console.log("Record not found, creating new record");
             // Record doesn't exist, create it
             const { error: insertError } = await supabase.from("score").insert({
-              identifier: identifier,
+              identifier: userId,
               personal_best: score,
               expansion_slug: expansionId,
-              game_name: "name-the-boss",
+              game_name: BOSS_MEMORY_GAME_TYPE,
             });
 
             if (insertError) {
@@ -105,7 +101,9 @@ export function useUserScore(expansionId: string) {
             const { data, error } = await supabase
               .from("score")
               .update({ personal_best: score })
-              .eq("identifier", identifier);
+              .eq("identifier", userId)
+              .eq("game_name", BOSS_MEMORY_GAME_TYPE)
+              .eq("expansion_slug", expansionId);
 
             console.log("Update result:", { data, error });
 

@@ -16,3 +16,6 @@ export const CURRENT_STORAGE_VERSION = 2;
 
 // Local storage key for user ID
 export const USER_ID_STORAGE_KEY = "wow-memory-user-id";
+
+export const BOSS_MEMORY_GAME_TYPE = "boss-memory";
+export const INSTANCE_MATCHER_GAME_TYPE = "instance-matcher";
