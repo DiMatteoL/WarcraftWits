@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Menu } from "lucide-react"
+import { Trophy } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -27,7 +27,7 @@ export function MenuButton() {
             className="rounded-full bg-background/80 backdrop-blur-sm shadow-md border border-border hover:bg-background/90 transition-all duration-300"
             aria-label="Open menu"
           >
-            <Menu className="h-[1.2rem] w-[1.2rem]" />
+            <Trophy className="h-[1.2rem] w-[1.2rem]" />
             <span className="sr-only">Open menu</span>
           </Button>
         </DropdownMenuTrigger>
