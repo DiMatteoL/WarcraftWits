@@ -3,9 +3,9 @@
 import { useState, useRef, useMemo, useCallback } from "react"
 import { AutoSelectInput } from "@/components/auto-select-input"
 import type { Boss } from "@/types/game"
-import createFuzzySearch from '@nozbe/microfuzz'
+import levenshtein from 'fast-levenshtein'
 
-// List of common words that should be penalized in the search
+// List of common words that should be removed from the search
 const COMMON_WORDS = [
   "the", "of", "lord", "commander", "lady", "high", "king", "general",
   "prince", "watcher", "baron", "grand", "and", "barov", "devourer",
@@ -34,11 +34,60 @@ export function BossSearch({ bosses, foundBosses, onBossFound, instanceFilter, n
     [bosses, foundBosses, instanceFilter]
   );
 
-  // Memoize the fuzzy search instance
-  const fuzzySearch = useMemo(() =>
-    createFuzzySearch(contextualBosses, { key: "name" }),
-    [contextualBosses]
-  );
+  // Helper function to remove common words from a string
+  const clean = (str: string): string => {
+    const words = str.toLowerCase().split(/\s+/);
+    const filteredWords = words.filter(word => !COMMON_WORDS.includes(word));
+    return filteredWords.join(' ').replace(/[^\w\s]/gi, '').toLowerCase().trim();;
+  };
+
+  // Helper function to get allowed distance based on string length
+  const getAllowedDistance = (length: number): number => {
+    if (length <= 5) return 0;
+    if (length <= 9) return 1;
+    if (length <= 14) return 2;
+    return 3;
+  };
+
+  const isMatch = (search: string, name: string): boolean => {
+    const totalDistance = levenshtein.get(search, name)
+
+    const allowedDistance = getAllowedDistance(name.length)
+
+    return totalDistance <= allowedDistance;
+  }
+
+  const isBossMatch = (input: string, boss: Boss): boolean => {
+    if (!boss.name) return false;
+
+    const bossName = boss.name.toLowerCase();
+    const search = input.toLowerCase()
+    if (isMatch(search, bossName)) return true;
+
+    const cleanBossName = clean(bossName);
+    const cleanSearch = clean(search)
+    if (isMatch(cleanSearch, cleanBossName)) return true;
+
+    const splittedNames = cleanBossName.split(" ")
+    for (const name of splittedNames) {
+      if (isMatch(search, name)) return true;
+    }
+
+    return false;
+  };
+
+  // Find the best match for an input string among a list of bosses
+  const findMatch = (input: string, bossList: Boss[]): Boss | null => {
+    if (!input.trim()) return null;
+
+    for (const boss of bossList) {
+      if (isBossMatch(input, boss)) {
+        return boss;
+      }
+    }
+
+    return null;
+  };
 
   // Handle form submission
   const handleSubmit = useCallback((e: React.FormEvent) => {
@@ -46,37 +95,11 @@ export function BossSearch({ bosses, foundBosses, onBossFound, instanceFilter, n
 
     if (!inputValue.trim()) return
 
-    const cleanInputValue = inputValue.replace(/[^\w\s]/gi, '').toLowerCase()
-    const results = fuzzySearch(cleanInputValue);
-    const bestResult = results?.[0];
-    const matchedBoss = bestResult?.item;
-    const nameLength = matchedBoss?.name?.length || 0;
-    let score = bestResult?.score || Infinity
+    const match = findMatch(inputValue, contextualBosses);
 
-    // Adjust score based on input length vs boss name length
-    if (inputValue.length < 4 && nameLength > 4) {
-      // Add penalty to score (1 point per character difference)
-      const lengthDifference = nameLength - inputValue.length;
-      score += lengthDifference;
-    }
-
-    // Penalize if the input is just a common word
-    if (COMMON_WORDS.includes(cleanInputValue.trim())) {
-      score += 5; // Significant penalty for common words
-    }
-
-    // Penalize if the boss name contains the input as a standalone word
-    if (matchedBoss?.name) {
-      const bossWords = matchedBoss.name.toLowerCase().split(/\s+/);
-      if (bossWords.includes(cleanInputValue) && COMMON_WORDS.includes(cleanInputValue)) {
-        score += 3; // Additional penalty if the input is a common word that appears as a standalone word in the boss name
-      }
-    }
-
-    if (score < 3.5) {
-      const matchedBoss = results[0].item;
+    if (match) {
       // Boss found, add it
-      onBossFound(matchedBoss)
+      onBossFound(match)
       setInputValue("")
       setIsError(false)
     } else {
@@ -94,7 +117,7 @@ export function BossSearch({ bosses, foundBosses, onBossFound, instanceFilter, n
         setIsError(false)
       }, 500)
     }
-  }, [inputValue, fuzzySearch, onBossFound]);
+  }, [inputValue, contextualBosses, onBossFound]);
 
   // Debounced input handler
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
