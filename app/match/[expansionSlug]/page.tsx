@@ -3,12 +3,13 @@ import { createClient } from "@/utils/supabase/server"
 import { notFound } from "next/navigation"
 import { MatchGameClient } from "./match-game-client"
 
-export async function generateMetadata({ params }: { params: { expansionSlug: string } }): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<{ expansionSlug: string }> }): Promise<Metadata> {
   const supabase = await createClient()
+  const { expansionSlug } = await params;
   const { data: expansion, error } = await supabase
     .from("expansion")
     .select("*")
-    .eq("slug", params.expansionSlug)
+    .eq("slug", expansionSlug)
     .single()
 
   if (error || !expansion) {
