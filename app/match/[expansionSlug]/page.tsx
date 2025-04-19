@@ -43,14 +43,15 @@ export async function generateMetadata({ params }: { params: Promise<{ expansion
   }
 }
 
-export default async function MatchGamePage({ params }: { params: { expansionSlug: string } }) {
+export default async function MatchGamePage({ params }: { params: Promise<{ expansionSlug: string }> }) {
+  const { expansionSlug } = await params;
   const supabase = await createClient()
 
   // Fetch expansion data
   const { data: expansion, error: expansionError } = await supabase
     .from("expansion")
     .select("*")
-    .eq("slug", params.expansionSlug)
+    .eq("slug", expansionSlug)
     .single()
 
   if (expansionError || !expansion) {
