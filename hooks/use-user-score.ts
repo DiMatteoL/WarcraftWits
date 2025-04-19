@@ -76,6 +76,8 @@ export function useUserScore(expansionId: string) {
             .from("score")
             .select("*")
             .eq("identifier", userId)
+            .eq("game_name", BOSS_MEMORY_GAME_TYPE)
+            .eq("expansion_slug", expansionId)
             .maybeSingle();
 
           if (checkError) {

@@ -62,6 +62,7 @@ export function LeaderboardModal({
   const [scoresLoading, setScoresLoading] = React.useState(false)
   const [currentUserId, setCurrentUserId] = React.useState<string>("")
   const [userRank, setUserRank] = React.useState<number | null>(null)
+  const [userPercentile, setUserPercentile] = React.useState<number | null>(null)
   const supabase = useSupabase()
 
   // Update selected game and expansion when initial values change
@@ -144,12 +145,29 @@ export function LeaderboardModal({
 
         setScores(data || [])
 
+        // Get total count of players for percentile calculation
+        const { count: totalPlayers, error: countError } = await supabase
+          .from("score")
+          .select("*", { count: "exact", head: true })
+          .eq("game_name", selectedGame)
+          .eq("expansion_slug", selectedExpansion)
+
+        if (countError) {
+          console.error("Error getting total player count:", countError)
+          return
+        }
+
         // Find user's rank in the leaderboard
         if (currentUserId && data) {
           const userIndex = data.findIndex(score => score.identifier === currentUserId)
           if (userIndex !== -1) {
             // User is in the top 20
             setUserRank(userIndex + 1)
+            // Calculate percentile (lower is better)
+            if (totalPlayers) {
+              const percentile = ((userIndex + 1) / totalPlayers) * 100
+              setUserPercentile(percentile)
+            }
           } else {
             // User is not in the top 20, fetch their rank
             const { data: userScore, error: userError } = await supabase
@@ -162,15 +180,21 @@ export function LeaderboardModal({
 
             if (!userError && userScore) {
               // Count how many scores are better than the user's score
-              const { count, error: countError } = await supabase
+              const { count, error: rankError } = await supabase
                 .from("score")
                 .select("*", { count: "exact", head: true })
                 .eq("game_name", selectedGame)
                 .eq("expansion_slug", selectedExpansion)
                 .gt("personal_best", userScore.personal_best)
 
-              if (!countError && count !== null) {
-                setUserRank(count + 1) // Add 1 because count is 0-based
+              if (!rankError && count !== null) {
+                const rank = count + 1 // Add 1 because count is 0-based
+                setUserRank(rank)
+                // Calculate percentile
+                if (totalPlayers) {
+                  const percentile = (rank / totalPlayers) * 100
+                  setUserPercentile(percentile)
+                }
               }
             }
           }
@@ -229,6 +253,11 @@ export function LeaderboardModal({
                 <Medal className="h-5 w-5 text-primary" />
                 <span className="font-medium">Your Rank:</span>
                 <span className="font-bold text-primary">#{userRank}</span>
+                {userPercentile !== null && (
+                  <span className="text-sm text-muted-foreground ml-2">
+                    (Top {userPercentile.toFixed(1)}%)
+                  </span>
+                )}
               </div>
               <UserProfileDisplay userId={currentUserId} />
             </div>

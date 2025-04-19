@@ -76,6 +76,8 @@ export function useMinigameScore(expansionSlug: string | null) {
             .from("score")
             .select("*")
             .eq("identifier", userId)
+            .eq("game_name", INSTANCE_MATCHER_GAME_TYPE)
+            .eq("expansion_slug", expansionSlug)
             .maybeSingle();
 
           if (checkError) {
