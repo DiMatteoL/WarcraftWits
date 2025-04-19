@@ -5,8 +5,6 @@ import {
   colors,
   animals,
 } from "unique-names-generator";
-// @ts-ignore
-import emojiFromText from "emoji-from-text";
 
 /**
  * Redirects to a specified path with an encoded message as a query parameter.
@@ -46,14 +44,6 @@ export function generateUniqueNameFromUUID(uuid: string): string {
  * @returns An emoji character, defaulting to 🧙 if no suitable emoji is found
  */
 export function generateEmojiFromText(text: string = ""): string {
-  // @ts-ignore
-  const emojiItem = emojiFromText(text || "", true);
-  if (
-    emojiItem?.match?.emoji.category !== "flags" &&
-    emojiItem?.match?.emoji.char
-  ) {
-    return emojiItem?.match?.emoji.char;
-  }
   const charSum = text
     .split("")
     .reduce((sum, char) => sum + char.charCodeAt(0), 0);
@@ -69,7 +59,6 @@ export function generateEmojiFromText(text: string = ""): string {
     "⚡",
     "🔥",
     "❄️",
-    "💀",
     "🔮",
     "🏰",
     "🐉",

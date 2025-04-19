@@ -42,9 +42,12 @@ export function PrefilledLeaderboardModal({
       }
 
 
-      const expansionMatch = pathname.match(/\/([^\/]+)(?:\/|$)/)
-      if (expansionMatch && expansionMatch[1]) {
-        setSelectedExpansion(expansionMatch[1])
+      // Extract expansion slug from URL path
+      const expansionMatch = pathname.match(/\/(match|expansion)\/([^\/]+)(?:\/|$)/)
+      if (expansionMatch && expansionMatch[2]) {
+        // Handle special case for "woltk" which should be normalized
+        const expansionSlug = expansionMatch[2] === "woltk" ? "wotlk" : expansionMatch[2]
+        setSelectedExpansion(expansionSlug)
       }
     }
   }, [pathname])
