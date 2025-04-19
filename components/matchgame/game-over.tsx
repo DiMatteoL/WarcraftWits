@@ -37,7 +37,7 @@ export function GameOver({ score, highScore, onRestart, correctInstanceName, bos
         </div>
 
       <div className="bg-muted/50 rounded-lg p-3 text-sm text-muted-foreground mb-4">
-        <p>Don't worry! You can try again.</p>
+        <p>Don&apos;t worry! You can try again.</p>
         <p className="mt-2"><span className="font-bold">{bossName}</span> is in <span className="font-bold">{correctInstanceName}</span></p>
       </div>
       </CardContent>

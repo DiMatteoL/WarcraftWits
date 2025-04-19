@@ -59,7 +59,23 @@ module.exports = {
         priority: 0.6,
       }));
 
-      return [...expansionPaths, ...instancePaths];
+      // Add the main match page
+      const matchPaths = [{
+        loc: '/match',
+        lastmod: new Date().toISOString(),
+        changefreq: 'daily',
+        priority: 0.9,
+      }];
+
+      // Generate paths for match pages of active expansions
+      const matchExpansionPaths = (expansions || []).map((expansion) => ({
+        loc: `/match/${expansion.slug}`,
+        lastmod: new Date().toISOString(),
+        changefreq: 'daily',
+        priority: 0.8,
+      }));
+
+      return [...expansionPaths, ...instancePaths, ...matchPaths, ...matchExpansionPaths];
     } catch (error) {
       console.error('Error generating sitemap paths:', error);
       return [];

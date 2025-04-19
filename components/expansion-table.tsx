@@ -11,7 +11,6 @@ import { usePathname } from "next/navigation"
 export function ExpansionTable() {
   const supabase = useSupabase()
   const pathname = usePathname()
-  const isMatchRoute = pathname === "/match"
   const [expansions, setExpansions] = useState<Tables<"expansion">[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -65,7 +64,7 @@ export function ExpansionTable() {
       {expansions.map((expansion) => (
         expansion.is_active ? (
           <Link
-            href={isMatchRoute ? `/match/${expansion.slug}` : `/expansion/${expansion.slug}`}
+            href={pathname === "/match" ? `/match/${expansion.slug}` : `/expansion/${expansion.slug}`}
             key={expansion.id}
             prefetch={true}
           >

@@ -20,7 +20,6 @@ export function GameController({ expansion }: GameControllerProps) {
   const [score, setScore] = useState(0)
   const { highScore, updateHighScore } = useMinigameScore(expansion.slug)
   const [currentBoss, setCurrentBoss] = useState<Tables<"npc"> | null>(null)
-  const [selectedInstance, setSelectedInstance] = useState<Tables<"instance"> | null>(null)
   const [displayedInstances, setDisplayedInstances] = useState<Tables<"instance">[]>([])
 
   const selectRandomBoss = () => {
@@ -61,7 +60,6 @@ export function GameController({ expansion }: GameControllerProps) {
   }, [currentBoss, expansion.instances])
 
   const handleInstanceSelect = (instance: Tables<"instance"> | null) => {
-    setSelectedInstance(instance)
     if (instance && currentBoss && instance.id === currentBoss.instance_id) {
       setScore(score + 1)
       selectRandomBoss()
@@ -76,7 +74,6 @@ export function GameController({ expansion }: GameControllerProps) {
   const restartGame = () => {
     setGameState("playing")
     setScore(0)
-    setSelectedInstance(null)
     selectRandomBoss()
   }
 

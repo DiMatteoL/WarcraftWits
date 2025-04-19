@@ -2,57 +2,39 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
 import { Brain, MapPin } from "lucide-react"
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
+import { BossRuleCard } from "./boss-rule-card"
+import { MatchRuleCard } from "./match-rule-card"
 
 export function GamePicker() {
   const pathname = usePathname()
   const isMatchRoute = pathname === "/match"
 
   return (
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-4xl mx-auto">
-        {/* Memory Game */}
-        <Card className={`overflow-hidden border border-border/40 shadow-md transition-all duration-300 hover:shadow-lg ${!isMatchRoute ? 'border-primary' : ''}`}>
-          <CardHeader className="p-6 pb-4">
-            <CardTitle className="flex items-center justify-center gap-2">
-              <Brain className="h-5 w-5 text-primary" />
+    <div className="w-full max-w-md mx-auto">
+      <Tabs defaultValue={isMatchRoute ? "match" : "memory"} className="w-full">
+        <TabsList className="grid w-full grid-cols-2">
+          <Link href="/" className="w-full">
+            <TabsTrigger value="memory" className="w-full flex items-center gap-2">
+              <Brain className="h-4 w-4" />
               <span>Boss Memory</span>
-            </CardTitle>
-            <CardDescription className="text-center">
-              How many boss names can you remember from each expansion?
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="p-6 pt-0 flex flex-col items-center">
-            <p className="text-sm text-muted-foreground mb-6 text-center">
-              Test your memory by naming as many raid and dungeon bosses as you can from each WoW expansion.
-            </p>
-            <Link href="/" className="w-full">
-              <Button className="w-full" variant={!isMatchRoute ? "default" : "outline"}>Play Memory Game</Button>
-            </Link>
-          </CardContent>
-        </Card>
-
-        {/* Instance Matcher Game */}
-        <Card className={`overflow-hidden border border-border/40 shadow-md transition-all duration-300 hover:shadow-lg ${isMatchRoute ? 'border-primary' : ''}`}>
-          <CardHeader className="p-6 pb-4">
-            <CardTitle className="flex items-center justify-center gap-2">
-              <MapPin className="h-5 w-5 text-primary" />
+            </TabsTrigger>
+          </Link>
+          <Link href="/match" className="w-full">
+            <TabsTrigger value="match" className="w-full flex items-center gap-2">
+              <MapPin className="h-4 w-4" />
               <span>Instance Matcher</span>
-            </CardTitle>
-            <CardDescription className="text-center">
-              Can you match each boss to their correct instance?
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="p-6 pt-0 flex flex-col items-center">
-            <p className="text-sm text-muted-foreground mb-6 text-center">
-              Test your knowledge by matching randomly selected bosses to their correct dungeon or raid instance.
-            </p>
-            <Link href="/match" className="w-full">
-              <Button className="w-full" variant={isMatchRoute ? "default" : "outline"}>Play Instance Matcher</Button>
-            </Link>
-          </CardContent>
-        </Card>
-      </div>
+            </TabsTrigger>
+          </Link>
+        </TabsList>
+        <TabsContent value="memory" className="mt-4">
+          <BossRuleCard />
+        </TabsContent>
+        <TabsContent value="match" className="mt-4">
+          <MatchRuleCard />
+        </TabsContent>
+      </Tabs>
+    </div>
   )
 }
