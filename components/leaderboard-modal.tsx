@@ -12,7 +12,7 @@ import { Label } from "@/components/ui/label"
 import { Tables } from "@/types/database"
 import { useSupabase } from "@/contexts/supabase-context"
 import { UserProfileDisplay } from "@/components/user-profile-display"
-import { Trophy, Medal } from "lucide-react"
+import { Hash, Medal } from "lucide-react"
 import { BOSS_MEMORY_GAME_TYPE, INSTANCE_MATCHER_GAME_TYPE, USER_ID_STORAGE_KEY } from "@/lib/constants"
 import { usePathname } from "next/navigation"
 import { useMemo } from "react"
@@ -63,6 +63,7 @@ export function LeaderboardModal({
   const [currentUserId, setCurrentUserId] = React.useState<string>("")
   const [userRank, setUserRank] = React.useState<number | null>(null)
   const [userPercentile, setUserPercentile] = React.useState<number | null>(null)
+  const [userPersonalBest, setUserPersonalBest] = React.useState<number | null>(null)
   const supabase = useSupabase()
 
   // Update selected game and expansion when initial values change
@@ -163,6 +164,8 @@ export function LeaderboardModal({
           if (userIndex !== -1) {
             // User is in the top 20
             setUserRank(userIndex + 1)
+            // Set user's personal best
+            setUserPersonalBest(data[userIndex].personal_best)
             // Calculate percentile (lower is better)
             if (totalPlayers) {
               const percentile = ((userIndex + 1) / totalPlayers) * 100
@@ -179,6 +182,8 @@ export function LeaderboardModal({
               .single()
 
             if (!userError && userScore) {
+              // Set user's personal best
+              setUserPersonalBest(userScore.personal_best)
               // Count how many scores are better than the user's score
               const { count, error: rankError } = await supabase
                 .from("score")
@@ -196,8 +201,14 @@ export function LeaderboardModal({
                   setUserPercentile(percentile)
                 }
               }
+            } else {
+              // Reset user's personal best if no score found
+              setUserPersonalBest(null)
             }
           }
+        } else {
+          // Reset user's personal best if no user ID
+          setUserPersonalBest(null)
         }
       } catch (err) {
         console.error("Error fetching scores:", err)
@@ -250,16 +261,21 @@ export function LeaderboardModal({
           {userRank && (
             <div className="mb-4 p-3 rounded-lg border border-primary/30 bg-primary/5 flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Medal className="h-5 w-5 text-primary" />
-                <span className="font-medium">Your Rank:</span>
-                <span className="font-bold text-primary">#{userRank}</span>
+                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 text-primary font-bold">
+                  {userRank}
+                </div>
+                <span className="text-sm text-muted-foreground ml-2">(You)</span>
+                <UserProfileDisplay userId={currentUserId} />
                 {userPercentile !== null && (
                   <span className="text-sm text-muted-foreground ml-2">
                     (Top {userPercentile.toFixed(1)}%)
                   </span>
                 )}
               </div>
-              <UserProfileDisplay userId={currentUserId} />
+              <div className="flex items-center gap-2">
+                <Hash className="h-4 w-4 text-primary" />
+                <span className="font-bold">{userPersonalBest || 0}</span>
+              </div>
             </div>
           )}
 
@@ -284,7 +300,7 @@ export function LeaderboardModal({
                       <UserProfileDisplay userId={score.identifier || ""} />
                     </div>
                     <div className="flex items-center gap-2">
-                      <Trophy className="h-4 w-4 text-primary" />
+                      <Hash className="h-4 w-4 text-primary" />
                       <span className="font-bold">{score.personal_best}</span>
                     </div>
                   </div>
