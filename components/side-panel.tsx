@@ -66,7 +66,7 @@ export function SidePanel({
 
   return (
     <div
-      className={`w-full md:w-1/4 h-[calc(100vh-4rem)] md:h-screen bg-card border-l border-border/50 shadow-md flex flex-col overflow-hidden`}
+      className={`w-full md:w-1/4 h-[calc(100vh-4rem)] md:h-svh bg-card border-l border-border/50 shadow-md flex flex-col overflow-hidden`}
     >
       {/* Fixed Content Container */}
       <div className="flex-none pt-4 px-4 space-y-4">

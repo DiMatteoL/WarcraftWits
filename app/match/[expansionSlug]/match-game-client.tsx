@@ -18,7 +18,7 @@ interface MatchGameClientProps {
 
 export function MatchGameClient({ expansion }: MatchGameClientProps) {
   return (
-    <div className="container py-8 px-4 max-w-5xl mx-auto min-h-screen flex flex-col">
+    <div className="container py-8 px-4 max-w-5xl mx-auto min-h-svh flex flex-col">
       <div className="flex items-center mb-8">
         <Link href="/match">
           <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground px-2 py-1 h-8">

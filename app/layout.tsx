@@ -69,7 +69,7 @@ export default function RootLayout({
       <body className={`${inter.variable} font-sans antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
           <SupabaseProvider>
-            <div className="min-h-screen bg-background">
+            <div className="min-h-svh bg-background">
               <div className="fixed top-4 right-4 z-50">
                 <MenuButton />
               </div>

@@ -107,8 +107,8 @@ export function GameInterface({
   }))
 
   return (
-    <div className="flex flex-col md:flex-row h-screen overflow-hidden" onMouseLeave={clearHoveredInstance}>
-      <div className="w-screen md:w-3/4 md:h-screen bg-muted flex flex-col aspect-[3/2] md:aspect-auto">
+    <div className="flex flex-col md:flex-row h-svh overflow-hidden" onMouseLeave={clearHoveredInstance}>
+      <div className="w-svh md:w-3/4 md:h-svh bg-muted flex flex-col aspect-[3/2] md:aspect-auto">
         <ImageCarousel
           slides={slides}
           thumbnails={thumbnails}
