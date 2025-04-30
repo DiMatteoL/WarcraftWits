@@ -156,7 +156,7 @@ export function SidePanel({
           instanceFilter={instanceFilter}
         />
       </div>
-      <div className="w-full fixed bottom-0">
+      <div className="w-full fixed bottom-0 h-[90px] md:w-1/4">
         <AdsenseAd />
       </div>
     </div>
