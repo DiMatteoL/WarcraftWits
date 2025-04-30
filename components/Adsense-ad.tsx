@@ -13,11 +13,11 @@ export const AdsenseAd = () => {
             <div className="absolute inset-0 pt-2 border-border border-t self-end">
                 <ins
                     className="adsbygoogle"
-                    style={{ display: "block", height: "250px", width: "100%" }}
+                    style={{ display: "block" }}
                     data-ad-client="ca-pub-5164534018223080"
                     data-ad-slot="8089054608"
                     data-ad-format="auto"
-                    data-full-width-responsive="false"
+                    data-full-width-responsive="true"
                 />
             </div>
         </div>
