@@ -11,7 +11,7 @@ export const AdsenseAd = () => {
     return (
         <ins
             className="adsbygoogle"
-            style={{ display: "block", width: "100%", height: "90px" }}
+            style={{ display: "block", width: "100%", height: "80px" }}
             data-ad-client="ca-pub-5164534018223080"
             data-ad-slot="8089054608"
             data-ad-format="horizontal"
