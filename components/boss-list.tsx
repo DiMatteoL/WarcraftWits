@@ -5,6 +5,7 @@ import type { Boss } from "@/types/game"
 import { DEFAULT_IMAGE } from "@/lib/constants"
 import { Tables } from "@/types/database"
 import { memo, useMemo } from "react"
+import { AdsenseAd } from "@/components/Adsense-ad"
 
 interface BossListProps {
   bosses: Boss[]
@@ -28,11 +29,11 @@ export const BossList = memo(function BossList({ bosses, instanceFilter, allBoss
   }, [allBosses]);
 
   return (
-    <div className="space-y-2 max-h-full overflow-y-auto pr-2">
+    <div className="gap-2 min-h-[350px] h-full overflow-y-auto flex flex-col w-full overflow-x-hidden">
       <span id="reward" />
-      {!sortedBosses?.length ? <p>No bosses found yet.</p> :
+      {!sortedBosses?.length ? <p className="px-4">No bosses found yet.</p> :
       sortedBosses.map((boss, index) => (
-        <div key={`${boss.name}-${boss.instance_id}-${index}`} className="flex items-center gap-3 pr-2 hover:bg-muted rounded-md transition-colors">
+        <div key={`${boss.name}-${boss.instance_id}-${index}`} className="flex items-center gap-3 pr-2 hover:bg-muted rounded-md transition-colors px-4">
           <div className="w-12 h-12 rounded-full overflow-hidden bg-muted flex-shrink-0 border border-border/50 transition-all duration-300">
             <Image
               src={getBossImage(boss)}
@@ -48,6 +49,7 @@ export const BossList = memo(function BossList({ bosses, instanceFilter, allBoss
           </div>
         </div>
       ))}
+      <AdsenseAd />
     </div>
   )
 })

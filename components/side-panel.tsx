@@ -7,8 +7,6 @@ import { BossList } from "@/components/boss-list"
 import { InstanceIcon } from "@/components/instance-icon"
 import type { InstanceWithCompletion } from "@/types/game"
 import type { Tables } from "@/types/database"
-import { useFoundBosses } from "@/hooks/use-found-bosses"
-import { AdsenseAd } from "@/components/AdsenseAd"
 
 type SidePanelProps = {
   expansion: Tables<"expansion">
@@ -32,13 +30,13 @@ export function SidePanel({
   foundBosses,
   onBossFound,
   clearHoveredInstance,
+  clearFoundBosses,
   isDesktop,
   instanceName,
   instanceFilter,
   backLink = "/",
   backText = "Other expansions"
 }: SidePanelProps) {
-  const { clearFoundBosses } = useFoundBosses(expansion.id.toString());
 
   // Calculate boss counts
   const totalBossCount = instanceFilter
@@ -148,16 +146,13 @@ export function SidePanel({
           </div>
         </div>
       </div>
-      <div className="flex flex-col flex-1 overflow-y-auto min-h-0 px-4 pb-[100px] gap-4">
+      <div className="flex flex-col flex-1 overflow-y-auto min-h-0">
         <BossList
           bosses={foundBosses}
           allBosses={bosses}
           instances={instances}
           instanceFilter={instanceFilter}
         />
-      </div>
-      <div className="w-full fixed bottom-0 h-[80px] md:w-1/4">
-        <AdsenseAd />
       </div>
     </div>
   )
