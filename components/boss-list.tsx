@@ -27,21 +27,11 @@ export const BossList = memo(function BossList({ bosses, instanceFilter, allBoss
     return matchingBoss?.background_uri || matchingBoss?.logo_uri || DEFAULT_IMAGE;
   }, [allBosses]);
 
-  if (sortedBosses.length === 0) {
-    return (
-      <div className="text-center py-6 text-muted-foreground text-sm">
-        <span id="reward" />
-        {instanceFilter ? "No bosses found for this instance yet." : "No bosses found yet."}
-      </div>
-    )
-  }
-
-  // Get image for boss by looking up in allBosses if available
-
   return (
     <div className="space-y-2 max-h-full overflow-y-auto pr-2">
       <span id="reward" />
-      {sortedBosses.map((boss, index) => (
+      {!sortedBosses?.length ? <p>No bosses found yet.</p> :
+      sortedBosses.map((boss, index) => (
         <div key={`${boss.name}-${boss.instance_id}-${index}`} className="flex items-center gap-3 pr-2 hover:bg-muted rounded-md transition-colors">
           <div className="w-12 h-12 rounded-full overflow-hidden bg-muted flex-shrink-0 border border-border/50 transition-all duration-300">
             <Image

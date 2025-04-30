@@ -1,6 +1,6 @@
 "use client"
 
-import { ReactNode } from "react"
+import { ReactNode, useState, useEffect } from "react"
 import { useMedia } from "react-use"
 import { SidePanel } from "@/components/side-panel"
 import { Tables } from "@/types/database"
@@ -8,8 +8,6 @@ import { InstanceWithCompletion } from "@/types/game"
 import { ImageCarousel } from "@/components/image-carousel/image-carousel"
 import { ImageWithOverlay, Pin } from "@/components/image-with-overlay"
 import { InstanceIcon } from "@/components/instance-icon"
-import { Trash2 } from "lucide-react"
-import { Button } from "@/components/ui/button"
 
 type GameInterfaceProps = {
   // Right side panel props
@@ -53,7 +51,12 @@ export function GameInterface({
   rightContent,
   maps
 }: GameInterfaceProps) {
+  const [mounted, setMounted] = useState(false)
   const isDesktop = useMedia('(min-width: 768px)', false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   // Convert instanceFilter from string to number if it exists
   const numericInstanceFilter = instanceFilter ? parseInt(instanceFilter, 10) : undefined
@@ -103,32 +106,16 @@ export function GameInterface({
     name: map.name || `Map ${map.id}`
   }))
 
-  // Prepare the footer content
-  const footerContent = foundBosses.length > 0 && clearFoundBosses ? (
-    <div className="fixed bottom-6 right-6 z-40">
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={clearFoundBosses}
-        className="fixed-action-button rounded-full bg-card shadow-md border border-border hover:bg-destructive/10 hover:text-destructive transition-colors duration-300 flex items-center gap-1.5"
-      >
-        <Trash2 className="h-4 w-4" />
-        <span>Reset Progress</span>
-      </Button>
-    </div>
-  ) : null
-
   return (
-    <div className="flex flex-col md:flex-row h-screen overflow-hidden" onMouseLeave={() => clearHoveredInstance()}>
+    <div className="flex flex-col md:flex-row h-screen overflow-hidden" onMouseLeave={clearHoveredInstance}>
       <div className="w-screen md:w-3/4 md:h-screen bg-muted flex flex-col aspect-[3/2] md:aspect-auto">
         <ImageCarousel
           slides={slides}
           thumbnails={thumbnails}
-          className="h-full"
         />
       </div>
 
-      {rightContent || (
+      {mounted && (rightContent || (
         <SidePanel
           expansion={expansion}
           instances={instances}
@@ -141,11 +128,9 @@ export function GameInterface({
           instanceFilter={numericInstanceFilter}
           backLink={backLink}
           backText={backText}
+          clearFoundBosses={clearFoundBosses}
         />
-      )}
-
-      {/* Footer content (like reset button) */}
-      {footerContent}
+      ))}
     </div>
   )
 }

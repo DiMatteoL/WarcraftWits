@@ -54,9 +54,6 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
-  verification: {
-    google: 'your-google-site-verification', // You'll need to add your actual verification code
-  },
   other: {
     'google-adsense-account': 'ca-pub-5164534018223080',
   },

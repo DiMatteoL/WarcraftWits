@@ -2,9 +2,6 @@ import Script from "next/script";
 
 
 const GoogleAdsense: React.FC = () => {
-  if (process.env.NODE_ENV !== "production") {
-    return null;
-  }
   return (
     <Script
       async

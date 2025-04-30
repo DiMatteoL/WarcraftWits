@@ -30,11 +30,24 @@ export function InstanceIcon({ instance, foundBosses = [], allBosses = [], size 
   const isSmallScreen = !isDesktop
 
   // Adjust radius and dimensions based on size
-  const svgSize = isCompact && isSmallScreen ? 20 : isCompact ? 40 : 44
-  const radius = isCompact && isSmallScreen ? 9 : isCompact ? 18 : 20
+  const svgSize = isCompact && isSmallScreen ? 20 : isCompact ? 36 : 40
+  const radius = isCompact && isSmallScreen ? 9 : isCompact ? 16 : 18
   const circleStrokeWidth = isCompact && isSmallScreen ? 1 : isCompact ? 1.5 : 2
-  const iconSize = isCompact && isSmallScreen ? "w-5 h-5" : isCompact ? "w-9 h-9" : "w-10 h-10"
-  const fontSize = isCompact && isSmallScreen ? "text-[7px]" : isCompact ? "text-xs" : "text-sm"
+  const iconSize = isCompact && isSmallScreen ? "w-5 h-5" : isCompact ? "w-8 h-8" : "w-9 h-9"
+
+  // Calculate font size based on instance slug length
+  const getFontSize = (slug: string | null) => {
+    if (!slug) return "text-sm"
+    if (isSmallScreen && slug.length <= 2) return "text-[8px]"
+    if (isSmallScreen && slug.length == 3) return "text-[7px]"
+    if (isSmallScreen && slug.length == 4) return "text-[6px]"
+    if (isSmallScreen && slug.length >= 5) return "text-[5px]"
+    if (slug.length <= 2) return "text-[11px]"
+    if (slug.length <= 3) return "text-[10px]"
+    if (slug.length <= 4) return "text-[9px]"
+    return "text-[8px]"
+  }
+  const fontSize = useMemo(() => getFontSize(instance.slug), [instance.slug, isCompact, isSmallScreen])
 
   // Calculate instance-specific boss counts
   const instanceBosses = allBosses.filter((boss) => boss.instance_id === instance.id)

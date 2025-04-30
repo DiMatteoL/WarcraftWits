@@ -7,6 +7,8 @@ import { BossList } from "@/components/boss-list"
 import { InstanceIcon } from "@/components/instance-icon"
 import type { InstanceWithCompletion } from "@/types/game"
 import type { Tables } from "@/types/database"
+import { useFoundBosses } from "@/hooks/use-found-bosses"
+import { AdsenseAd } from "@/components/AdsenseAd"
 
 type SidePanelProps = {
   expansion: Tables<"expansion">
@@ -14,6 +16,7 @@ type SidePanelProps = {
   bosses: Tables<"npc">[]
   foundBosses: Tables<"npc">[]
   onBossFound: (boss: Tables<"npc">) => void
+  clearFoundBosses?: () => void
   clearHoveredInstance: () => void
   isDesktop: boolean
   instanceName?: string // Optional instance name to display instead of expansion name
@@ -35,6 +38,8 @@ export function SidePanel({
   backLink = "/",
   backText = "Other expansions"
 }: SidePanelProps) {
+  const { clearFoundBosses } = useFoundBosses(expansion.id.toString());
+
   // Calculate boss counts
   const totalBossCount = instanceFilter
     ? bosses.filter(b => b.instance_id === instanceFilter).length
@@ -69,7 +74,7 @@ export function SidePanel({
       <div className="flex-none pt-4 px-4 space-y-4">
         {/* Navigation Area */}
         <div className="grid-area-nav">
-          <Link href={backLink} onClick={() => clearHoveredInstance()}>
+          <Link href={backLink} onClick={() => clearHoveredInstance()} className="inline-flex">
             <Button
               variant="outline"
               size="sm"
@@ -87,6 +92,7 @@ export function SidePanel({
           onBossFound={onBossFound}
           instanceFilter={instanceFilter}
           name={instanceName || expansionName}
+          onReset={clearFoundBosses}
         />
         : <div className="grid-area-progress">
             <ProgressIndicator
@@ -135,21 +141,23 @@ export function SidePanel({
             onBossFound={onBossFound}
             instanceFilter={instanceFilter}
             name={instanceName || expansionName}
+            onReset={clearFoundBosses}
           />}
           <div className="text-sm text-muted-foreground flex justify-end w-full">
             {`${foundBossCount}/${totalBossCount} bosses found`}
           </div>
         </div>
       </div>
-      <div className="flex-1 overflow-y-auto min-h-0">
-        <div className="px-4 pb-4">
-          <BossList
-            bosses={foundBosses}
-            allBosses={bosses}
-            instances={instances}
-            instanceFilter={instanceFilter}
-          />
-        </div>
+      <div className="flex flex-col flex-1 overflow-y-auto min-h-0 px-4 pb-[100px] gap-4">
+        <BossList
+          bosses={foundBosses}
+          allBosses={bosses}
+          instances={instances}
+          instanceFilter={instanceFilter}
+        />
+      </div>
+      <div className="w-full fixed bottom-0">
+        <AdsenseAd />
       </div>
     </div>
   )

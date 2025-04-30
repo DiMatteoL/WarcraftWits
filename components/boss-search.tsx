@@ -4,6 +4,7 @@ import { useState, useRef, useMemo, useCallback } from "react"
 import { AutoSelectInput } from "@/components/auto-select-input"
 import type { Boss } from "@/types/game"
 import levenshtein from 'fast-levenshtein'
+import { Trash2 } from "lucide-react"
 
 // List of common words that should be removed from the search
 const COMMON_WORDS = [
@@ -18,9 +19,10 @@ interface BossSearchProps {
   onBossFound: (boss: Boss) => void
   instanceFilter?: number
   name?: string
+  onReset?: () => void
 }
 
-export function BossSearch({ bosses, foundBosses, onBossFound, instanceFilter, name }: BossSearchProps) {
+export function BossSearch({ bosses, foundBosses, onBossFound, instanceFilter, name, onReset }: BossSearchProps) {
   const [inputValue, setInputValue] = useState("")
   const [isError, setIsError] = useState(false)
   const inputContainerRef = useRef<HTMLDivElement>(null)
@@ -124,10 +126,16 @@ export function BossSearch({ bosses, foundBosses, onBossFound, instanceFilter, n
     setInputValue(e.target.value);
   }, []);
 
+  const handleReset = () => {
+    if (onReset) {
+      onReset();
+    }
+  };
+
   return (
     <form onSubmit={handleSubmit} className="relative">
       <div ref={inputContainerRef} className={`relative mb-1 ${isError ? "animate-shake" : ""}`}>
-        <div className="relative">
+        <div className="relative flex items-center">
           <AutoSelectInput
             type="text"
             placeholder={`${name || ''} Boss Name`}
@@ -138,6 +146,16 @@ export function BossSearch({ bosses, foundBosses, onBossFound, instanceFilter, n
             autoFocus={true}
             selectAllOnFocus={true}
           />
+          {onReset && !!foundBosses?.length && (
+            <button
+              type="button"
+              onClick={handleReset}
+              className="absolute right-2 p-1"
+              title="Reset found bosses"
+            >
+              <Trash2 className="w-4 h-4" />
+            </button>
+          )}
         </div>
       </div>
     </form>
