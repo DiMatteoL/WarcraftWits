@@ -1,11 +1,12 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { Tables } from "@/types/database"
 import { BossDisplay } from "./boss-display"
 import { InstanceSelector } from "@/components/matchgame/instance-selector"
 import { ScoreDisplay } from "./score-display"
 import { GameOver } from "./game-over"
+import { VictoryCard } from "./victory-card"
 import { useMinigameScore } from "@/hooks/use-matchgame-score"
 
 interface GameControllerProps {
@@ -16,17 +17,37 @@ interface GameControllerProps {
 }
 
 export function GameController({ expansion }: GameControllerProps) {
-  const [gameState, setGameState] = useState<"playing" | "gameOver">("playing")
+  const [gameState, setGameState] = useState<"playing" | "gameOver" | "victory">("playing")
   const [score, setScore] = useState(0)
   const { highScore, updateHighScore } = useMinigameScore(expansion.slug)
   const [currentBoss, setCurrentBoss] = useState<Tables<"npc"> | null>(null)
   const [displayedInstances, setDisplayedInstances] = useState<Tables<"instance">[]>([])
+  const [remainingBosses, setRemainingBosses] = useState<Tables<"npc">[]>([])
+
+  const bosses = useMemo(() => {
+    return expansion.bosses
+  }, [expansion.bosses])
 
   const selectRandomBoss = () => {
-    if (!expansion.bosses?.length) return
-    const randomIndex = Math.floor(Math.random() * expansion.bosses.length)
-    setCurrentBoss(expansion.bosses[randomIndex])
+    if (!remainingBosses.length) {
+      setGameState("victory")
+      return
+    }
+    const randomIndex = Math.floor(Math.random() * remainingBosses.length)
+    const selectedBoss = remainingBosses[randomIndex]
+    setCurrentBoss(selectedBoss)
+    setRemainingBosses(remainingBosses.filter(boss => boss.id !== selectedBoss.id))
+    if (score > highScore) {
+      updateHighScore(score)
+    }
   }
+
+  // Initialize remaining bosses when expansion changes
+  useEffect(() => {
+    if (bosses?.length) {
+      setRemainingBosses([...bosses])
+    }
+  }, [bosses])
 
   // Generate 6 instances (5 random + 1 matching the current boss)
   useEffect(() => {
@@ -74,19 +95,29 @@ export function GameController({ expansion }: GameControllerProps) {
   const restartGame = () => {
     setGameState("playing")
     setScore(0)
-    selectRandomBoss()
+    setRemainingBosses([...bosses])
+    setCurrentBoss(null)
   }
 
+  // Initial boss selection
+  useEffect(() => {
+    if (!currentBoss && remainingBosses.length > 0) {
+      selectRandomBoss()
+    }
+  }, [currentBoss, remainingBosses])
 
   if (!currentBoss) {
-    selectRandomBoss()
     return null
   }
 
   return (
     <div className="flex flex-col items-center gap-4">
       <div className="flex items-center gap-4">
-        <ScoreDisplay score={score} highScore={highScore} />
+        <ScoreDisplay
+          score={score}
+          highScore={highScore}
+          total={bosses.length}
+        />
       </div>
 
       {gameState === "playing" ? (
@@ -98,6 +129,11 @@ export function GameController({ expansion }: GameControllerProps) {
             correctInstanceId={currentBoss.instance_id}
           />
         </div>
+      ) : gameState === "victory" ? (
+        <VictoryCard
+          score={score}
+          onRestart={restartGame}
+        />
       ) : (
         <GameOver
           score={score}
