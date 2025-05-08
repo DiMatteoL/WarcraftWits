@@ -16,6 +16,7 @@ import { Hash } from "lucide-react"
 import { BOSS_MEMORY_GAME_TYPE, INSTANCE_MATCHER_GAME_TYPE, USER_ID_STORAGE_KEY } from "@/lib/constants"
 import { usePathname } from "next/navigation"
 import { useMemo } from "react"
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 interface LeaderboardWrapperProps {
   open: boolean
@@ -56,6 +57,7 @@ export function LeaderboardModal({
 }: LeaderboardModalProps) {
   const [selectedGame, setSelectedGame] = React.useState<string>(initialGameType)
   const [selectedExpansion, setSelectedExpansion] = React.useState<string>(initialExpansion)
+  const [selectedTimePeriod, setSelectedTimePeriod] = React.useState<"all" | "weekly" | "monthly">("all")
   const [expansions, setExpansions] = React.useState<Tables<"expansion">[]>([])
   const [scores, setScores] = React.useState<Tables<"score">[]>([])
   const [loading, setLoading] = React.useState(true)
@@ -131,11 +133,27 @@ export function LeaderboardModal({
 
       try {
         setScoresLoading(true)
-        const { data, error } = await supabase
+        let query = supabase
           .from("score")
           .select("*")
           .eq("game_name", selectedGame)
           .eq("expansion_slug", selectedExpansion)
+
+        // Add time period filter
+        if (selectedTimePeriod !== "all") {
+          const now = new Date()
+          const startDate = new Date()
+
+          if (selectedTimePeriod === "weekly") {
+            startDate.setDate(now.getDate() - 7)
+          } else if (selectedTimePeriod === "monthly") {
+            startDate.setMonth(now.getMonth() - 1)
+          }
+
+          query = query.gte("created_at", startDate.toISOString())
+        }
+
+        const { data, error } = await query
           .order("personal_best", { ascending: false })
           .limit(20)
 
@@ -147,11 +165,27 @@ export function LeaderboardModal({
         setScores(data || [])
 
         // Get total count of players for percentile calculation
-        const { count: totalPlayers, error: countError } = await supabase
+        let countQuery = supabase
           .from("score")
           .select("*", { count: "exact", head: true })
           .eq("game_name", selectedGame)
           .eq("expansion_slug", selectedExpansion)
+
+        // Add time period filter to count query
+        if (selectedTimePeriod !== "all") {
+          const now = new Date()
+          const startDate = new Date()
+
+          if (selectedTimePeriod === "weekly") {
+            startDate.setDate(now.getDate() - 7)
+          } else if (selectedTimePeriod === "monthly") {
+            startDate.setMonth(now.getMonth() - 1)
+          }
+
+          countQuery = countQuery.gte("created_at", startDate.toISOString())
+        }
+
+        const { count: totalPlayers, error: countError } = await countQuery
 
         if (countError) {
           console.error("Error getting total player count:", countError)
@@ -173,24 +207,55 @@ export function LeaderboardModal({
             }
           } else {
             // User is not in the top 20, fetch their rank
-            const { data: userScore, error: userError } = await supabase
+            let userScoreQuery = supabase
               .from("score")
               .select("personal_best")
               .eq("identifier", currentUserId)
               .eq("game_name", selectedGame)
               .eq("expansion_slug", selectedExpansion)
-              .single()
+
+            // Add time period filter to user score query
+            if (selectedTimePeriod !== "all") {
+              const now = new Date()
+              const startDate = new Date()
+
+              if (selectedTimePeriod === "weekly") {
+                startDate.setDate(now.getDate() - 7)
+              } else if (selectedTimePeriod === "monthly") {
+                startDate.setMonth(now.getMonth() - 1)
+              }
+
+              userScoreQuery = userScoreQuery.gte("created_at", startDate.toISOString())
+            }
+
+            const { data: userScore, error: userError } = await userScoreQuery.single()
 
             if (!userError && userScore) {
               // Set user's personal best
               setUserPersonalBest(userScore.personal_best)
               // Count how many scores are better than the user's score
-              const { count, error: rankError } = await supabase
+              let rankQuery = supabase
                 .from("score")
                 .select("*", { count: "exact", head: true })
                 .eq("game_name", selectedGame)
                 .eq("expansion_slug", selectedExpansion)
                 .gt("personal_best", userScore.personal_best)
+
+              // Add time period filter to rank query
+              if (selectedTimePeriod !== "all") {
+                const now = new Date()
+                const startDate = new Date()
+
+                if (selectedTimePeriod === "weekly") {
+                  startDate.setDate(now.getDate() - 7)
+                } else if (selectedTimePeriod === "monthly") {
+                  startDate.setMonth(now.getMonth() - 1)
+                }
+
+                rankQuery = rankQuery.gte("created_at", startDate.toISOString())
+              }
+
+              const { count, error: rankError } = await rankQuery
 
               if (!rankError && count !== null) {
                 const rank = count + 1 // Add 1 because count is 0-based
@@ -218,7 +283,7 @@ export function LeaderboardModal({
     }
 
     fetchScores()
-  }, [selectedGame, selectedExpansion, supabase, currentUserId])
+  }, [selectedGame, selectedExpansion, selectedTimePeriod, supabase, currentUserId])
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -256,6 +321,16 @@ export function LeaderboardModal({
                 </SelectContent>
               </Select>
             </div>
+          </div>
+
+          <div className="mb-6">
+            <Tabs value={selectedTimePeriod} onValueChange={(value) => setSelectedTimePeriod(value as "all" | "weekly" | "monthly")}>
+              <TabsList className="grid w-full grid-cols-3">
+                <TabsTrigger value="all">All Time</TabsTrigger>
+                <TabsTrigger value="weekly">This Week</TabsTrigger>
+                <TabsTrigger value="monthly">This Month</TabsTrigger>
+              </TabsList>
+            </Tabs>
           </div>
 
           {userRank && (
