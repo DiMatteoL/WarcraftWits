@@ -22,6 +22,7 @@ export function ExpansionTable() {
         const { data } = await supabase
           .from("expansion")
           .select("*")
+          .order("is_active", { ascending: false })
           .order("release_date", { ascending: true })
 
         setExpansions(data || [])

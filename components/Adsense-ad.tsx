@@ -10,7 +10,7 @@ export const AdsenseAd = () => {
     }, [])
     return (
         <div className="w-full h-[250px] relative flex-1 flex flex-col">
-            <div className="absolute inset-0 pt-2 border-border border-t self-end">
+            <div className="absolute inset-0 border-border border-t self-end">
                 <ins
                     className="adsbygoogle"
                     style={{ display: "block", height: "250px", width: "100%" }}
