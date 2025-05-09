@@ -12,14 +12,14 @@ interface BossDisplayProps {
 export function BossDisplay({ boss }: BossDisplayProps) {
   return (
     <Card className="overflow-hidden border border-primary/30 shadow-md w-full sm:w-auto sticky top-4 z-10">
-      <CardContent className="p-6">
+      <CardContent className="p-2">
         <div className="flex flex-col sm:flex-row items-center gap-6">
-          <div className="w-24 h-24 rounded-md overflow-hidden bg-muted flex-shrink-0 border-2 border-primary/50 transition-all duration-300 relative">
+          <div className="w-48 h-48 rounded-md overflow-hidden bg-muted flex-shrink-0 border-2 border-primary/50 transition-all duration-300 relative">
             <Image
               src={boss.logo_uri || DEFAULT_IMAGE}
               alt={boss.name || ""}
-              width={96}
-              height={96}
+              width={192}
+              height={192}
               className="object-cover w-full h-full object-top"
             />
           </div>
