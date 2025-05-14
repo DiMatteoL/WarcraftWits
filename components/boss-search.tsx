@@ -22,7 +22,6 @@ const COMMON_WORDS = [
   "master",
   "watcher",
   "baron",
-  "devourer",
   "prince",
   "shade",
   "and",
