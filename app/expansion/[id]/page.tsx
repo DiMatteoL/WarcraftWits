@@ -21,11 +21,11 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   }
 
   return {
-    title: `${expansion.name} - Warcraft Wits`,
-    description: `Test your knowledge of World of Warcraft bosses in ${expansion.name}. Challenge yourself to name as many raid and dungeon bosses as you can remember!`,
+    title: `${expansion.name} Raid & Dungeon Bosses - Warcraft Wits`,
+    description: `Challenge your knowledge of ${expansion.name} raid and dungeon encounters. Test your memory of boss names and instances while competing on the leaderboard!`,
     openGraph: {
-      title: `${expansion.name} - Warcraft Wits`,
-      description: `Test your knowledge of World of Warcraft bosses in ${expansion.name}. Challenge yourself to name as many raid and dungeon bosses as you can remember!`,
+      title: `${expansion.name} Raid & Dungeon Bosses - Warcraft Wits`,
+      description: `Challenge your knowledge of ${expansion.name} raid and dungeon encounters. Test your memory of boss names and instances while competing on the leaderboard!`,
       images: expansion.logo_uri ? [
         {
           url: expansion.logo_uri,
@@ -37,8 +37,8 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     },
     twitter: {
       card: 'summary_large_image',
-      title: `${expansion.name} - Warcraft Wits`,
-      description: `Test your knowledge of World of Warcraft bosses in ${expansion.name}. Challenge yourself to name as many raid and dungeon bosses as you can remember!`,
+      title: `${expansion.name} Raid & Dungeon Bosses - Warcraft Wits`,
+      description: `Challenge your knowledge of ${expansion.name} raid and dungeon encounters. Test your memory of boss names and instances while competing on the leaderboard!`,
       images: expansion.logo_uri ? [expansion.logo_uri] : undefined,
     }
   }

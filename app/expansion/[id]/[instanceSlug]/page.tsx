@@ -22,11 +22,11 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   }
 
   return {
-    title: `${instance.name} - ${instance.expansion?.name} - Warcraft Wits`,
-    description: `Test your knowledge of World of Warcraft bosses in ${instance.name} from ${instance.expansion?.name}. Challenge yourself to name as many raid and dungeon bosses as you can remember!`,
+    title: `${instance.name} Boss Challenge - ${instance.expansion?.name} - Warcraft Wits`,
+    description: `Test your knowledge of ${instance.name} from ${instance.expansion?.name}. Challenge yourself to remember every boss encounter, and compete on the leaderboard!`,
     openGraph: {
-      title: `${instance.name} - ${instance.expansion?.name} - Warcraft Wits`,
-      description: `Test your knowledge of World of Warcraft bosses in ${instance.name} from ${instance.expansion?.name}. Challenge yourself to name as many raid and dungeon bosses as you can remember!`,
+      title: `${instance.name} Boss Challenge - ${instance.expansion?.name} - Warcraft Wits`,
+      description: `Test your knowledge of ${instance.name} from ${instance.expansion?.name}. Challenge yourself to remember every boss encounter, and compete on the leaderboard!`,
       images: instance.logo_uri ? [
         {
           url: instance.logo_uri,
@@ -38,8 +38,8 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     },
     twitter: {
       card: 'summary_large_image',
-      title: `${instance.name} - ${instance.expansion?.name} - Warcraft Wits`,
-      description: `Test your knowledge of World of Warcraft bosses in ${instance.name} from ${instance.expansion?.name}. Challenge yourself to name as many raid and dungeon bosses as you can remember!`,
+      title: `${instance.name} Boss Challenge - ${instance.expansion?.name} - Warcraft Wits`,
+      description: `Test your knowledge of ${instance.name} from ${instance.expansion?.name}. Challenge yourself to remember every boss encounter, and compete on the leaderboard!`,
       images: instance.logo_uri ? [instance.logo_uri] : undefined,
     }
   }

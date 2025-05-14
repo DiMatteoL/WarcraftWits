@@ -2,11 +2,11 @@ import { Home } from "@/components/home"
 import { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Match Game - Warcraft Wits",
-  description: "Test your memory and match World of Warcraft bosses in this fun memory game. Challenge yourself to find all the matching pairs!",
+  title: "WoW Boss Memory Match - Warcraft Wits",
+  description: "Challenge your WoW knowledge in this memory matching game. Match raid bosses to their instances and compete on the leaderboard!",
   openGraph: {
-    title: "Match Game - Warcraft Wits",
-    description: "Test your memory and match World of Warcraft bosses in this fun memory game. Challenge yourself to find all the matching pairs!",
+    title: "WoW Boss Memory Match - Warcraft Wits",
+    description: "Challenge your WoW knowledge in this memory matching game. Match raid bosses to their instances, and compete on the leaderboard!",
     images: [
       {
         url: '/android-chrome-512x512.png',
@@ -18,8 +18,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: "Match Game - Warcraft Wits",
-    description: "Test your memory and match World of Warcraft bosses in this fun memory game. Challenge yourself to find all the matching pairs!",
+    title: "WoW Boss Memory Match - Warcraft Wits",
+    description: "Challenge your WoW knowledge in this memory matching game. Match raid bosses to their instances, and compete on the leaderboard!",
     images: ['/android-chrome-512x512.png'],
   }
 }
