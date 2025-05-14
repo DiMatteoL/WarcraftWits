@@ -49,7 +49,9 @@ export const BossList = memo(function BossList({ bosses, instanceFilter, allBoss
           </div>
         </div>
       ))}
-      <AdsenseAd />
+      <div className="hidden md:block">
+        <AdsenseAd />
+      </div>
     </div>
   )
 })

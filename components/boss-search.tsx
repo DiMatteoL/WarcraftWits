@@ -6,11 +6,37 @@ import type { Boss } from "@/types/game"
 import levenshtein from 'fast-levenshtein'
 import { Trash2 } from "lucide-react"
 
+
+
 // List of common words that should be removed from the search
 const COMMON_WORDS = [
-  "the", "of", "lord", "commander", "lady", "high", "king", "general",
-  "prince", "watcher", "baron", "grand", "and", "barov", "devourer",
-  "gatewatcher", "instructor", "master", "prophet", "shade", "warlord"
+  "the",
+  "of",
+  "high",
+  "lord",
+  "king",
+  "lady",
+  "general",
+  "commander",
+  "grand",
+  "master",
+  "watcher",
+  "baron",
+  "devourer",
+  "prince",
+  "shade",
+  "and",
+  "captain",
+  "instructor",
+  "maiden",
+  "priestess",
+  "gatewatcher",
+  "hall",
+  "opera",
+  "prophet",
+  "souls",
+  "speaker",
+  "warlord",
 ];
 
 interface BossSearchProps {
