@@ -1,20 +1,18 @@
-import { MapPin } from "lucide-react"
+import { SquareStack } from "lucide-react"
 import { RuleCard } from "./rule-card"
 
 export function MatchRuleCard() {
   const rules = [
-    "Select your favorite expansion",
-    "You'll be shown a random boss from that expansion",
-    "Select the instance where this boss can be found",
-    "Each correct answer earns you 1 point",
-    "One wrong answer ends the game",
-    "Try to beat your high score!"
+    "Pick a WoW expansion to test your knowledge",
+    "Match each boss to their correct instance",
+    "Choose from 8 possible instances per boss",
+    "One wrong guess ends your run - aim for the high score!"
   ]
 
   return (
     <RuleCard
-      icon={MapPin}
-      title="How to Play Instance Matcher"
+      icon={SquareStack}
+      title="Instance Matcher Challenge"
       rules={rules}
     />
   )

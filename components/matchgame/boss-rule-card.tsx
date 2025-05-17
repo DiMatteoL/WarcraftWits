@@ -1,18 +1,18 @@
-import { Brain } from "lucide-react"
+import { Map } from "lucide-react"
 import { RuleCard } from "./rule-card"
 
 export function BossRuleCard() {
   const rules = [
-    "Select your favorite expansion",
-    "Name as many bosses as you can remember",
-    "Your score increases with each correct boss name",
-    "Try to beat your high score !"
+    "Choose your favorite WoW expansion",
+    "Type all or part of a boss name to score points",
+    "Test your knowledge of raid and dungeon encounters",
+    "Compete for the highest score on the leaderboard"
   ]
 
   return (
     <RuleCard
-      icon={Brain}
-      title="How to Play Boss Memory"
+      icon={Map}
+      title="Boss Memory Challenge"
       rules={rules}
     />
   )

@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Brain, MapPin } from "lucide-react"
+import { Map, SquareStack } from "lucide-react"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { BossRuleCard } from "./boss-rule-card"
 import { MatchRuleCard } from "./match-rule-card"
@@ -17,13 +17,13 @@ export function GamePicker() {
         <TabsList className="grid w-full grid-cols-2">
           <Link href="/" className="w-full">
             <TabsTrigger value="memory" className="w-full flex items-center gap-2">
-              <Brain className="h-4 w-4" />
+              <Map className="h-4 w-4" />
               <span>Boss Memory</span>
             </TabsTrigger>
           </Link>
           <Link href="/match" className="w-full">
             <TabsTrigger value="match" className="w-full flex items-center gap-2">
-              <MapPin className="h-4 w-4" />
+              <SquareStack className="h-4 w-4" />
               <span>Instance Matcher</span>
             </TabsTrigger>
           </Link>
