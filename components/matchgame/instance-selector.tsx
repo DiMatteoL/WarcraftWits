@@ -2,8 +2,8 @@ import { Tables } from "@/types/database";
 import { InstanceCard } from "./instance-card";
 
 interface InstanceSelectorProps {
-  instances: Tables<"instance">[];
-  onInstanceChange: (instance: Tables<"instance"> | null) => void;
+  instances: Tables<"ww_instance">[];
+  onInstanceChange: (instance: Tables<"ww_instance"> | null) => void;
   correctInstanceId: number | null;
 }
 

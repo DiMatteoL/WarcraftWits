@@ -11,9 +11,9 @@ interface Pin {
 }
 
 interface MapSelectorClientProps {
-  maps: (Tables<"map"> & {
-    pin: (Tables<"pin"> & {
-      instance: Tables<"instance"> | null
+  maps: (Tables<"ww_map"> & {
+    ww_pin: (Tables<"ww_pin"> & {
+      ww_instance: Tables<"ww_instance"> | null
     })[]
   })[]
   addPin: (mapId: number, position: { x: number; y: number }) => Promise<void>
@@ -27,9 +27,9 @@ export function MapSelectorClient({
   const currentMap = maps[currentPage]
 
   // Convert database pins to the format expected by ImageWithOverlay
-  const formattedPins = currentMap.pin.map(pin => {
+  const formattedPins = currentMap.ww_pin.map(pin => {
     // Find the instance associated with this pin
-    const instance = pin?.instance || null
+    const instance = pin?.ww_instance || null
     if (!instance) return null
 
     return {

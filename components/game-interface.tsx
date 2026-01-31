@@ -11,11 +11,11 @@ import { InstanceIcon } from "@/components/instance-icon"
 
 type GameInterfaceProps = {
   // Right side panel props
-  expansion: Tables<"expansion">
+  expansion: Tables<"ww_expansion">
   instances: InstanceWithCompletion[]
-  bosses: Tables<"npc">[]
-  foundBosses: Tables<"npc">[]
-  onBossFound: (boss: Tables<"npc">) => void
+  bosses: Tables<"ww_npc">[]
+  foundBosses: Tables<"ww_npc">[]
+  onBossFound: (boss: Tables<"ww_npc">) => void
   clearHoveredInstance: () => void
   clearFoundBosses?: () => void
 
@@ -29,9 +29,9 @@ type GameInterfaceProps = {
   rightContent?: ReactNode
 
   // Map data for the carousel
-  maps: (Tables<"map"> & {
-    pin: (Tables<"pin"> & {
-      instance: Tables<"instance"> | null
+  maps: (Tables<"ww_map"> & {
+    ww_pin: (Tables<"ww_pin"> & {
+      ww_instance: Tables<"ww_instance"> | null
     })[]
   })[]
 }
@@ -81,8 +81,8 @@ export function GameInterface({
       key={map.id}
       src={map.uri || "/placeholder.svg"}
       alt={`Map ${map.id || ''}`}
-      pins={map.pin?.map((pin) => {
-        const instance = pin.instance || null;
+      pins={map.ww_pin?.map((pin) => {
+        const instance = pin.ww_instance || null;
         if (!instance) return null;
 
         const instanceWithCompletion = instanceCompletionRates.find(i => i.id === instance.id);

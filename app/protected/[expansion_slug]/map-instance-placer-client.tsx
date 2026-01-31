@@ -8,12 +8,12 @@ import { Tables } from "@/types/database"
 import { useSupabase } from "@/contexts/supabase-context"
 
 interface BossPickerClientProps {
-  maps: (Tables<"map"> & {
-    pin: (Tables<"pin"> & {
-      instance: Tables<"instance"> | null
+  maps: (Tables<"ww_map"> & {
+    ww_pin: (Tables<"ww_pin"> & {
+      ww_instance: Tables<"ww_instance"> | null
     })[]
   })[]
-  instances: Tables<"instance">[]
+  instances: Tables<"ww_instance">[]
   totalPages: number
   expansionSlug: string
 }
@@ -35,11 +35,11 @@ function MapInstancePlacerClientInner({ maps, instances, expansionSlug }: BossPi
   useEffect(() => {
     if (maps.length > 0) {
       // Extract unique instance IDs from all pins across all maps
-      const allPins = maps.flatMap(map => map.pin || [])
+      const allPins = maps.flatMap(map => map.ww_pin || [])
       const uniqueInstanceIds = Array.from(new Set(
         allPins
-          .filter(pin => pin.instance !== null)
-          .map(pin => pin.instance!.id)
+          .filter(pin => pin.ww_instance !== null)
+          .map(pin => pin.ww_instance!.id)
       ))
 
       setPinnedInstanceIds(uniqueInstanceIds)
@@ -55,7 +55,7 @@ function MapInstancePlacerClientInner({ maps, instances, expansionSlug }: BossPi
     try {
       // Insert the pin into the database
       const { error } = await supabase
-        .from('pin')
+        .from('ww_pin')
         .insert({
           map_id: mapId,
           x_percent: position.x,

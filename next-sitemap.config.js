@@ -27,13 +27,13 @@ module.exports = {
     try {
       // Fetch only active expansions
       const { data: expansions } = await supabase
-        .from('expansion')
+        .from('ww_expansion')
         .select('slug')
         .eq('is_active', true);
 
       // Fetch instances only for active expansions
       const { data: instances } = await supabase
-        .from('instance')
+        .from('ww_instance')
         .select(`
           slug,
           expansion:expansion_id(

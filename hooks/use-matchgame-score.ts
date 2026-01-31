@@ -73,7 +73,7 @@ export function useMinigameScore(expansionSlug: string | null) {
           setIsSyncing(true);
 
           const { data: existingRecord, error: checkError } = await supabase
-            .from("score")
+            .from("ww_score")
             .select("*")
             .eq("identifier", userId)
             .eq("game_name", INSTANCE_MATCHER_GAME_TYPE)
@@ -87,7 +87,7 @@ export function useMinigameScore(expansionSlug: string | null) {
             );
           } else if (!existingRecord) {
             // Record doesn't exist, create it
-            const { error: insertError } = await supabase.from("score").insert({
+            const { error: insertError } = await supabase.from("ww_score").insert({
               identifier: userId,
               personal_best: score,
               expansion_slug: expansionSlug,
@@ -105,7 +105,7 @@ export function useMinigameScore(expansionSlug: string | null) {
           } else {
             // Record exists, update it
             const { data, error } = await supabase
-              .from("score")
+              .from("ww_score")
               .update({ personal_best: score })
               .eq("identifier", userId)
               .eq("game_name", INSTANCE_MATCHER_GAME_TYPE)

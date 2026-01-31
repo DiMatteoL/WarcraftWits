@@ -8,9 +8,9 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   const { instanceSlug, id } = await params;
 
   const { data: instance, error } = await supabase
-    .from("instance")
-    .select("*, expansion(*)")
-    .eq("expansion.slug", id)
+    .from("ww_instance")
+    .select("*, ww_expansion(*)")
+    .eq("ww_expansion.slug", id)
     .eq("slug", instanceSlug)
     .single()
 
@@ -52,9 +52,9 @@ export default async function InstancePage({ params }: { params: Promise<{ id: s
 
   // Fetch instance data
   const { data: instance, error } = await supabase
-    .from("instance")
-    .select("*, npc(*), map(*), expansion(*)")
-    .eq("expansion.slug", id)
+    .from("ww_instance")
+    .select("*, ww_npc(*), ww_map(*), ww_expansion(*)")
+    .eq("ww_expansion.slug", id)
     .eq("slug", instanceSlug)
     .single()
 

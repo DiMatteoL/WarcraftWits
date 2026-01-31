@@ -7,14 +7,14 @@ import { Tables } from "@/types/database"
 import { InstanceWithCompletion } from "@/types/game"
 import { GameInterface } from "@/components/game-interface"
 
-type InstanceData = Tables<"instance"> & {
-  npc: Tables<"npc">[];
-  map: (Tables<"map"> & {
-    pin: (Tables<"pin"> & {
-      instance: Tables<"instance"> | null
+type InstanceData = Tables<"ww_instance"> & {
+  ww_npc: Tables<"ww_npc">[];
+  ww_map: (Tables<"ww_map"> & {
+    ww_pin: (Tables<"ww_pin"> & {
+      ww_instance: Tables<"ww_instance"> | null
     })[]
   })[];
-  expansion: Tables<"expansion">;
+  ww_expansion: Tables<"ww_expansion">;
 }
 
 type InstanceClientProps = {
@@ -37,7 +37,7 @@ export function InstanceClient({ expansionId, instance }: InstanceClientProps) {
   // Calculate completion rate for the instance
   const foundInstanceBosses = foundBosses.filter((b) => b.instance_id === instance.id)
   const foundCount = foundInstanceBosses.length
-  const totalCount = instance.npc.length
+  const totalCount = instance.ww_npc.length
   const completionPercentage = totalCount > 0 ? Math.round((foundCount / totalCount) * 100) : 0
 
   // Create an instance with completion rate for the SidePanel
@@ -48,9 +48,9 @@ export function InstanceClient({ expansionId, instance }: InstanceClientProps) {
 
   return (
     <GameInterface
-      expansion={instance.expansion}
+      expansion={instance.ww_expansion}
       instances={[instanceWithCompletion]}
-      bosses={instance.npc}
+      bosses={instance.ww_npc}
       foundBosses={foundBosses}
       onBossFound={addFoundBoss}
       clearHoveredInstance={clearHoveredInstance}
@@ -58,7 +58,7 @@ export function InstanceClient({ expansionId, instance }: InstanceClientProps) {
       instanceFilter={instance.id.toString()}
       backLink={`/expansion/${expansionId}`}
       backText="All instances"
-      maps={instance.map}
+      maps={instance.ww_map}
     />
   )
 }

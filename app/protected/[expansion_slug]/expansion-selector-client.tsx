@@ -5,7 +5,7 @@ import { ExpansionSelector } from "@/components/expansion-selector"
 import type { Tables } from "@/types/database"
 
 interface ExpansionSelectorClientProps {
-  expansions: Tables<"expansion">[]
+  expansions: Tables<"ww_expansion">[]
   currentExpansion: string
 }
 

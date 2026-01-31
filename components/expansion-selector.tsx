@@ -2,7 +2,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import type { Tables } from "@/types/database";
 
 interface ExpansionSelectorProps {
-  expansions: Tables<"expansion">[];
+  expansions: Tables<"ww_expansion">[];
   currentExpansion: string;
   onExpansionChange: (expansionSlug: string) => void;
 }

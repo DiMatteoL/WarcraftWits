@@ -6,7 +6,7 @@ import { Suspense } from "react"
 
 
 interface InstancePickerClientProps {
-  instances: Tables<"instance">[]
+  instances: Tables<"ww_instance">[]
   expansionSlug: string
   pinnedInstanceIds: number[]
 }

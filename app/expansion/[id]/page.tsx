@@ -8,7 +8,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   const supabase = await createClient()
   const { id } = await params;
   const { data: expansion, error } = await supabase
-    .from("expansion")
+    .from("ww_expansion")
     .select("*")
     .eq("slug", id)
     .single()
@@ -51,7 +51,7 @@ export default async function ExpansionPage({ params }: { params: Promise<{ id: 
 
   // 1. Fetch expansion
   const { data: expansion, error: expansionError } = await supabase
-    .from("expansion")
+    .from("ww_expansion")
     .select("*")
     .eq("slug", id)
     .single()
@@ -62,11 +62,11 @@ export default async function ExpansionPage({ params }: { params: Promise<{ id: 
 
   // 2. Fetch instances for this expansion with related maps and bosses
   const { data: instances, error: instancesError } = await supabase
-    .from("instance")
+    .from("ww_instance")
     .select(`
       *,
-      map(*),
-      npc(*)
+      ww_map(*),
+      ww_npc(*)
     `)
     .eq("expansion_id", expansion.id)
     .order("name")
@@ -77,10 +77,10 @@ export default async function ExpansionPage({ params }: { params: Promise<{ id: 
 
   // Extract maps and bosses from the joined query results
   const { data: maps, error: mapsError } = await supabase
-    .from("map")
+    .from("ww_map")
     .select(`
       *,
-      pin(*, instance(*))
+      ww_pin(*, ww_instance(*))
     `)
     .eq("expansion_id", expansion.id)
     .is("instance_id", null)
@@ -90,7 +90,7 @@ export default async function ExpansionPage({ params }: { params: Promise<{ id: 
     throw new Error(`Failed to load maps: ${mapsError.message}`)
   }
 
-  const bosses = instances?.flatMap(instance => instance.npc || []) || []
+  const bosses = instances?.flatMap(instance => instance.ww_npc || []) || []
 
   return (
     <Suspense>

@@ -7,7 +7,7 @@ export async function ExpansionSelectorServer({ expansionSlug }: { expansionSlug
 
   // Fetch all expansions
   const { data: expansions, error: expansionsError } = await supabase
-    .from("expansion")
+    .from("ww_expansion")
     .select("*")
     .order("release_date", { ascending: true })
 

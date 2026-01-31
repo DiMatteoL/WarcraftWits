@@ -58,8 +58,8 @@ export function LeaderboardModal({
   const [selectedGame, setSelectedGame] = React.useState<string>(initialGameType)
   const [selectedExpansion, setSelectedExpansion] = React.useState<string>(initialExpansion)
   const [selectedTimePeriod, setSelectedTimePeriod] = React.useState<"all" | "weekly" | "monthly">("all")
-  const [expansions, setExpansions] = React.useState<Tables<"expansion">[]>([])
-  const [scores, setScores] = React.useState<Tables<"score">[]>([])
+  const [expansions, setExpansions] = React.useState<Tables<"ww_expansion">[]>([])
+  const [scores, setScores] = React.useState<Tables<"ww_score">[]>([])
   const [loading, setLoading] = React.useState(true)
   const [scoresLoading, setScoresLoading] = React.useState(false)
   const [currentUserId, setCurrentUserId] = React.useState<string>("")
@@ -87,7 +87,7 @@ export function LeaderboardModal({
       try {
         setLoading(true)
         const { data, error } = await supabase
-          .from("expansion")
+          .from("ww_expansion")
           .select("*")
           .eq("is_active", true)
           .order("release_date", { ascending: true })
@@ -134,7 +134,7 @@ export function LeaderboardModal({
       try {
         setScoresLoading(true)
         let query = supabase
-          .from("score")
+          .from("ww_score")
           .select("*")
           .eq("game_name", selectedGame)
           .eq("expansion_slug", selectedExpansion)
@@ -166,7 +166,7 @@ export function LeaderboardModal({
 
         // Get total count of players for percentile calculation
         let countQuery = supabase
-          .from("score")
+          .from("ww_score")
           .select("*", { count: "exact", head: true })
           .eq("game_name", selectedGame)
           .eq("expansion_slug", selectedExpansion)
@@ -208,7 +208,7 @@ export function LeaderboardModal({
           } else {
             // User is not in the top 20, fetch their rank
             let userScoreQuery = supabase
-              .from("score")
+              .from("ww_score")
               .select("personal_best")
               .eq("identifier", currentUserId)
               .eq("game_name", selectedGame)
@@ -235,7 +235,7 @@ export function LeaderboardModal({
               setUserPersonalBest(userScore.personal_best)
               // Count how many scores are better than the user's score
               let rankQuery = supabase
-                .from("score")
+                .from("ww_score")
                 .select("*", { count: "exact", head: true })
                 .eq("game_name", selectedGame)
                 .eq("expansion_slug", selectedExpansion)

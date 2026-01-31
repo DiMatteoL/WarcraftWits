@@ -9,7 +9,7 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      expansion: {
+      ww_expansion: {
         Row: {
           background_uri: string | null
           created_at: string
@@ -42,7 +42,7 @@ export type Database = {
         }
         Relationships: []
       }
-      instance: {
+      ww_instance: {
         Row: {
           backgroud_uri: string | null
           created_at: string
@@ -84,15 +84,15 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "instance_expansion_id_fkey"
+            foreignKeyName: "ww_instance_expansion_id_fkey"
             columns: ["expansion_id"]
             isOneToOne: false
-            referencedRelation: "expansion"
+            referencedRelation: "ww_expansion"
             referencedColumns: ["id"]
           },
         ]
       }
-      map: {
+      ww_map: {
         Row: {
           created_at: string
           expansion_id: number | null
@@ -128,22 +128,22 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "map_expansion_id_fkey"
+            foreignKeyName: "ww_map_expansion_id_fkey"
             columns: ["expansion_id"]
             isOneToOne: false
-            referencedRelation: "expansion"
+            referencedRelation: "ww_expansion"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "map_instance_id_fkey"
+            foreignKeyName: "ww_map_instance_id_fkey"
             columns: ["instance_id"]
             isOneToOne: false
-            referencedRelation: "instance"
+            referencedRelation: "ww_instance"
             referencedColumns: ["id"]
           },
         ]
       }
-      npc: {
+      ww_npc: {
         Row: {
           background_uri: string | null
           created_at: string
@@ -182,22 +182,22 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "npc_instance_id_fkey"
+            foreignKeyName: "ww_npc_instance_id_fkey"
             columns: ["instance_id"]
             isOneToOne: false
-            referencedRelation: "instance"
+            referencedRelation: "ww_instance"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "npc_pin_id_fkey"
+            foreignKeyName: "ww_npc_pin_id_fkey"
             columns: ["pin_id"]
             isOneToOne: false
-            referencedRelation: "pin"
+            referencedRelation: "ww_pin"
             referencedColumns: ["id"]
           },
         ]
       }
-      pin: {
+      ww_pin: {
         Row: {
           created_at: string
           id: number
@@ -230,29 +230,29 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "pin_instance_id_fkey"
+            foreignKeyName: "ww_pin_instance_id_fkey"
             columns: ["instance_id"]
             isOneToOne: false
-            referencedRelation: "instance"
+            referencedRelation: "ww_instance"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "pin_map_id_fkey"
+            foreignKeyName: "ww_pin_map_id_fkey"
             columns: ["map_id"]
             isOneToOne: false
-            referencedRelation: "map"
+            referencedRelation: "ww_map"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "pin_npc_id_fkey"
+            foreignKeyName: "ww_pin_npc_id_fkey"
             columns: ["npc_id"]
             isOneToOne: false
-            referencedRelation: "npc"
+            referencedRelation: "ww_npc"
             referencedColumns: ["id"]
           },
         ]
       }
-      score: {
+      ww_score: {
         Row: {
           created_at: string
           expansion_slug: string

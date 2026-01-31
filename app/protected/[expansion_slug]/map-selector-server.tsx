@@ -13,7 +13,7 @@ export async function MapSelectorServer({
 
   // First get the expansion ID
   const { data: expansion, error: expansionError } = await supabase
-    .from("expansion")
+    .from("ww_expansion")
     .select("id")
     .eq("slug", expansionSlug)
     .single()
@@ -24,8 +24,8 @@ export async function MapSelectorServer({
 
   // Fetch all maps for this expansion with pins and instances
   const { data: maps, error: mapsError, count } = await supabase
-    .from("map")
-    .select("*, pin(*, instance(*))", { count: "exact" })
+    .from("ww_map")
+    .select("*, ww_pin(*, ww_instance(*))", { count: "exact" })
     .eq("expansion_id", expansion.id)
     .is("instance_id", null)
     .order("index")
@@ -38,7 +38,7 @@ export async function MapSelectorServer({
   const totalPages = Math.ceil((count || 0) / MAPS_PER_PAGE)
 
   const { data: instances, error: instancesError } = await supabase
-    .from("instance")
+    .from("ww_instance")
     .select("*")
     .eq("expansion_id", expansion.id)
     .order("name")

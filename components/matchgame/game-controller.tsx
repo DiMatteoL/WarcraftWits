@@ -10,9 +10,9 @@ import { VictoryCard } from "./victory-card"
 import { useMinigameScore } from "@/hooks/use-matchgame-score"
 
 interface GameControllerProps {
-  expansion: Tables<"expansion"> & {
-    instances: Tables<"instance">[]
-    bosses: Tables<"npc">[]
+  expansion: Tables<"ww_expansion"> & {
+    instances: Tables<"ww_instance">[]
+    bosses: Tables<"ww_npc">[]
   }
 }
 
@@ -20,9 +20,9 @@ export function GameController({ expansion }: GameControllerProps) {
   const [gameState, setGameState] = useState<"playing" | "gameOver" | "victory">("playing")
   const [score, setScore] = useState(0)
   const { highScore, updateHighScore } = useMinigameScore(expansion.slug)
-  const [currentBoss, setCurrentBoss] = useState<Tables<"npc"> | null>(null)
-  const [displayedInstances, setDisplayedInstances] = useState<Tables<"instance">[]>([])
-  const [remainingBosses, setRemainingBosses] = useState<Tables<"npc">[]>([])
+  const [currentBoss, setCurrentBoss] = useState<Tables<"ww_npc"> | null>(null)
+  const [displayedInstances, setDisplayedInstances] = useState<Tables<"ww_instance">[]>([])
+  const [remainingBosses, setRemainingBosses] = useState<Tables<"ww_npc">[]>([])
 
   const bosses = useMemo(() => {
     return expansion.bosses
@@ -80,7 +80,7 @@ export function GameController({ expansion }: GameControllerProps) {
     setDisplayedInstances(finalInstances)
   }, [currentBoss, expansion.instances])
 
-  const handleInstanceSelect = (instance: Tables<"instance"> | null) => {
+  const handleInstanceSelect = (instance: Tables<"ww_instance"> | null) => {
     if (instance && currentBoss && instance.id === currentBoss.instance_id) {
       setScore(score + 1)
       selectRandomBoss()

@@ -10,8 +10,8 @@ import { AdsenseAd } from "@/components/Adsense-ad"
 interface BossListProps {
   bosses: Boss[]
   instanceFilter?: number
-  allBosses?: Tables<"npc">[]
-  instances?: Tables<"instance">[]
+  allBosses?: Tables<"ww_npc">[]
+  instances?: Tables<"ww_instance">[]
 }
 
 export const BossList = memo(function BossList({ bosses, instanceFilter, allBosses = [], instances = [] }: BossListProps) {

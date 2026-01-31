@@ -6,8 +6,8 @@ import { Check, X } from "lucide-react";
 import { useState, useEffect } from "react";
 
 interface InstanceCardProps {
-  instance: Tables<"instance">;
-  onInstanceSelect: (instance: Tables<"instance"> | null) => void;
+  instance: Tables<"ww_instance">;
+  onInstanceSelect: (instance: Tables<"ww_instance"> | null) => void;
   correctInstanceId: number | null;
 }
 
@@ -30,7 +30,7 @@ export function InstanceCard({
     }
   }, [animationState, onInstanceSelect, instance]);
 
-  const handleClick = (instance: Tables<"instance">) => {
+  const handleClick = (instance: Tables<"ww_instance">) => {
     if (String(instance.id) === String(correctInstanceId)) {
       setAnimationState('success');
     } else {

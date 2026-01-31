@@ -11,7 +11,7 @@ import { usePathname } from "next/navigation"
 export function ExpansionTable() {
   const supabase = useSupabase()
   const pathname = usePathname()
-  const [expansions, setExpansions] = useState<Tables<"expansion">[]>([])
+  const [expansions, setExpansions] = useState<Tables<"ww_expansion">[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -20,7 +20,7 @@ export function ExpansionTable() {
       try {
         setLoading(true)
         const { data } = await supabase
-          .from("expansion")
+          .from("ww_expansion")
           .select("*")
           .order("is_active", { ascending: false })
           .order("release_date", { ascending: true })

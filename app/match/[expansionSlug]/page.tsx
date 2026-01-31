@@ -7,7 +7,7 @@ export async function generateMetadata({ params }: { params: Promise<{ expansion
   const supabase = await createClient()
   const { expansionSlug } = await params;
   const { data: expansion, error } = await supabase
-    .from("expansion")
+    .from("ww_expansion")
     .select("*")
     .eq("slug", expansionSlug)
     .single()
@@ -49,7 +49,7 @@ export default async function MatchGamePage({ params }: { params: Promise<{ expa
 
   // Fetch expansion data
   const { data: expansion, error: expansionError } = await supabase
-    .from("expansion")
+    .from("ww_expansion")
     .select("*")
     .eq("slug", expansionSlug)
     .single()
@@ -60,7 +60,7 @@ export default async function MatchGamePage({ params }: { params: Promise<{ expa
 
   // Fetch instances for this expansion
   const { data: instances, error: instancesError } = await supabase
-    .from("instance")
+    .from("ww_instance")
     .select("*")
     .eq("expansion_id", expansion.id)
 
@@ -73,7 +73,7 @@ export default async function MatchGamePage({ params }: { params: Promise<{ expa
 
   // Fetch bosses (NPCs) for this expansion
   const { data: bosses, error: bossesError } = await supabase
-    .from("npc")
+    .from("ww_npc")
     .select("*")
     .in("instance_id", instanceIds)
 

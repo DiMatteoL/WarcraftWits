@@ -7,9 +7,9 @@ import { Button } from "@/components/ui/button"
 import { GameController } from "@/components/matchgame/game-controller"
 import { Database } from "@/types/database"
 
-type Expansion = Database["public"]["Tables"]["expansion"]["Row"] & {
-  instances: Database["public"]["Tables"]["instance"]["Row"][]
-  bosses: Database["public"]["Tables"]["npc"]["Row"][]
+type Expansion = Database["public"]["Tables"]["ww_expansion"]["Row"] & {
+  instances: Database["public"]["Tables"]["ww_instance"]["Row"][]
+  bosses: Database["public"]["Tables"]["ww_npc"]["Row"][]
 }
 
 interface MatchGameClientProps {

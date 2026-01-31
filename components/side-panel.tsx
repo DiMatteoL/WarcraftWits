@@ -9,11 +9,11 @@ import type { InstanceWithCompletion } from "@/types/game"
 import type { Tables } from "@/types/database"
 
 type SidePanelProps = {
-  expansion: Tables<"expansion">
+  expansion: Tables<"ww_expansion">
   instances: InstanceWithCompletion[]
-  bosses: Tables<"npc">[]
-  foundBosses: Tables<"npc">[]
-  onBossFound: (boss: Tables<"npc">) => void
+  bosses: Tables<"ww_npc">[]
+  foundBosses: Tables<"ww_npc">[]
+  onBossFound: (boss: Tables<"ww_npc">) => void
   clearFoundBosses?: () => void
   clearHoveredInstance: () => void
   isDesktop: boolean

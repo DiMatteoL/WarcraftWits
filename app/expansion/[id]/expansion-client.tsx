@@ -7,18 +7,18 @@ import type { InstanceWithCompletion } from "@/types/game"
 import type { Tables } from "@/types/database"
 import { GameInterface } from "@/components/game-interface"
 
-type ExtendedMap = Tables<"map"> & {
-  pin: (Tables<"pin"> & {
-    instance: Tables<"instance"> | null
+type ExtendedMap = Tables<"ww_map"> & {
+  ww_pin: (Tables<"ww_pin"> & {
+    ww_instance: Tables<"ww_instance"> | null
   })[]
 }
 
 type ExpansionClientProps = {
   id: string
-  expansion: Tables<"expansion">
-  instances: Tables<"instance">[]
+  expansion: Tables<"ww_expansion">
+  instances: Tables<"ww_instance">[]
   maps: ExtendedMap[]
-  bosses: Tables<"npc">[]
+  bosses: Tables<"ww_npc">[]
 }
 
 export function ExpansionClient({ id, expansion, instances, maps, bosses }: ExpansionClientProps) {

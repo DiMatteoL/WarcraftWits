@@ -73,7 +73,7 @@ export function useUserScore(expansionId: string) {
           setIsSyncing(true);
 
           const { data: existingRecord, error: checkError } = await supabase
-            .from("score")
+            .from("ww_score")
             .select("*")
             .eq("identifier", userId)
             .eq("game_name", BOSS_MEMORY_GAME_TYPE)
@@ -85,7 +85,7 @@ export function useUserScore(expansionId: string) {
           } else if (!existingRecord) {
             console.log("Record not found, creating new record");
             // Record doesn't exist, create it
-            const { error: insertError } = await supabase.from("score").insert({
+            const { error: insertError } = await supabase.from("ww_score").insert({
               identifier: userId,
               personal_best: score,
               expansion_slug: expansionId,
@@ -101,7 +101,7 @@ export function useUserScore(expansionId: string) {
             console.log("Record found, updating with score:", score);
             // Record exists, update it
             const { data, error } = await supabase
-              .from("score")
+              .from("ww_score")
               .update({ personal_best: score })
               .eq("identifier", userId)
               .eq("game_name", BOSS_MEMORY_GAME_TYPE)
